@@ -23,5 +23,6 @@ jobs:
 
       # specify any bash command here prefixed with `run: `
       - run: echo "Starting building now.."
+      - run: sudo apt-get install libyara-dev yara
       - run: go get -v -t -d ./...
       - run: go test -v ./...
