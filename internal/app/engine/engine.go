@@ -23,18 +23,14 @@ func Start() {
 	yarahandler.Main()
 
 	r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
-
 	nextRule := ruleSequence(r...)
-
 	fmt.Println(nextRule())
-
 }
 
 func ruleSequence(rules ...string) func() string {
 	i := 0
 
 	return func() string {
-
 		if i < len(rules) {
 			ret := rules[i]
 			i++
