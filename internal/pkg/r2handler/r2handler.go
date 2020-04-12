@@ -13,7 +13,7 @@ func Testr2() {
 	}
 	defer r2p.Close()
 
-	_, err = r2p.Cmd("w Hello World")
+	_, err = r2p.Cmd("w Hey There Boss")
 	if err != nil {
 		panic(err)
 	}
