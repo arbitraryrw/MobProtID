@@ -32,6 +32,6 @@ jobs:
       - run: cd yara-3.11.0/ && make
       - run: cd yara-3.11.0/ && sudo make install
       - run: cd yara-3.11.0/ && make check
-      - run: sudo apt-get isntall libyara-dev
+      - run: sudo apt-get install libyara-dev
       - run: go get -v -t -d ./...
       - run: go test -v ./...
