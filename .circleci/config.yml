@@ -23,6 +23,17 @@ jobs:
 
       # specify any bash command here prefixed with `run: `
       - run: echo "Starting building now.."
-      - run: sudo apt-get install libyara-dev yara
+      - run: echo "Working dir:" `pwd` 
+      - run: sudo apt-get install automake libtool make gcc
+      - run: wget https://swift.org/builds/swift-5.1.3-release/ubuntu1804/swift-5.1.3-RELEASE/swift-5.1.3-RELEASE-ubuntu18.04.tar.gz
+      - run: tar -zxf swift-5.1.3-RELEASE-ubuntu18.04.tar.gz
+      - run: cd swift-5.1.3-RELEASE-ubuntu18.04
+      - run: ./bootstrap.sh
+      - run: ./configure
+      - run: make
+      - run: sudo make install
+      - run: make check
+      - run: cd ../
+      - run: sudo apt-get install libyara-dev
       - run: go get -v -t -d ./...
       - run: go test -v ./...
