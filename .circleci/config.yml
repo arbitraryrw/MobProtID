@@ -30,7 +30,7 @@ jobs:
       - run: cd yara-3.11.0/ && ./bootstrap.sh
       - run: cd yara-3.11.0/ && ./configure
       - run: cd yara-3.11.0/ && make
-      - run: cd yara-3.11.0/ && make install
+      - run: cd yara-3.11.0/ && sudo make install
       - run: cd yara-3.11.0/ && make check
       - run: sudo apt-get install libyara-dev
       - run: go get -v -t -d ./...
