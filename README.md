@@ -25,6 +25,7 @@ go test ./...
 - [gobyexample](https://gobyexample.com/)
 - [r2pipe-go docs](https://godoc.org/github.com/radare/r2pipe-go)
 - [go-yara docs](https://godoc.org/github.com/hillu/go-yara)
+- [Installing yara](https://yara.readthedocs.io/en/stable/gettingstarted.html)
 
 ### License
 [GNU General Public License v3.0](https://github.com/arbitraryrw/MobProtID/blob/master/LICENSE)
