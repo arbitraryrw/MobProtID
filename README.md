@@ -11,6 +11,11 @@ To recursively run all unit tests in the project run the following go command in
 ```go
 go test ./...
 ```
+### Dependencies
+- [r2pipe-go](https://github.com/radareorg/radare2-r2pipe/tree/master/go)
+- [radare2](https://github.com/radareorg/radare2)
+- [go-yara](https://github.com/hillu/go-yara)
+- [yara](https://virustotal.github.io/yara/)
 
 ### Useful Go References
 - [project-layout](https://github.com/golang-standards/project-layout)
@@ -18,6 +23,8 @@ go test ./...
 - [testing docs](https://golang.org/pkg/testing/)
 - [general coding docs](https://golang.org/doc/code.html)
 - [gobyexample](https://gobyexample.com/)
+- [r2pipe-go docs](https://godoc.org/github.com/radare/r2pipe-go)
+- [go-yara docs](https://godoc.org/github.com/hillu/go-yara)
 
 ### License
 [GNU General Public License v3.0](https://github.com/arbitraryrw/MobProtID/blob/master/LICENSE)
