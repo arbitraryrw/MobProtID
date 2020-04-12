@@ -16,4 +16,6 @@ func main() {
 	fmt.Println(utils.Description())
 
 	ruleparser.ParseRuleFile()
+
+	engine.Testr2()
 }
