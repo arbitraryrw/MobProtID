@@ -27,13 +27,11 @@ jobs:
       - run: sudo apt-get install automake libtool make gcc
       - run: wget https://github.com/VirusTotal/yara/archive/v3.11.0.tar.gz
       - run: tar -zxf v3.11.0.tar.gz
-      - run: cd yara-3.11.0
-      - run: ./bootstrap.sh
-      - run: ./configure
-      - run: make
-      - run: sudo make install
-      - run: make check
-      - run: cd ../
+      - run: cd yara-3.11.0/ && ./bootstrap.sh
+      - run: cd yara-3.11.0/ && ./configure
+      - run: cd yara-3.11.0/ && make
+      - run: cd yara-3.11.0/ && make install
+      - run: cd yara-3.11.0/ && make check
       - run: sudo apt-get install libyara-dev
       - run: go get -v -t -d ./...
       - run: go test -v ./...
