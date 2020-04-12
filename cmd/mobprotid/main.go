@@ -10,6 +10,8 @@ import (
 	"github.com/arbitraryrw/MobProtID/internal/app/ruleparser"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/r2handler"
+
+	"github.com/arbitraryrw/MobProtID/internal/pkg/yarahandler"
 )
 
 func main() {
@@ -20,4 +22,5 @@ func main() {
 	ruleparser.ParseRuleFile()
 
 	r2handler.Testr2()
+	yarahandler.Main()
 }
