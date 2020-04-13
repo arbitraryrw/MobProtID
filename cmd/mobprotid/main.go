@@ -3,6 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"os/user"
+	"path/filepath"
 
 	"github.com/arbitraryrw/MobProtID/internal/app/engine"
 	"github.com/arbitraryrw/MobProtID/internal/app/ruleparser"
@@ -19,8 +22,28 @@ func main() {
 	if *wordPtr != "" {
 		fmt.Println("target:", *wordPtr)
 
-		ruleparser.ParseRuleFile()
-		engine.Start()
+		var targetPath string
+
+		if string(*wordPtr)[:1] == "~" {
+
+			usr, _ := user.Current()
+			homeDir := usr.HomeDir
+
+			targetPath = filepath.Join(homeDir, string(*wordPtr)[1:])
+
+		} else {
+			targetPath, _ = filepath.Abs(*wordPtr)
+		}
+
+		if _, err := os.Stat(targetPath); err == nil {
+
+			ruleparser.ParseRuleFile()
+			engine.Start()
+
+		} else {
+			fmt.Println(targetPath, "File does not exist")
+		}
+
 	} else {
 		fmt.Println("No target provided, please enter a valid path")
 	}
