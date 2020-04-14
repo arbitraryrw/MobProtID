@@ -6,7 +6,11 @@ import (
 	"github.com/radare/r2pipe-go"
 )
 
-func Testr2() {
+var r2session r2pipe.Pipe
+
+func init() {
+	fmt.Println("*** R2 handler Starting ***")
+
 	r2p, err := r2pipe.NewPipe("malloc://256")
 	if err != nil {
 		panic(err)
@@ -22,4 +26,8 @@ func Testr2() {
 		panic(err)
 	}
 	fmt.Println(buf)
+}
+
+func getStrings(r2session r2pipe.Pipe) {
+
 }
