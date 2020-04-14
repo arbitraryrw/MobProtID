@@ -28,6 +28,18 @@ func init() {
 	fmt.Println(buf)
 }
 
+func PrepareAnal() {
+
+}
+
 func getStrings(r2session r2pipe.Pipe) {
+
+}
+
+func getExports(r2session r2pipe.Pipe) {
+
+}
+
+func getSymbols(r2session r2pipe.Pipe) {
 
 }

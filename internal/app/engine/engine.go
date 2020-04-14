@@ -3,7 +3,6 @@ package engine
 import (
 	"fmt"
 
-	"github.com/arbitraryrw/MobProtID/internal/pkg/r2handler"
 	"github.com/arbitraryrw/MobProtID/internal/pkg/yarahandler"
 )
 
@@ -17,7 +16,7 @@ func Start() {
 	fmt.Println("[INFO] Engine Starting..")
 
 	fmt.Println("[INFO] R2 Running...")
-	r2handler.Testr2()
+	r2handler.PrepareAnal()
 
 	fmt.Println("[INFO] Yara Running...")
 	yarahandler.Main()
