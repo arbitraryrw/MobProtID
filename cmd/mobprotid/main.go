@@ -38,7 +38,7 @@ func main() {
 		if _, err := os.Stat(targetPath); err == nil {
 
 			ruleparser.ParseRuleFile()
-			engine.Start()
+			engine.Start(targetPath)
 
 		} else {
 			fmt.Println(targetPath, "File does not exist")

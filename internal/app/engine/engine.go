@@ -3,7 +3,7 @@ package engine
 import (
 	"fmt"
 
-	"github.com/arbitraryrw/MobProtID/internal/pkg/yarahandler"
+	"github.com/arbitraryrw/MobProtID/internal/pkg/r2handler"
 )
 
 //Description Dummy function to check scope
@@ -12,18 +12,18 @@ func Description() string {
 }
 
 // Start initialises the core analysis orchestration logic
-func Start() {
+func Start(bp string) {
 	fmt.Println("[INFO] Engine Starting..")
 
 	fmt.Println("[INFO] R2 Running...")
-	r2handler.PrepareAnal()
+	r2handler.PrepareAnal(bp)
 
-	fmt.Println("[INFO] Yara Running...")
-	yarahandler.Main()
+	// fmt.Println("[INFO] Yara Running...")
+	// yarahandler.Main()
 
-	r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
-	nextRule := ruleSequence(r...)
-	fmt.Println(nextRule())
+	// r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
+	// nextRule := ruleSequence(r...)
+	// fmt.Println(nextRule())
 }
 
 func ruleSequence(rules ...string) func() string {
