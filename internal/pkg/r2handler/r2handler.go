@@ -3,6 +3,7 @@ package r2handler
 import (
 	"encoding/base64"
 	"fmt"
+	"sync"
 
 	"github.com/radare/r2pipe-go"
 )
@@ -12,8 +13,9 @@ var r2session r2pipe.Pipe
 func init() {}
 
 // PrepareAnal - gathers all the relevant data required for analysis
-func PrepareAnal(binaryPath string) {
+func PrepareAnal(binaryPath string, wg *sync.WaitGroup) {
 
+	defer wg.Done()
 	fmt.Println("*** R2 handler Starting ***")
 
 	r2session = openR2Pipe(binaryPath)
