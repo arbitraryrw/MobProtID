@@ -25,7 +25,8 @@ func anal() {
 	fmt.Println("Performing Analaysis")
 
 	// writeString("Letsa go!")
-	getStringEntireBinary()
+	allStrings := getStringEntireBinary()
+	fmt.Println("Found", len(allStrings), "strings in binary")
 
 	defer r2session.Close()
 }
@@ -56,37 +57,35 @@ func writeString(s string) {
 	fmt.Println(buf)
 }
 
-func getStringEntireBinary() {
+func getStringEntireBinary() []string {
 	buf, err := r2session.Cmdj("izzj")
 	if err != nil {
 		panic(err)
 	}
 
+	stringsInBinary := make([]string, 0)
+
 	// Assert buf as map[string]interface{} and then parse if true
 	if buf, ok := buf.([]interface{}); ok {
 
-		stringsInBinary := make([]string, 0)
-
-		for i, stringBundle := range buf {
+		for _, stringBundle := range buf {
 
 			sb, ok := stringBundle.(map[string]interface{})
 
-			fmt.Println("String #", i)
 			if ok {
 
 				sDec, _ := base64.StdEncoding.DecodeString(sb["string"].(string))
 
 				stringsInBinary = append(stringsInBinary, string(sDec))
 
-				fmt.Println("Length", sb["length"])
-				fmt.Println("Ordinal", sb["ordinal"])
-				fmt.Println("Paddr", sb["paddr"])
-				fmt.Println("Section", sb["section"])
-				fmt.Println("Size", sb["size"])
-				fmt.Println("Type", sb["type"])
-				fmt.Println("Decoded string", string(sDec))
-
-				fmt.Println()
+				// fmt.Println("Length", sb["length"])
+				// fmt.Println("Ordinal", sb["ordinal"])
+				// fmt.Println("Paddr", sb["paddr"])
+				// fmt.Println("Section", sb["section"])
+				// fmt.Println("Size", sb["size"])
+				// fmt.Println("Type", sb["type"])
+				// fmt.Println("Decoded string", string(sDec))
+				// fmt.Println()
 
 			} else {
 				panic("Unexpected string bundle from r2, unable to assert!")
@@ -95,6 +94,8 @@ func getStringEntireBinary() {
 	} else {
 		panic("Unable to parse R2 strings returned")
 	}
+
+	return stringsInBinary
 }
 
 func getStringsDataSections() {
