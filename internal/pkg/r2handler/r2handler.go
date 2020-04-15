@@ -2,7 +2,6 @@ package r2handler
 
 import (
 	"fmt"
-	"reflect"
 
 	"github.com/radare/r2pipe-go"
 )
@@ -62,23 +61,27 @@ func getStringEntireBinary() {
 		panic(err)
 	}
 
-	fmt.Println("reee", reflect.TypeOf(buf))
-
 	// Assert buf as map[string]interface{} and then parse if true
 	if buf, ok := buf.([]interface{}); ok {
 
-		for _, stringBundle := range buf {
+		for i, stringBundle := range buf {
 
-			sb, _ := stringBundle.(map[string]interface{})
+			sb, ok := stringBundle.(map[string]interface{})
 
-			fmt.Println(sb["length"])
-			fmt.Println(sb["ordinal"])
-			fmt.Println(sb["paddr"])
-			fmt.Println(sb["section"])
-			fmt.Println(sb["size"])
-			fmt.Println(sb["string"])
-			fmt.Println(sb["type"])
+			fmt.Println("String #", i)
+			if ok {
+				fmt.Println(sb["length"])
+				fmt.Println(sb["ordinal"])
+				fmt.Println(sb["paddr"])
+				fmt.Println(sb["section"])
+				fmt.Println(sb["size"])
+				fmt.Println(sb["string"])
+				fmt.Println(sb["type"])
+				fmt.Println()
 
+			} else {
+				panic("Unexpected string bundle from r2, unable to assert!")
+			}
 		}
 	} else {
 		panic("Unable to parse R2 strings returned")
