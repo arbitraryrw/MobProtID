@@ -1,6 +1,7 @@
 package r2handler
 
 import (
+	"encoding/base64"
 	"fmt"
 
 	"github.com/radare/r2pipe-go"
@@ -64,19 +65,27 @@ func getStringEntireBinary() {
 	// Assert buf as map[string]interface{} and then parse if true
 	if buf, ok := buf.([]interface{}); ok {
 
+		stringsInBinary := make([]string, 0)
+
 		for i, stringBundle := range buf {
 
 			sb, ok := stringBundle.(map[string]interface{})
 
 			fmt.Println("String #", i)
 			if ok {
-				fmt.Println(sb["length"])
-				fmt.Println(sb["ordinal"])
-				fmt.Println(sb["paddr"])
-				fmt.Println(sb["section"])
-				fmt.Println(sb["size"])
-				fmt.Println(sb["string"])
-				fmt.Println(sb["type"])
+
+				sDec, _ := base64.StdEncoding.DecodeString(sb["string"].(string))
+
+				stringsInBinary = append(stringsInBinary, string(sDec))
+
+				fmt.Println("Length", sb["length"])
+				fmt.Println("Ordinal", sb["ordinal"])
+				fmt.Println("Paddr", sb["paddr"])
+				fmt.Println("Section", sb["section"])
+				fmt.Println("Size", sb["size"])
+				fmt.Println("Type", sb["type"])
+				fmt.Println("Decoded string", string(sDec))
+
 				fmt.Println()
 
 			} else {
