@@ -11,12 +11,20 @@ var r2session r2pipe.Pipe
 
 func init() {}
 
-// PrepareAnal -
+// PrepareAnal - gathers all the relevant data required for analysis
 func PrepareAnal(binaryPath string) {
 
 	fmt.Println("*** R2 handler Starting ***")
 
 	r2session = openR2Pipe(binaryPath)
+
+	// writeString("Letsa go!")
+
+	allStrings := make(chan []string)
+
+	go func() { allStrings <- getStringEntireBinary() }()
+
+	fmt.Println("Found", len(<-allStrings), "strings in binary")
 
 	anal()
 }
@@ -24,9 +32,7 @@ func PrepareAnal(binaryPath string) {
 func anal() {
 	fmt.Println("Performing Analaysis")
 
-	// writeString("Letsa go!")
-	allStrings := getStringEntireBinary()
-	fmt.Println("Found", len(allStrings), "strings in binary")
+	//ToDO: Analysis logic here
 
 	defer r2session.Close()
 }
