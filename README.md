@@ -6,8 +6,16 @@
 
 A simple Mobile Analysis POC tool to practice programming in [golang](https://golang.org/doc/code.html).
 
+### Usage
+Run the compiled binary and specify a target binary to analyse as seen below:
+
+```go
+cmd/mobprotid -target=<target binary path>
+```
+
 ### Testing
 To recursively run all unit tests in the project run the following go command in the project root directory:
+
 ```go
 go test ./...
 ```
