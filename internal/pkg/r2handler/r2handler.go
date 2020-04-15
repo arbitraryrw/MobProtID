@@ -2,6 +2,7 @@ package r2handler
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/radare/r2pipe-go"
 )
@@ -61,10 +62,26 @@ func getStringEntireBinary() {
 		panic(err)
 	}
 
-	fmt.Println(buf)
+	fmt.Println("reee", reflect.TypeOf(buf))
 
-	if buf, ok := buf.(map[string]interface{}); ok {
-		fmt.Println(buf)
+	// Assert buf as map[string]interface{} and then parse if true
+	if buf, ok := buf.([]interface{}); ok {
+
+		for _, stringBundle := range buf {
+
+			sb, _ := stringBundle.(map[string]interface{})
+
+			fmt.Println(sb["length"])
+			fmt.Println(sb["ordinal"])
+			fmt.Println(sb["paddr"])
+			fmt.Println(sb["section"])
+			fmt.Println(sb["size"])
+			fmt.Println(sb["string"])
+			fmt.Println(sb["type"])
+
+		}
+	} else {
+		panic("Unable to parse R2 strings returned")
 	}
 }
 
