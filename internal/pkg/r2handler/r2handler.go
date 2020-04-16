@@ -3,6 +3,7 @@ package r2handler
 import (
 	"encoding/base64"
 	"fmt"
+	"reflect"
 	"sync"
 
 	"github.com/radare/r2pipe-go"
@@ -25,6 +26,7 @@ func PrepareAnal(binaryPath string, wg *sync.WaitGroup) {
 	allStrings := make(chan []string)
 
 	go func() { allStrings <- getStringEntireBinary() }()
+	getBinaryInfo()
 
 	fmt.Println("Found", len(<-allStrings), "strings in binary")
 
@@ -104,6 +106,18 @@ func getStringEntireBinary() []string {
 	}
 
 	return stringsInBinary
+}
+
+func getBinaryInfo() {
+	buf, err := r2session.Cmdj("iIj")
+	if err != nil {
+		panic(err)
+	}
+
+	if bi, ok := buf.(map[string]interface{}); ok {
+		fmt.Println("re", reflect.TypeOf(bi))
+	}
+
 }
 
 func getStringsDataSections() {
