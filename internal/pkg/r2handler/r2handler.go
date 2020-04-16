@@ -3,7 +3,6 @@ package r2handler
 import (
 	"encoding/base64"
 	"fmt"
-	"reflect"
 	"sync"
 
 	"github.com/radare/r2pipe-go"
@@ -26,7 +25,9 @@ func PrepareAnal(binaryPath string, wg *sync.WaitGroup) {
 	allStrings := make(chan []string)
 
 	go func() { allStrings <- getStringEntireBinary() }()
-	getBinaryInfo()
+
+	binaryInfo := getBinaryInfo()
+	fmt.Println("Lets see if r2 has returned the goods:", binaryInfo)
 
 	fmt.Println("Found", len(<-allStrings), "strings in binary")
 
@@ -108,15 +109,28 @@ func getStringEntireBinary() []string {
 	return stringsInBinary
 }
 
-func getBinaryInfo() {
+func getBinaryInfo() map[string]string {
 	buf, err := r2session.Cmdj("iIj")
 	if err != nil {
 		panic(err)
 	}
 
+	binaryInfo := make(map[string]string)
+
 	if bi, ok := buf.(map[string]interface{}); ok {
-		fmt.Println("re", reflect.TypeOf(bi))
+		fmt.Println("Arch", bi["arch"])
+		fmt.Println("bits", bi["bits"])
+		fmt.Println("compiler", bi["compiler"])
+		fmt.Println("canary", bi["canary"])
+		fmt.Println("pic", bi["pic"])
+		fmt.Println("stripped", bi["stripped"])
+
+		binaryInfo["Arch"] = bi["arch"].(string)
+	} else {
+		panic("Unexpected reponse from R2 while getting binary info")
 	}
+
+	return binaryInfo
 
 }
 
