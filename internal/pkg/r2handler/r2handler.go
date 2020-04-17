@@ -3,6 +3,7 @@ package r2handler
 import (
 	"encoding/base64"
 	"fmt"
+	"strconv"
 	"sync"
 
 	"github.com/radare/r2pipe-go"
@@ -38,6 +39,7 @@ func anal() {
 	fmt.Println("Performing Analaysis")
 
 	//ToDO: Analysis logic here
+	// faccesstat, open, stat64
 
 	defer r2session.Close()
 }
@@ -118,14 +120,25 @@ func getBinaryInfo() map[string]string {
 	binaryInfo := make(map[string]string)
 
 	if bi, ok := buf.(map[string]interface{}); ok {
-		fmt.Println("Arch", bi["arch"])
-		fmt.Println("bits", bi["bits"])
-		fmt.Println("compiler", bi["compiler"])
-		fmt.Println("canary", bi["canary"])
-		fmt.Println("pic", bi["pic"])
-		fmt.Println("stripped", bi["stripped"])
 
-		binaryInfo["Arch"] = bi["arch"].(string)
+		// fmt.Println("R2 returned ->", bi)
+
+		if val, ok := bi["compiler"].(string); ok {
+			binaryInfo["compiler"] = val
+		}
+
+		if val, ok := bi["canary"].(bool); ok {
+			binaryInfo["canary"] = strconv.FormatBool(val)
+		}
+
+		if val, ok := bi["pic"].(bool); ok {
+			binaryInfo["pic"] = strconv.FormatBool(val)
+		}
+
+		if val, ok := bi["stripped"].(bool); ok {
+			binaryInfo["stripped"] = strconv.FormatBool(val)
+		}
+
 	} else {
 		panic("Unexpected reponse from R2 while getting binary info")
 	}
