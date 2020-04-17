@@ -9,7 +9,7 @@ import (
 	"github.com/radare/r2pipe-go"
 )
 
-var r2session r2pipe.Pipe
+var r2sessionMap map[string]r2pipe.Pipe
 
 func init() {}
 
@@ -19,17 +19,31 @@ func PrepareAnal(binaryPath string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	fmt.Println("*** R2 handler Starting ***")
 
-	r2session = openR2Pipe(binaryPath)
+	r2sessionMap := make(map[string]r2pipe.Pipe)
+
+	r2s := openR2Pipe(binaryPath)
+	defer r2s.Close()
+
+	r2sessionMap[binaryPath] = r2s
+
+	allStrings := make(chan []string)
+	binaryInfo := make(chan map[string]string)
+
+	for path, session := range r2sessionMap {
+		fmt.Println(path, session)
+
+		go func(s r2pipe.Pipe) {
+			binaryInfo <- getBinaryInfo(s)
+		}(session)
+
+		go func(s r2pipe.Pipe) {
+			allStrings <- getStringEntireBinary(s)
+		}(session)
+	}
 
 	// writeString("Letsa go!")
 
-	allStrings := make(chan []string)
-
-	go func() { allStrings <- getStringEntireBinary() }()
-
-	binaryInfo := getBinaryInfo()
-	fmt.Println("Lets see if r2 has returned the goods:", binaryInfo)
-
+	fmt.Println("Lets see if r2 has returned the goods:", <-binaryInfo)
 	fmt.Println("Found", len(<-allStrings), "strings in binary")
 
 	anal()
@@ -41,7 +55,6 @@ func anal() {
 	//ToDO: Analysis logic here
 	// faccesstat, open, stat64
 
-	defer r2session.Close()
 }
 
 func openR2Pipe(path string) r2pipe.Pipe {
@@ -57,7 +70,7 @@ func openR2Pipe(path string) r2pipe.Pipe {
 	return *r2p
 }
 
-func writeString(s string) {
+func writeString(s string, r2session r2pipe.Pipe) {
 
 	_, err := r2session.Cmd("w " + s)
 	if err != nil {
@@ -70,7 +83,7 @@ func writeString(s string) {
 	fmt.Println(buf)
 }
 
-func getStringEntireBinary() []string {
+func getStringEntireBinary(r2session r2pipe.Pipe) []string {
 	buf, err := r2session.Cmdj("izzj")
 	if err != nil {
 		panic(err)
@@ -109,7 +122,7 @@ func getStringEntireBinary() []string {
 	return stringsInBinary
 }
 
-func getBinaryInfo() map[string]string {
+func getBinaryInfo(r2session r2pipe.Pipe) map[string]string {
 	buf, err := r2session.Cmdj("iIj")
 	if err != nil {
 		panic(err)
@@ -144,7 +157,7 @@ func getBinaryInfo() map[string]string {
 	return binaryInfo
 }
 
-func getStringsDataSections() {
+func getStringsDataSections(r2session r2pipe.Pipe) {
 	_, err := r2session.Cmdj("izj")
 	if err != nil {
 		panic(err)

@@ -18,6 +18,9 @@ To recursively run all unit tests in the project run the following go command in
 
 ```go
 go test ./...
+
+// To clean the test cache:
+go clean -testcache ./...
 ```
 ### Dependencies
 - [r2pipe-go](https://github.com/radareorg/radare2-r2pipe/tree/master/go)
