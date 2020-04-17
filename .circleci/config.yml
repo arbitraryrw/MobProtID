@@ -24,7 +24,7 @@ jobs:
       # specify any bash command here prefixed with `run: `
       - run: echo "Starting building now.."
       - run: echo "Working dir:" `pwd` 
-      - run: sudo apt-get install automake libtool make gcc radare2
+      - run: sudo apt-get install automake libtool make gcc
       - run: wget https://github.com/VirusTotal/yara/archive/v3.11.0.tar.gz
       - run: tar -zxf v3.11.0.tar.gz
       - run: cd yara-3.11.0/ && ./bootstrap.sh
@@ -33,5 +33,9 @@ jobs:
       - run: cd yara-3.11.0/ && sudo make install
       - run: cd yara-3.11.0/ && make check
       - run: sudo apt-get install libyara-dev
+      - run: wget https://github.com/radareorg/radare2/archive/4.4.0.zip
+      - run: sudo apt-get install patch
+      - run: unzip 4.4.0.zip
+      - run: cd radare2-4.4.0/ && sys/user.sh
       - run: go get -v -t -d ./...
       - run: go test -v ./...
