@@ -20,15 +20,13 @@ func TestUgetStringEntireBinary(t *testing.T) {
 
 	for _, val := range got {
 		if strings.Compare(expect, val) == 0 {
-			t.Log(val)
+			// Successfully found the string in the slice
 			result = true
 		}
 	}
 
-	t.Log(result)
-
-	if strings.Compare("a", "a") != 0 {
+	if result == false {
 		fmt.Println("Failed comparison!")
-		t.Errorf("Description() = %q; want %q", got, expect)
+		t.Errorf("getStringEntireBinary() = could not find %q in sample_binary r2 reponse", expect)
 	}
 }

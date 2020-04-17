@@ -24,7 +24,7 @@ jobs:
       # specify any bash command here prefixed with `run: `
       - run: echo "Starting building now.."
       - run: echo "Working dir:" `pwd` 
-      - run: sudo apt-get install automake libtool make gcc
+      - run: sudo apt-get install automake libtool make gcc radare2
       - run: wget https://github.com/VirusTotal/yara/archive/v3.11.0.tar.gz
       - run: tar -zxf v3.11.0.tar.gz
       - run: cd yara-3.11.0/ && ./bootstrap.sh
