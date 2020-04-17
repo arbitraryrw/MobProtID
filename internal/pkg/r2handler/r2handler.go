@@ -83,9 +83,7 @@ func getStringEntireBinary() []string {
 
 		for _, stringBundle := range buf {
 
-			sb, ok := stringBundle.(map[string]interface{})
-
-			if ok {
+			if sb, ok := stringBundle.(map[string]interface{}); ok {
 
 				sDec, _ := base64.StdEncoding.DecodeString(sb["string"].(string))
 
@@ -101,7 +99,7 @@ func getStringEntireBinary() []string {
 				// fmt.Println()
 
 			} else {
-				panic("Unexpected string bundle from r2, unable to assert!")
+				panic("Unexpected reponse from R2 while getting all strings in binary!")
 			}
 		}
 	} else {
@@ -144,7 +142,6 @@ func getBinaryInfo() map[string]string {
 	}
 
 	return binaryInfo
-
 }
 
 func getStringsDataSections() {
