@@ -50,11 +50,10 @@ func PrepareAnal(binaryPath string, wg *sync.WaitGroup) {
 }
 
 func anal() {
-	fmt.Println("Performing Analaysis")
+	fmt.Println("Performing Analysis")
 
 	//ToDO: Analysis logic here
 	// faccesstat, open, stat64
-
 }
 
 func openR2Pipe(path string) r2pipe.Pipe {
