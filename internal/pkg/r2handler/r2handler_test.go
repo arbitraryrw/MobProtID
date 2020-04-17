@@ -2,6 +2,7 @@ package r2handler
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 )
@@ -23,9 +24,14 @@ func TestUgetStringEntireBinary(t *testing.T) {
 			// Successfully found the string in the slice
 			result = true
 		}
-
-		t.Log("Found", val)
 	}
+
+	pwd, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	t.Log("DEBUG PATH ->>", pwd)
 
 	if result == false {
 		fmt.Println("Failed comparison!")
