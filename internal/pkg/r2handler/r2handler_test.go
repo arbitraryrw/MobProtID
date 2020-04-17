@@ -21,9 +21,10 @@ func TestUgetStringEntireBinary(t *testing.T) {
 	for _, val := range got {
 		if strings.Compare(expect, val) == 0 {
 			// Successfully found the string in the slice
-			fmt.Println(val)
 			result = true
 		}
+
+		t.Log("Found", val)
 	}
 
 	if result == false {
