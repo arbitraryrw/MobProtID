@@ -25,6 +25,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 	allStrings := make(chan []string)
 	binaryInfo := make(chan map[string]string)
 	symbols := make(chan []string)
+	syscalls := make(chan []string)
 
 	for index, path := range binaryPath {
 		fmt.Println(index, path)
@@ -46,6 +47,12 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 			symbols <- getSymbols(r2Session)
 			r2Session.Close()
 		}(path)
+
+		go func(p string) {
+			r2sessionMap := openR2Pipe("/bin/ls")
+			syscalls <- getSysCalls(r2sessionMap)
+			r2sessionMap.Close()
+		}(path)
 	}
 
 	// writeString("Letsa go!")
@@ -53,6 +60,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 	fmt.Println("Lets see if r2 has returned the goods:", <-binaryInfo)
 	fmt.Println("Found", len(<-allStrings), "strings in binary")
 	fmt.Println("Found", <-symbols, "symbols in binary")
+	fmt.Println("Found", len(<-syscalls), "syscalls in binary")
 
 	anal()
 }
@@ -66,7 +74,7 @@ func anal() {
 
 func openR2Pipe(path string) r2pipe.Pipe {
 
-	fmt.Println("Opening", path)
+	// fmt.Println("Opening", path)
 	// r2p, err := r2pipe.NewPipe("malloc://256")
 	r2p, err := r2pipe.NewPipe(path)
 
@@ -216,6 +224,13 @@ func getSymbols(r2session r2pipe.Pipe) []string {
 	}
 
 	return symbolsInBinary
+}
+
+func getSysCalls(r2session r2pipe.Pipe) []string {
+
+	syscalls := make([]string, 0)
+
+	return syscalls
 }
 
 func getStringsDataSections(r2session r2pipe.Pipe) {
