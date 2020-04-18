@@ -27,6 +27,7 @@ func PrepareAnal(binaryPath string, wg *sync.WaitGroup) {
 
 	allStrings := make(chan []string)
 	binaryInfo := make(chan map[string]string)
+	symbols := make(chan []string)
 
 	for path, session := range r2sessionMap {
 		fmt.Println(path, session)
@@ -38,12 +39,17 @@ func PrepareAnal(binaryPath string, wg *sync.WaitGroup) {
 		go func(s r2pipe.Pipe) {
 			allStrings <- getStringEntireBinary(s)
 		}(session)
+
+		go func(s r2pipe.Pipe) {
+			symbols <- getSymbols(s)
+		}(session)
 	}
 
 	// writeString("Letsa go!")
 
 	fmt.Println("Lets see if r2 has returned the goods:", <-binaryInfo)
 	fmt.Println("Found", len(<-allStrings), "strings in binary")
+	fmt.Println("Found", len(<-symbols), "symbols in binary")
 
 	anal()
 }
@@ -107,15 +113,6 @@ func getStringEntireBinary(r2session r2pipe.Pipe) []string {
 					stringsInBinary = append(stringsInBinary, s.(string))
 				}
 
-				// fmt.Println("Length", sb["length"])
-				// fmt.Println("Ordinal", sb["ordinal"])
-				// fmt.Println("Paddr", sb["paddr"])
-				// fmt.Println("Section", sb["section"])
-				// fmt.Println("Size", sb["size"])
-				// fmt.Println("Type", sb["type"])
-				// fmt.Println("Decoded string", string(sDec))
-				// fmt.Println()
-
 			} else {
 				panic("Unexpected reponse from R2 while getting all strings in binary!")
 			}
@@ -173,6 +170,11 @@ func getExports(r2session r2pipe.Pipe) {
 
 }
 
-func getSymbols(r2session r2pipe.Pipe) {
+func getSymbols(r2session r2pipe.Pipe) []string {
 
+	symbolsInBinary := make([]string, 0)
+
+	symbolsInBinary = append(symbolsInBinary, "dummy_val")
+
+	return symbolsInBinary
 }
