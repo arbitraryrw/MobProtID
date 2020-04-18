@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"strconv"
 	"sync"
+	"time"
+
+	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 
 	"github.com/radare/r2pipe-go"
 )
@@ -89,9 +92,17 @@ func writeString(s string, r2session r2pipe.Pipe) {
 
 func getStringEntireBinary(r2session r2pipe.Pipe) []string {
 
+	var buf interface{}
+
+	err := utils.Retry(5, 2*time.Second, func() (err error) {
+		buf, err = r2session.Cmdj("izzj")
+		return
+	})
+
 	// Example return of izzj
 	//map[length:8 ordinal:86 paddr:6549 section:.shstrtab size:9 string:.comment type:ascii vaddr:245]
-	buf, err := r2session.Cmdj("izzj")
+	// buf, err := r2session.Cmdj("izzj")
+
 	if err != nil {
 		panic(err)
 	}
@@ -125,7 +136,15 @@ func getStringEntireBinary(r2session r2pipe.Pipe) []string {
 }
 
 func getBinaryInfo(r2session r2pipe.Pipe) map[string]string {
-	buf, err := r2session.Cmdj("iIj")
+
+	var buf interface{}
+
+	err := utils.Retry(5, 2*time.Second, func() (err error) {
+		buf, err = r2session.Cmdj("iIj")
+		return
+	})
+
+	// buf, err := r2session.Cmdj("iIj")
 	if err != nil {
 		panic(err)
 	}
@@ -171,6 +190,30 @@ func getExports(r2session r2pipe.Pipe) {
 }
 
 func getSymbols(r2session r2pipe.Pipe) []string {
+
+	var buf interface{}
+
+	err := utils.Retry(5, 2*time.Second, func() (err error) {
+		buf, err = r2session.Cmdj("isj")
+		return
+	})
+
+	// buf, err := r2session.Cmdj("isj")
+
+	if err != nil {
+		panic(err)
+	}
+
+	if buf, ok := buf.([]interface{}); ok {
+		for _, symMap := range buf {
+			fmt.Println(symMap)
+			if sym, ok := symMap.(map[string]interface{}); ok {
+				fmt.Println(sym["bind"])
+			}
+
+			break
+		}
+	}
 
 	symbolsInBinary := make([]string, 0)
 
