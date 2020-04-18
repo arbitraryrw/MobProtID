@@ -2,6 +2,7 @@ package r2handler
 
 import (
 	"fmt"
+	"reflect"
 	"strconv"
 	"sync"
 	"time"
@@ -35,24 +36,30 @@ func PrepareAnal(binaryPath string, wg *sync.WaitGroup) {
 	for path, session := range r2sessionMap {
 		fmt.Println(path, session)
 
-		go func(s r2pipe.Pipe) {
-			binaryInfo <- getBinaryInfo(s)
-		}(session)
+		go func(p string) {
+			r2Session := openR2Pipe(path)
+			binaryInfo <- getBinaryInfo(r2Session)
+			r2Session.Close()
+		}(path)
 
-		go func(s r2pipe.Pipe) {
-			allStrings <- getStringEntireBinary(s)
-		}(session)
+		go func(p string) {
+			r2Session := openR2Pipe(path)
+			allStrings <- getStringEntireBinary(r2Session)
+			r2Session.Close()
+		}(path)
 
-		go func(s r2pipe.Pipe) {
-			symbols <- getSymbols(s)
-		}(session)
+		go func(p string) {
+			r2Session := openR2Pipe(path)
+			symbols <- getSymbols(r2Session)
+			r2Session.Close()
+		}(path)
 	}
 
 	// writeString("Letsa go!")
 
 	fmt.Println("Lets see if r2 has returned the goods:", <-binaryInfo)
 	fmt.Println("Found", len(<-allStrings), "strings in binary")
-	fmt.Println("Found", len(<-symbols), "symbols in binary")
+	fmt.Println("Found", <-symbols, "symbols in binary")
 
 	anal()
 }
@@ -94,9 +101,9 @@ func getStringEntireBinary(r2session r2pipe.Pipe) []string {
 
 	var buf interface{}
 
-	err := utils.Retry(5, 2*time.Second, func() (err error) {
+	err := utils.RetryR2Command(5, 2*time.Second, func() (i interface{}, err error) {
 		buf, err = r2session.Cmdj("izzj")
-		return
+		return buf, err
 	})
 
 	// Example return of izzj
@@ -129,7 +136,7 @@ func getStringEntireBinary(r2session r2pipe.Pipe) []string {
 			}
 		}
 	} else {
-		panic("Unable to parse R2 strings returned")
+		fmt.Println("[INFO] Found no strings in binary")
 	}
 
 	return stringsInBinary
@@ -139,9 +146,9 @@ func getBinaryInfo(r2session r2pipe.Pipe) map[string]string {
 
 	var buf interface{}
 
-	err := utils.Retry(5, 2*time.Second, func() (err error) {
+	err := utils.RetryR2Command(5, 2*time.Second, func() (i interface{}, err error) {
 		buf, err = r2session.Cmdj("iIj")
-		return
+		return buf, err
 	})
 
 	// buf, err := r2session.Cmdj("iIj")
@@ -152,7 +159,6 @@ func getBinaryInfo(r2session r2pipe.Pipe) map[string]string {
 	binaryInfo := make(map[string]string)
 
 	if bi, ok := buf.(map[string]interface{}); ok {
-
 		// fmt.Println("R2 returned ->", bi)
 
 		if val, ok := bi["compiler"].(string); ok {
@@ -172,6 +178,8 @@ func getBinaryInfo(r2session r2pipe.Pipe) map[string]string {
 		}
 
 	} else {
+		fmt.Println("[ERROR] Response from R2:", buf)
+		fmt.Println("[ERROR] Response type from R2:", reflect.TypeOf(buf))
 		panic("Unexpected reponse from R2 while getting binary info")
 	}
 
@@ -182,9 +190,12 @@ func getSymbols(r2session r2pipe.Pipe) []string {
 
 	var buf interface{}
 
-	err := utils.Retry(5, 2*time.Second, func() (err error) {
+	err := utils.RetryR2Command(5, 2*time.Second, func() (b interface{}, err error) {
+		// Example data from r2:
+		// map[bind:GLOBAL flagname:sym.main is_imported:false name:main
+		//ordinal:61 paddr:1706 realname:main size:56 type:FUNC vaddr:1706]
 		buf, err = r2session.Cmdj("isj")
-		return
+		return buf, err
 	})
 
 	if err != nil {
@@ -195,14 +206,16 @@ func getSymbols(r2session r2pipe.Pipe) []string {
 
 	if buf, ok := buf.([]interface{}); ok {
 		for _, symMap := range buf {
-			fmt.Println(symMap)
+
+			// fmt.Println(symMap)
+
 			if sym, ok := symMap.(map[string]interface{}); ok {
 
 				if symType, ok := sym["type"].(string); ok {
 
 					// Can be of type SECT / FILE / FUNC / OBJ / NOTYPE
 					if symType == "FUNC" {
-						symbolsInBinary = append(symbolsInBinary, sym["flagname"].(string))
+						symbolsInBinary = append(symbolsInBinary, sym["realname"].(string))
 					}
 				}
 			}
