@@ -178,17 +178,6 @@ func getBinaryInfo(r2session r2pipe.Pipe) map[string]string {
 	return binaryInfo
 }
 
-func getStringsDataSections(r2session r2pipe.Pipe) {
-	_, err := r2session.Cmdj("izj")
-	if err != nil {
-		panic(err)
-	}
-}
-
-func getExports(r2session r2pipe.Pipe) {
-
-}
-
 func getSymbols(r2session r2pipe.Pipe) []string {
 
 	var buf interface{}
@@ -198,26 +187,38 @@ func getSymbols(r2session r2pipe.Pipe) []string {
 		return
 	})
 
-	// buf, err := r2session.Cmdj("isj")
-
 	if err != nil {
 		panic(err)
 	}
+
+	symbolsInBinary := make([]string, 0)
 
 	if buf, ok := buf.([]interface{}); ok {
 		for _, symMap := range buf {
 			fmt.Println(symMap)
 			if sym, ok := symMap.(map[string]interface{}); ok {
-				fmt.Println(sym["bind"])
-			}
 
-			break
+				if symType, ok := sym["type"].(string); ok {
+
+					// Can be of type SECT / FILE / FUNC / OBJ / NOTYPE
+					if symType == "FUNC" {
+						symbolsInBinary = append(symbolsInBinary, sym["flagname"].(string))
+					}
+				}
+			}
 		}
 	}
 
-	symbolsInBinary := make([]string, 0)
-
-	symbolsInBinary = append(symbolsInBinary, "dummy_val")
-
 	return symbolsInBinary
+}
+
+func getStringsDataSections(r2session r2pipe.Pipe) {
+	_, err := r2session.Cmdj("izj")
+	if err != nil {
+		panic(err)
+	}
+}
+
+func getExports(r2session r2pipe.Pipe) {
+
 }
