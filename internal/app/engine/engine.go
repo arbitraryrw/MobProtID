@@ -18,10 +18,14 @@ func Start(bp string) {
 
 	fmt.Println("[INFO] R2 Running...")
 
+	parsedBinaryFilePaths := make([]string, 0)
+
+	parsedBinaryFilePaths = append(parsedBinaryFilePaths, bp)
+
 	var wg sync.WaitGroup
 
 	wg.Add(1)
-	go r2handler.PrepareAnal(bp, &wg)
+	go r2handler.PrepareAnal(parsedBinaryFilePaths, &wg)
 
 	// fmt.Println("[INFO] Yara Running...")
 	// yarahandler.Main()

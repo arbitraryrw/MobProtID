@@ -47,26 +47,11 @@ func GetWorkingDir() string {
 	return dir
 }
 
-// RetryR2Command is used to retry functions that may fail outside of the app's control
-func RetryR2Command(attempts int, sleep time.Duration, f func() (interface{}, error)) (err error) {
+// Retry is used to retry functions that may fail outside of the app's control
+func Retry(attempts int, sleep time.Duration, f func() error) (err error) {
 	for i := 0; ; i++ {
 
-		var res interface{}
-
-		res, err = f()
-
-		switch resType := res.(type) {
-		default:
-			fmt.Println("Unknown type: ", resType)
-		case []interface{}:
-			if len(res.([]interface{})) < 1 {
-				fmt.Println("aaaaaaaaaaaaaaa", res)
-			}
-		case map[string]interface{}:
-			if len(res.(map[string]interface{})) < 1 {
-				fmt.Println("bbbbbbbbbbbb", res)
-			}
-		}
+		err = f()
 
 		if err == nil {
 			return

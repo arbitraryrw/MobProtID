@@ -17,24 +17,17 @@ var r2sessionMap map[string]r2pipe.Pipe
 func init() {}
 
 // PrepareAnal - gathers all the relevant data required for analysis
-func PrepareAnal(binaryPath string, wg *sync.WaitGroup) {
+func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 
 	defer wg.Done()
 	fmt.Println("*** R2 handler Starting ***")
-
-	r2sessionMap := make(map[string]r2pipe.Pipe)
-
-	r2s := openR2Pipe(binaryPath)
-	defer r2s.Close()
-
-	r2sessionMap[binaryPath] = r2s
 
 	allStrings := make(chan []string)
 	binaryInfo := make(chan map[string]string)
 	symbols := make(chan []string)
 
-	for path, session := range r2sessionMap {
-		fmt.Println(path, session)
+	for index, path := range binaryPath {
+		fmt.Println(index, path)
 
 		go func(p string) {
 			r2Session := openR2Pipe(path)
@@ -101,9 +94,9 @@ func getStringEntireBinary(r2session r2pipe.Pipe) []string {
 
 	var buf interface{}
 
-	err := utils.RetryR2Command(5, 2*time.Second, func() (i interface{}, err error) {
+	err := utils.Retry(5, 2*time.Second, func() (err error) {
 		buf, err = r2session.Cmdj("izzj")
-		return buf, err
+		return
 	})
 
 	// Example return of izzj
@@ -146,9 +139,9 @@ func getBinaryInfo(r2session r2pipe.Pipe) map[string]string {
 
 	var buf interface{}
 
-	err := utils.RetryR2Command(5, 2*time.Second, func() (i interface{}, err error) {
+	err := utils.Retry(5, 2*time.Second, func() (err error) {
 		buf, err = r2session.Cmdj("iIj")
-		return buf, err
+		return
 	})
 
 	// buf, err := r2session.Cmdj("iIj")
@@ -190,12 +183,12 @@ func getSymbols(r2session r2pipe.Pipe) []string {
 
 	var buf interface{}
 
-	err := utils.RetryR2Command(5, 2*time.Second, func() (b interface{}, err error) {
+	err := utils.Retry(5, 2*time.Second, func() (err error) {
 		// Example data from r2:
 		// map[bind:GLOBAL flagname:sym.main is_imported:false name:main
 		//ordinal:61 paddr:1706 realname:main size:56 type:FUNC vaddr:1706]
 		buf, err = r2session.Cmdj("isj")
-		return buf, err
+		return
 	})
 
 	if err != nil {
