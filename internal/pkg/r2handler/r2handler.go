@@ -1,7 +1,6 @@
 package r2handler
 
 import (
-	"encoding/base64"
 	"fmt"
 	"strconv"
 	"sync"
@@ -83,6 +82,9 @@ func writeString(s string, r2session r2pipe.Pipe) {
 }
 
 func getStringEntireBinary(r2session r2pipe.Pipe) []string {
+
+	// Example return of izzj
+	//map[length:8 ordinal:86 paddr:6549 section:.shstrtab size:9 string:.comment type:ascii vaddr:245]
 	buf, err := r2session.Cmdj("izzj")
 	if err != nil {
 		panic(err)
@@ -97,9 +99,13 @@ func getStringEntireBinary(r2session r2pipe.Pipe) []string {
 
 			if sb, ok := stringBundle.(map[string]interface{}); ok {
 
-				sDec, _ := base64.StdEncoding.DecodeString(sb["string"].(string))
+				// r2 4.0.0 the "string" key values are b64 encoded
+				// sDec, _ := base64.StdEncoding.DecodeString(sb["string"].(string))
+				// stringsInBinary = append(stringsInBinary, string(sDec))
 
-				stringsInBinary = append(stringsInBinary, string(sDec))
+				if s, ok := sb["string"]; ok {
+					stringsInBinary = append(stringsInBinary, s.(string))
+				}
 
 				// fmt.Println("Length", sb["length"])
 				// fmt.Println("Ordinal", sb["ordinal"])
