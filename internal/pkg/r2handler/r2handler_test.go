@@ -40,7 +40,12 @@ func TestUgetSysCalls(t *testing.T) {
 	got := getSysCalls(r2s)
 
 	if len(got) > 0 {
-		result = true
+		for _, v := range got {
+			if v == expect {
+				result = true
+				break
+			}
+		}
 	}
 
 	if result == false {
