@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -25,7 +26,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 	allStrings := make(chan []string)
 	binaryInfo := make(chan map[string]string)
 	symbols := make(chan []string)
-	syscalls := make(chan []string)
+	syscalls := make(chan map[string]string)
 
 	for index, path := range binaryPath {
 		fmt.Println(index, path)
@@ -49,7 +50,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 		}(path)
 
 		go func(p string) {
-			r2sessionMap := openR2Pipe(path)
+			r2sessionMap := openR2Pipe("/bin/bash")
 			syscalls <- getSysCalls(r2sessionMap)
 			r2sessionMap.Close()
 		}(path)
@@ -226,15 +227,14 @@ func getSymbols(r2session r2pipe.Pipe) []string {
 	return symbolsInBinary
 }
 
-func getSysCalls(r2session r2pipe.Pipe) []string {
+func getSysCalls(r2session r2pipe.Pipe) map[string]string {
 
-	var buf interface{}
+	var buf string
 
 	err := utils.Retry(5, 2*time.Second, func() (err error) {
-		// Example data from r2:
-		// map[bind:GLOBAL flagname:sym.main is_imported:false name:main
-		//ordinal:61 paddr:1706 realname:main size:56 type:FUNC vaddr:1706]
-		buf, err = r2session.Cmdj("asj")
+		// Annoyingly you can't seem to chain as and /j to get json output
+		// having to parse the r2 string response
+		buf, err = r2session.Cmd("/as")
 		return
 	})
 
@@ -242,21 +242,17 @@ func getSysCalls(r2session r2pipe.Pipe) []string {
 		panic(err)
 	}
 
-	syscalls := make([]string, 0)
+	syscalls := make(map[string]string, 0)
 
-	if buf, ok := buf.([]interface{}); ok {
+	if len(buf) > 0 {
 
-		for _, syscallMap := range buf {
+		for _, val := range strings.Split(buf, "\n") {
 
-			if syscallMap, ok := syscallMap.(map[string]interface{}); ok {
+			splitVal := strings.Fields(val)
 
-				if sc, ok := syscallMap["name"].(string); ok {
-					syscalls = append(syscalls, sc)
-				}
-			}
+			syscalls[splitVal[0]] = splitVal[1]
 		}
 	}
-
 	return syscalls
 }
 
