@@ -50,7 +50,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 		}(path)
 
 		go func(p string) {
-			r2sessionMap := openR2Pipe("/bin/bash")
+			r2sessionMap := openR2Pipe(path)
 			syscalls <- getSysCalls(r2sessionMap)
 			r2sessionMap.Close()
 		}(path)
@@ -61,7 +61,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 	fmt.Println("Lets see if r2 has returned the goods:", <-binaryInfo)
 	fmt.Println("Found", len(<-allStrings), "strings in binary")
 	fmt.Println("Found", <-symbols, "symbols in binary")
-	fmt.Println("Found", len(<-syscalls), "syscalls in binary")
+	fmt.Println("Found", <-syscalls, "syscalls in binary")
 
 	anal()
 }
@@ -247,12 +247,12 @@ func getSysCalls(r2session r2pipe.Pipe) map[string]string {
 	if len(buf) > 0 {
 
 		for _, val := range strings.Split(buf, "\n") {
-
 			splitVal := strings.Fields(val)
-
 			syscalls[splitVal[0]] = splitVal[1]
 		}
+
 	}
+
 	return syscalls
 }
 

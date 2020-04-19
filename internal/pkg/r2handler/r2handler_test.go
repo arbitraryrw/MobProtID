@@ -30,3 +30,21 @@ func TestUgetStringEntireBinary(t *testing.T) {
 		t.Errorf("getStringEntireBinary() = could not find %q in sample_binary r2 reponse", expect)
 	}
 }
+
+func TestUgetSysCalls(t *testing.T) {
+
+	var result = false
+
+	r2s := openR2Pipe("/bin/bash")
+	expect := "read"
+	got := getSysCalls(r2s)
+
+	if len(got) > 0 {
+		result = true
+	}
+
+	if result == false {
+		fmt.Println("Failed comparison!")
+		t.Errorf("getSysCalls = could not find %q in /bin/bash r2 reponse", expect)
+	}
+}
