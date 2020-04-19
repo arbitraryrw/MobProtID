@@ -49,7 +49,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 		}(path)
 
 		go func(p string) {
-			r2sessionMap := openR2Pipe("/bin/ls")
+			r2sessionMap := openR2Pipe(path)
 			syscalls <- getSysCalls(r2sessionMap)
 			r2sessionMap.Close()
 		}(path)
@@ -227,6 +227,18 @@ func getSymbols(r2session r2pipe.Pipe) []string {
 }
 
 func getSysCalls(r2session r2pipe.Pipe) []string {
+
+	var buf interface{}
+
+	err := utils.Retry(5, 2*time.Second, func() (err error) {
+		// Example data from r2:
+		// map[bind:GLOBAL flagname:sym.main is_imported:false name:main
+		//ordinal:61 paddr:1706 realname:main size:56 type:FUNC vaddr:1706]
+		buf, err = r2session.Cmdj("asj")
+		return
+	})
+
+	fmt.Println(buf, err)
 
 	syscalls := make([]string, 0)
 
