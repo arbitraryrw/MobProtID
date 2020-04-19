@@ -238,9 +238,24 @@ func getSysCalls(r2session r2pipe.Pipe) []string {
 		return
 	})
 
-	fmt.Println(buf, err)
+	if err != nil {
+		panic(err)
+	}
 
 	syscalls := make([]string, 0)
+
+	if buf, ok := buf.([]interface{}); ok {
+
+		for _, syscallMap := range buf {
+
+			if syscallMap, ok := syscallMap.(map[string]interface{}); ok {
+
+				if sc, ok := syscallMap["name"].(string); ok {
+					syscalls = append(syscalls, sc)
+				}
+			}
+		}
+	}
 
 	return syscalls
 }
