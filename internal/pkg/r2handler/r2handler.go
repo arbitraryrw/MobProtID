@@ -13,10 +13,16 @@ import (
 	"github.com/radare/r2pipe-go"
 )
 
-var allStringsInBinary []string
+var allStringsInBinary map[string][]string
+var allSymbolsInBinary map[string][]string
+var allbinaryInfo map[string]map[string]string
+var allSyscall map[string]map[string]string
 
 func init() {
-	allStringsInBinary = make([]string, 0)
+	allStringsInBinary = make(map[string][]string, 0)
+	allSymbolsInBinary = make(map[string][]string, 0)
+	allSyscall = make(map[string]map[string]string, 0)
+	allbinaryInfo = make(map[string]map[string]string, 0)
 }
 
 // PrepareAnal - gathers all the relevant data required for analysis
@@ -27,7 +33,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 
 	for index, path := range binaryPath {
 
-		allStrings := make(chan []string)
+		strings := make(chan []string)
 		binaryInfo := make(chan map[string]string)
 		symbols := make(chan []string)
 		syscalls := make(chan map[string]string)
@@ -42,7 +48,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 
 		go func(p string) {
 			r2Session := openR2Pipe(path)
-			allStrings <- getStringEntireBinary(r2Session)
+			strings <- getStringEntireBinary(r2Session)
 			r2Session.Close()
 		}(path)
 
@@ -58,9 +64,15 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 			r2sessionMap.Close()
 		}(path)
 
-		allStringsInBinary = append(allStringsInBinary, <-allStrings...)
+		allStringsInBinary[path] = <-strings
+		allSymbolsInBinary[path] = <-symbols
+		allSyscall[path] = <-syscalls
+		allbinaryInfo[path] = <-binaryInfo
 
-		close(allStrings)
+		close(strings)
+		close(symbols)
+		close(syscalls)
+		close(binaryInfo)
 
 		anal()
 	}
@@ -78,6 +90,8 @@ func anal() {
 	fmt.Println("Performing Analysis")
 
 	fmt.Println("Analysing", len(allStringsInBinary), "strings")
+	fmt.Println("Analysing", len(allSymbolsInBinary), "symbols")
+	fmt.Println("Analysing", allSyscall, "syscalls")
 
 	//ToDO: Analysis logic here
 	// faccesstat, open, stat64
