@@ -20,7 +20,7 @@ func Start(bp string) {
 
 	parsedBinaryFilePaths := make([]string, 0)
 
-	parsedBinaryFilePaths = append(parsedBinaryFilePaths, bp)
+	parsedBinaryFilePaths = append(parsedBinaryFilePaths, bp, "/bin/bash")
 
 	var wg sync.WaitGroup
 

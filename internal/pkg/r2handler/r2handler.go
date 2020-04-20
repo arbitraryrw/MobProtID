@@ -13,9 +13,11 @@ import (
 	"github.com/radare/r2pipe-go"
 )
 
-var r2sessionMap map[string]r2pipe.Pipe
+var allStringsInBinary []string
 
-func init() {}
+func init() {
+	allStringsInBinary = make([]string, 0)
+}
 
 // PrepareAnal - gathers all the relevant data required for analysis
 func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
@@ -23,12 +25,13 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	fmt.Println("*** R2 handler Starting ***")
 
-	allStrings := make(chan []string)
-	binaryInfo := make(chan map[string]string)
-	symbols := make(chan []string)
-	syscalls := make(chan map[string]string)
-
 	for index, path := range binaryPath {
+
+		allStrings := make(chan []string)
+		binaryInfo := make(chan map[string]string)
+		symbols := make(chan []string)
+		syscalls := make(chan map[string]string)
+
 		fmt.Println(index, path)
 
 		go func(p string) {
@@ -54,20 +57,27 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 			syscalls <- getSysCalls(r2sessionMap)
 			r2sessionMap.Close()
 		}(path)
+
+		allStringsInBinary = append(allStringsInBinary, <-allStrings...)
+
+		close(allStrings)
+
+		anal()
 	}
 
 	// writeString("Letsa go!")
+	// fmt.Println("Lets see if r2 has returned the goods:", <-binaryInfo)
+	// fmt.Println("Found", len(<-allStrings), "strings in binary")
+	// fmt.Println("Found", len(<-symbols), "symbols in binary")
+	// fmt.Println("Found", <-syscalls, "syscalls in binary")
 
-	fmt.Println("Lets see if r2 has returned the goods:", <-binaryInfo)
-	fmt.Println("Found", len(<-allStrings), "strings in binary")
-	fmt.Println("Found", <-symbols, "symbols in binary")
-	fmt.Println("Found", <-syscalls, "syscalls in binary")
-
-	anal()
+	return
 }
 
 func anal() {
 	fmt.Println("Performing Analysis")
+
+	fmt.Println("Analysing", len(allStringsInBinary), "strings")
 
 	//ToDO: Analysis logic here
 	// faccesstat, open, stat64
