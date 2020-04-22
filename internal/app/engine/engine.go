@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/r2handler"
+	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
 
 //Description Dummy function to check scope
@@ -15,6 +16,10 @@ func Description() string {
 // Start initialises the core analysis orchestration logic
 func Start(bp string) {
 	fmt.Println("[INFO] Engine Starting..")
+
+	utils.CreateAnalysisDir(bp)
+
+	fmt.Println("we cookin now", utils.AnalysisDir)
 
 	fmt.Println("[INFO] R2 Running...")
 
@@ -32,9 +37,9 @@ func Start(bp string) {
 
 	wg.Wait()
 
-	// r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
-	// nextRule := ruleSequence(r...)
-	// fmt.Println(nextRule())
+	r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
+	nextRule := ruleSequence(r...)
+	fmt.Println(nextRule())
 
 	fmt.Println("Engine Finished")
 }

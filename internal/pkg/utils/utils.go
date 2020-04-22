@@ -13,6 +13,8 @@ import (
 
 var AnalysisDir string
 
+const analysisRootDir string = "/tmp/mobprotid"
+
 //Description Dummy function to check scope
 func Description() string {
 	return "utils coming in!"
@@ -74,14 +76,23 @@ func CreateAnalysisDir(targetAppPath string) {
 
 	targetFileName := filepath.Base(targetAppPath)
 	t := time.Now()
-	analysisRootDir := "/tmp/mobprotid"
 	formattedTime := t.Format("150405-02-01-2006")
 
 	AnalysisDir = filepath.Join(analysisRootDir, targetFileName+"--"+formattedTime)
 
 	if _, err := os.Stat(analysisRootDir); os.IsNotExist(err) {
-		// os.Mkdir(path, mode)
-		fmt.Println("it does not exist!!")
+		os.Mkdir(analysisRootDir, os.ModePerm)
+	}
+
+	if _, err := os.Stat(AnalysisDir); os.IsNotExist(err) {
+		os.Mkdir(AnalysisDir, os.ModePerm)
+	}
+}
+
+func cleanupAnalysisDir() {
+
+	if _, err := os.Stat(analysisRootDir); err == nil {
+		os.RemoveAll(analysisRootDir + "/")
 	}
 
 }
