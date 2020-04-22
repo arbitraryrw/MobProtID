@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+var AnalysisDir string
+
 //Description Dummy function to check scope
 func Description() string {
 	return "utils coming in!"
@@ -66,4 +68,20 @@ func Retry(attempts int, sleep time.Duration, f func() error) (err error) {
 		log.Println("retrying after error:", err)
 	}
 	return fmt.Errorf("after %d attempts, last error: %s", attempts, err)
+}
+
+func CreateAnalysisDir(targetAppPath string) {
+
+	targetFileName := filepath.Base(targetAppPath)
+	t := time.Now()
+	analysisRootDir := "/tmp/mobprotid"
+	formattedTime := t.Format("150405-02-01-2006")
+
+	AnalysisDir = filepath.Join(analysisRootDir, targetFileName+"--"+formattedTime)
+
+	if _, err := os.Stat(analysisRootDir); os.IsNotExist(err) {
+		// os.Mkdir(path, mode)
+		fmt.Println("it does not exist!!")
+	}
+
 }
