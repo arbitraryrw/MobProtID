@@ -13,6 +13,7 @@ import (
 )
 
 var AnalysisDir string
+var AnalysisBinPath string
 
 const analysisRootDir string = "/tmp/mobprotid"
 
@@ -106,9 +107,9 @@ func PrepBinaryForAnal(path string) {
 
 	fn := filepath.Base(path)
 
-	fmt.Println("beep", path, filepath.Join(AnalysisDir, fn))
+	AnalysisBinPath = filepath.Join(AnalysisDir, fn)
 
-	err := CopyFile(path, filepath.Join(AnalysisDir, fn))
+	err := CopyFile(path, AnalysisBinPath)
 
 	if err != nil {
 		fmt.Println("[ERROR]Failed to copy files:", err)
