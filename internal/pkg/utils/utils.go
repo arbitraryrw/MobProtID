@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path"
@@ -74,6 +75,8 @@ func Retry(attempts int, sleep time.Duration, f func() error) (err error) {
 
 func CreateAnalysisDir(targetAppPath string) {
 
+	cleanupAnalysisDir()
+
 	targetFileName := filepath.Base(targetAppPath)
 	t := time.Now()
 	formattedTime := t.Format("150405-02-01-2006")
@@ -97,9 +100,26 @@ func cleanupAnalysisDir() {
 
 }
 
+func PrepBinaryForAnal(path string) {
+
+	fmt.Println("[INFO] Prepping binary for anal")
+
+	fn := filepath.Base(path)
+
+	fmt.Println("beep", path, filepath.Join(AnalysisDir, fn))
+
+	err := CopyFile(path, filepath.Join(AnalysisDir, fn))
+
+	if err != nil {
+		fmt.Println("Failed to copy files", err)
+	}
+
+}
+
 func CopyFile(src, dst string) (err error) {
 	sfi, err := os.Stat(src)
 	if err != nil {
+		fmt.Println("os.stat error")
 		return
 	}
 	if !sfi.Mode().IsRegular() {
@@ -109,6 +129,7 @@ func CopyFile(src, dst string) (err error) {
 	dfi, err := os.Stat(dst)
 	if err != nil {
 		if !os.IsNotExist(err) {
+			fmt.Println("os.IsNotExist error")
 			return
 		}
 	} else {
@@ -116,9 +137,33 @@ func CopyFile(src, dst string) (err error) {
 			return fmt.Errorf("CopyFile: non-regular destination file %s (%q)", dfi.Name(), dfi.Mode().String())
 		}
 		if os.SameFile(sfi, dfi) {
+			fmt.Println("os.SameFile error")
 			return
 		}
 	}
+	// err = copyFileContents(src, dst)
+	return
+}
 
+func copyFileContents(src, dst string) (err error) {
+	in, err := os.Open(src)
+	if err != nil {
+		return
+	}
+	defer in.Close()
+	out, err := os.Create(dst)
+	if err != nil {
+		return
+	}
+	defer func() {
+		cerr := out.Close()
+		if err == nil {
+			err = cerr
+		}
+	}()
+	if _, err = io.Copy(out, in); err != nil {
+		return
+	}
+	err = out.Sync()
 	return
 }

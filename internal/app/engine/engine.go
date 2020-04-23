@@ -2,9 +2,7 @@ package engine
 
 import (
 	"fmt"
-	"sync"
 
-	"github.com/arbitraryrw/MobProtID/internal/pkg/r2handler"
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
 
@@ -16,10 +14,10 @@ func Description() string {
 // Start initialises the core analysis orchestration logic
 func Start(bp string) {
 	fmt.Println("[INFO] Engine Starting..")
+	fmt.Println("[INFO] Analysis artifacts stored: ", utils.AnalysisDir)
 
 	utils.CreateAnalysisDir(bp)
-
-	fmt.Println("we cookin now", utils.AnalysisDir)
+	utils.PrepBinaryForAnal(bp)
 
 	fmt.Println("[INFO] R2 Running...")
 
@@ -27,21 +25,21 @@ func Start(bp string) {
 
 	parsedBinaryFilePaths = append(parsedBinaryFilePaths, bp, "/bin/bash")
 
-	var wg sync.WaitGroup
+	// var wg sync.WaitGroup
 
-	wg.Add(1)
-	go r2handler.PrepareAnal(parsedBinaryFilePaths, &wg)
+	// wg.Add(1)
+	// go r2handler.PrepareAnal(parsedBinaryFilePaths, &wg)
 
-	// fmt.Println("[INFO] Yara Running...")
-	// yarahandler.Main()
+	// // fmt.Println("[INFO] Yara Running...")
+	// // yarahandler.Main()
 
-	wg.Wait()
+	// wg.Wait()
 
-	r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
-	nextRule := ruleSequence(r...)
-	fmt.Println(nextRule())
+	// r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
+	// nextRule := ruleSequence(r...)
+	// fmt.Println(nextRule())
 
-	fmt.Println("Engine Finished")
+	// fmt.Println("Engine Finished")
 }
 
 func ruleSequence(rules ...string) func() string {
