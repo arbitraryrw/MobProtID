@@ -111,7 +111,7 @@ func PrepBinaryForAnal(path string) {
 	err := CopyFile(path, filepath.Join(AnalysisDir, fn))
 
 	if err != nil {
-		fmt.Println("Failed to copy files", err)
+		fmt.Println("[ERROR]Failed to copy files:", err)
 	}
 
 }
@@ -126,10 +126,11 @@ func CopyFile(src, dst string) (err error) {
 		// cannot copy non-regular files (directories / symlinks etc)
 		return fmt.Errorf("CopyFile: non-regular source file %s (%q)", sfi.Name(), sfi.Mode().String())
 	}
+
+	// Check the stat of the file
 	dfi, err := os.Stat(dst)
 	if err != nil {
 		if !os.IsNotExist(err) {
-			fmt.Println("os.IsNotExist error")
 			return
 		}
 	} else {
@@ -137,11 +138,11 @@ func CopyFile(src, dst string) (err error) {
 			return fmt.Errorf("CopyFile: non-regular destination file %s (%q)", dfi.Name(), dfi.Mode().String())
 		}
 		if os.SameFile(sfi, dfi) {
-			fmt.Println("os.SameFile error")
+			fmt.Println("[INFO] File already exists at directory, no need to copy")
 			return
 		}
 	}
-	// err = copyFileContents(src, dst)
+	err = copyFileContents(src, dst)
 	return
 }
 
