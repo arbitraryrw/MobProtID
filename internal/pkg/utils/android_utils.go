@@ -7,7 +7,8 @@ import (
 	"strings"
 )
 
-func GetDroidManifest() string {
+// GetDroidManifest parses the target binaries AndroidManifest.xml file
+func GetDroidManifest() map[string]string {
 	//aapt dump xmltree ../dummy_app_MobProtID.apk AndroidManifest.xml
 
 	app := "aapt"
@@ -29,18 +30,40 @@ func GetDroidManifest() string {
 
 		var rawCommandOutput string = string(stdout)
 
+		var parsedOutput map[string]string = make(map[string]string, 0)
+
 		scanner := bufio.NewScanner(strings.NewReader(rawCommandOutput))
 
+		//A: android:debuggable(0x0101000f)=(type 0x12)0xffffffff (means debuggable is true)
+		//A: android:debuggable(0x0101000f)=(type 0x12)0x0 (means debuggable is false)
 		for scanner.Scan() {
-			fmt.Println(scanner.Text()[3:])
 
-			if strings.Contains(scanner.Text()[3:], "android") {
-				fmt.Println("yep!")
+			// fmt.Println(scanner.Text()[len(scanner.Text())-10:])
+
+			if strings.Contains(scanner.Text()[3:], "android:debuggable") {
+				fmt.Println("Found debuggable!")
+				fmt.Println(scanner.Text()[3:])
+
+			} else if strings.Contains(scanner.Text()[3:], "android:allowBackup") {
+				fmt.Println("Found allowbackup!")
+				fmt.Println(scanner.Text()[3:])
+
+			} else if strings.Contains(scanner.Text()[3:], "android:targetSdkVersion") {
+				fmt.Println("Found targetSdkVersion!")
+				fmt.Println(scanner.Text()[3:])
+
+			} else if strings.Contains(scanner.Text()[3:], "android:minSdkVersion") {
+				fmt.Println("Found minSdkVersion!")
+				fmt.Println(scanner.Text()[3:])
+
+			} else if strings.Contains(scanner.Text()[3:], "package=\"") {
+				fmt.Println("Found package!")
+				fmt.Println(scanner.Text()[3:])
 			}
-			break
+
 		}
 
-		return "Getting android manifest details.."
+		return parsedOutput
 
 	} else {
 		panic("Unable to find aapt installed, make sure android-sdk is installed.")
