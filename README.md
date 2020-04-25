@@ -27,6 +27,7 @@ go clean -testcache ./...
 - [radare2](https://github.com/radareorg/radare2)
 - [go-yara](https://github.com/hillu/go-yara)
 - [yara](https://virustotal.github.io/yara/)
+- [android sdk (cli tools)](https://developer.android.com/studio/index.html#command-tools)
 
 ### Useful Go References
 - [project-layout](https://github.com/golang-standards/project-layout)
