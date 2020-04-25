@@ -19,6 +19,7 @@ var AnalysisBinPath string
 var analysisRootDir string
 
 func init() {
+	// Potentially set working dir for processing in user home dir?
 	// usr, err := user.Current()
 	// if err != nil {
 	// 	// log.Fatal(err)

@@ -25,6 +25,8 @@ func Start(bp string) {
 
 	parsedBinaryFilePaths = append(parsedBinaryFilePaths, bp, "/bin/bash")
 
+	fmt.Println(utils.GetDroidManifest())
+
 	// var wg sync.WaitGroup
 
 	// wg.Add(1)
