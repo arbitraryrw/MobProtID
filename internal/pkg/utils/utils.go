@@ -15,6 +15,7 @@ import (
 
 var AnalysisDir string
 var AnalysisBinPath string
+var UnzippedAnalBinPath string
 
 var analysisRootDir string
 
@@ -128,7 +129,8 @@ func PrepBinaryForAnal(path string) {
 		fmt.Println("[ERROR]Failed to copy files:", err)
 	}
 
-	fmt.Println("Unzipping -", AnalysisBinPath, AnalysisBinPath+"-unzipped")
+	UnzippedAnalBinPath = AnalysisBinPath + "-unzipped"
+
 	unzipErr := Unzip(AnalysisBinPath, AnalysisBinPath+"-unzipped")
 
 	if unzipErr != nil {
