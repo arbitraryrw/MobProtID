@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"runtime"
@@ -253,4 +254,13 @@ func Unzip(src, dest string) error {
 	}
 
 	return nil
+}
+
+// IsCommandAvailable checks if a command is exists in shell
+func IsCommandAvailable(name string) bool {
+	cmd := exec.Command("/bin/sh", "-c", "command -v "+name)
+	if err := cmd.Run(); err != nil {
+		return false
+	}
+	return true
 }
