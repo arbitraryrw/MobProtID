@@ -39,26 +39,36 @@ func GetDroidManifest() map[string]string {
 		for scanner.Scan() {
 
 			// fmt.Println(scanner.Text()[len(scanner.Text())-10:])
+			ct := scanner.Text()[3:]
 
-			if strings.Contains(scanner.Text()[3:], "android:debuggable") {
+			if strings.Contains(ct, "android:debuggable") {
 				fmt.Println("Found debuggable!")
-				fmt.Println(scanner.Text()[3:])
+				fmt.Println()
 
-			} else if strings.Contains(scanner.Text()[3:], "android:allowBackup") {
+				if len(ct) > 10 && ct[len(ct)-10:] == "0xffffffff" {
+					fmt.Println("It's defo allowed..")
+				} else {
+
+				}
+
+			} else if strings.Contains(ct, "android:allowBackup") {
 				fmt.Println("Found allowbackup!")
-				fmt.Println(scanner.Text()[3:])
+				fmt.Println(ct)
 
-			} else if strings.Contains(scanner.Text()[3:], "android:targetSdkVersion") {
+			} else if strings.Contains(ct, "android:targetSdkVersion") {
 				fmt.Println("Found targetSdkVersion!")
-				fmt.Println(scanner.Text()[3:])
+				fmt.Println(ct)
 
-			} else if strings.Contains(scanner.Text()[3:], "android:minSdkVersion") {
+			} else if strings.Contains(ct, "android:minSdkVersion") {
 				fmt.Println("Found minSdkVersion!")
-				fmt.Println(scanner.Text()[3:])
+				fmt.Println(ct)
 
-			} else if strings.Contains(scanner.Text()[3:], "package=\"") {
-				fmt.Println("Found package!")
-				fmt.Println(scanner.Text()[3:])
+			} else if strings.Contains(ct, "package=\"") {
+				s := strings.Split(ct, "\"")
+
+				if len(s) > 1 {
+					parsedOutput["pName"] = s[1]
+				}
 			}
 
 		}
