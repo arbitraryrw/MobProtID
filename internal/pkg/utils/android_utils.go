@@ -3,14 +3,13 @@ package utils
 import (
 	"bufio"
 	"encoding/hex"
-	"fmt"
 	"os/exec"
 	"strconv"
 	"strings"
 )
 
 // GetDroidManifest parses the target binaries AndroidManifest.xml file
-func GetDroidManifest() map[string]string {
+func GetDroidManifest(abs string) map[string]string {
 	//aapt dump xmltree ../dummy_app_MobProtID.apk AndroidManifest.xml
 
 	app := "aapt"
@@ -20,7 +19,7 @@ func GetDroidManifest() map[string]string {
 		// Arguments for AAPT
 		arg0 := "dump"
 		arg1 := "xmltree"
-		arg2 := AnalysisBinPath
+		arg2 := abs
 		arg3 := "AndroidManifest.xml"
 
 		cmd := exec.Command(app, arg0, arg1, arg2, arg3)
@@ -76,8 +75,21 @@ func GetDroidManifest() map[string]string {
 				}
 
 			} else if strings.Contains(ct, "android:minSdkVersion") {
-				fmt.Println("Found minSdkVersion!")
-				fmt.Println(ct)
+
+				if len(ct) > 4 {
+
+					mvHex := strings.Split(ct[len(ct)-4:], "0x")
+
+					bs, err := hex.DecodeString(mvHex[1])
+					if err != nil {
+						panic(err)
+					}
+
+					if len(bs) > 0 {
+						parsedOutput["minSdkVersion"] = strconv.Itoa(int(bs[0]))
+					}
+
+				}
 
 			} else if strings.Contains(ct, "package=\"") {
 				s := strings.Split(ct, "\"")
