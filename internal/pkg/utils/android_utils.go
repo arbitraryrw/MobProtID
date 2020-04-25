@@ -2,8 +2,10 @@ package utils
 
 import (
 	"bufio"
+	"encoding/hex"
 	"fmt"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -34,30 +36,44 @@ func GetDroidManifest() map[string]string {
 
 		scanner := bufio.NewScanner(strings.NewReader(rawCommandOutput))
 
-		//A: android:debuggable(0x0101000f)=(type 0x12)0xffffffff (means debuggable is true)
-		//A: android:debuggable(0x0101000f)=(type 0x12)0x0 (means debuggable is false)
 		for scanner.Scan() {
 
-			// fmt.Println(scanner.Text()[len(scanner.Text())-10:])
 			ct := scanner.Text()[3:]
 
 			if strings.Contains(ct, "android:debuggable") {
-				fmt.Println("Found debuggable!")
-				fmt.Println()
 
+				//A: android:debuggable(0x0101000f)=(type 0x12)0xffffffff (means debuggable is true)
+				//A: android:debuggable(0x0101000f)=(type 0x12)0x0 (means debuggable is false)
 				if len(ct) > 10 && ct[len(ct)-10:] == "0xffffffff" {
-					fmt.Println("It's defo allowed..")
+					parsedOutput["debuggable"] = "true"
 				} else {
-
+					parsedOutput["debuggable"] = "false"
 				}
 
 			} else if strings.Contains(ct, "android:allowBackup") {
-				fmt.Println("Found allowbackup!")
-				fmt.Println(ct)
+
+				if len(ct) > 10 && ct[len(ct)-10:] == "0xffffffff" {
+					parsedOutput["allowBackup"] = "true"
+				} else {
+					parsedOutput["allowBackup"] = "false"
+				}
 
 			} else if strings.Contains(ct, "android:targetSdkVersion") {
-				fmt.Println("Found targetSdkVersion!")
-				fmt.Println(ct)
+
+				if len(ct) > 4 {
+
+					tvHex := strings.Split(ct[len(ct)-4:], "0x")
+
+					bs, err := hex.DecodeString(tvHex[1])
+					if err != nil {
+						panic(err)
+					}
+
+					if len(bs) > 0 {
+						parsedOutput["targetSdkVersion"] = strconv.Itoa(int(bs[0]))
+					}
+
+				}
 
 			} else if strings.Contains(ct, "android:minSdkVersion") {
 				fmt.Println("Found minSdkVersion!")
@@ -67,7 +83,7 @@ func GetDroidManifest() map[string]string {
 				s := strings.Split(ct, "\"")
 
 				if len(s) > 1 {
-					parsedOutput["pName"] = s[1]
+					parsedOutput["package"] = s[1]
 				}
 			}
 
