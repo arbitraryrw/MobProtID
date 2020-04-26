@@ -32,49 +32,51 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 	fmt.Println("*** R2 handler Starting ***")
 
 	for index, path := range binaryPath {
-
-		strings := make(chan []string)
-		binaryInfo := make(chan map[string]string)
-		symbols := make(chan []string)
-		syscalls := make(chan map[string]string)
-
 		fmt.Println(index, path)
+		getFunctions(openR2Pipe(path))
 
-		go func(p string) {
-			r2Session := openR2Pipe(path)
-			binaryInfo <- getBinaryInfo(r2Session)
-			r2Session.Close()
-		}(path)
+		// strings := make(chan []string)
+		// binaryInfo := make(chan map[string]string)
+		// symbols := make(chan []string)
+		// syscalls := make(chan map[string]string)
 
-		go func(p string) {
-			r2Session := openR2Pipe(path)
-			strings <- getStringEntireBinary(r2Session)
-			r2Session.Close()
-		}(path)
+		// fmt.Println(index, path)
 
-		go func(p string) {
-			r2Session := openR2Pipe(path)
-			symbols <- getSymbols(r2Session)
-			r2Session.Close()
-		}(path)
+		// go func(p string) {
+		// 	r2Session := openR2Pipe(path)
+		// 	binaryInfo <- getBinaryInfo(r2Session)
+		// 	r2Session.Close()
+		// }(path)
 
-		go func(p string) {
-			r2sessionMap := openR2Pipe(path)
-			syscalls <- getSysCalls(r2sessionMap)
-			r2sessionMap.Close()
-		}(path)
+		// go func(p string) {
+		// 	r2Session := openR2Pipe(path)
+		// 	strings <- getStringEntireBinary(r2Session)
+		// 	r2Session.Close()
+		// }(path)
 
-		allStringsInBinary[path] = <-strings
-		allSymbolsInBinary[path] = <-symbols
-		allSyscall[path] = <-syscalls
-		allbinaryInfo[path] = <-binaryInfo
+		// go func(p string) {
+		// 	r2Session := openR2Pipe(path)
+		// 	symbols <- getSymbols(r2Session)
+		// 	r2Session.Close()
+		// }(path)
 
-		close(strings)
-		close(symbols)
-		close(syscalls)
-		close(binaryInfo)
+		// go func(p string) {
+		// 	r2sessionMap := openR2Pipe(path)
+		// 	syscalls <- getSysCalls(r2sessionMap)
+		// 	r2sessionMap.Close()
+		// }(path)
 
-		anal()
+		// allStringsInBinary[path] = <-strings
+		// allSymbolsInBinary[path] = <-symbols
+		// allSyscall[path] = <-syscalls
+		// allbinaryInfo[path] = <-binaryInfo
+
+		// close(strings)
+		// close(symbols)
+		// close(syscalls)
+		// close(binaryInfo)
+
+		// anal()
 	}
 
 	// writeString("Letsa go!")
@@ -288,5 +290,53 @@ func getStringsDataSections(r2session r2pipe.Pipe) {
 }
 
 func getExports(r2session r2pipe.Pipe) {
+
+}
+
+func getFunctions(r2session r2pipe.Pipe) {
+
+	// Instruct r2 to analyse the binary
+	r2session.Cmdj("aaa")
+
+	buf, err := r2session.Cmdj("aflj")
+
+	if err != nil {
+		panic(err)
+	}
+
+	functionsInBinary := make([]string, 0)
+
+	if buf, ok := buf.([]interface{}); ok {
+		for _, funcBundle := range buf {
+
+			if fun, ok := funcBundle.(map[string]interface{}); ok {
+
+				fmt.Println("[DEBUG] r2 func object ->", fun)
+
+				/*
+					R2 sample response:
+					map[bits:32 bpvars:[] callrefs:[map[addr:399668 at:543028 type:CALL]] cc:1 codexrefs:[map[addr:543248 at:543028 type:CALL]]
+					cost:0 datarefs:[] dataxrefs:[] difftype:new ebbs:1 edges:0 indegree:1 is-pure:true maxbound:543036 minbound:543028
+					name:method.constructor.Landroid_support_v4_os_ResultReceiver_1.Landroid_support_v4_os_ResultReceiver_1.method._init___V
+					nargs:0 nbbs:1 nlocals:0 noreturn:false offset:543028 outdegree:1 realsz:8 regvars:[]
+					signature:method.constructor.Landroid_support_v4_os_ResultReceiver_1.Landroid_support_v4_os_ResultReceiver_1.method._init___V ();
+					size:8 spvars:[] stackframe:0 type:fcn]
+				*/
+
+				if funName, ok := fun["name"].(string); ok {
+					functionsInBinary = append(functionsInBinary, funName)
+				}
+
+				if funOffset, ok := fun["offset"]; ok {
+					functionsInBinary = append(functionsInBinary, fmt.Sprintf("%g", funOffset))
+				}
+
+				// Break on the first object for now..
+				break
+			}
+		}
+	}
+
+	fmt.Println("functions in binary: ", functionsInBinary)
 
 }
