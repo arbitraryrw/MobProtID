@@ -264,3 +264,29 @@ func IsCommandAvailable(name string) bool {
 	}
 	return true
 }
+
+func FindFilesInDir(needles []string, haystack string) []string {
+
+	matchedFilePaths := make([]string, 0)
+
+	err := filepath.Walk(haystack,
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			for _, n := range needles {
+				if strings.Contains(info.Name(), n) {
+					matchedFilePaths = append(matchedFilePaths, path)
+				}
+			}
+
+			// fmt.Println(path, info.Size(), info.Name())
+			return nil
+		})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return matchedFilePaths
+}

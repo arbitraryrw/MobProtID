@@ -2,9 +2,6 @@ package engine
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
@@ -28,24 +25,11 @@ func Start(bp string) {
 
 	parsedBinaryFilePaths = append(parsedBinaryFilePaths, bp, "/bin/bash")
 
-	err := filepath.Walk(utils.UnzippedAnalBinPath,
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
+	filesOfInterest := []string{".so", ".dex"}
+	matchedFiles := utils.FindFilesInDir(filesOfInterest, utils.UnzippedAnalBinPath)
+	parsedBinaryFilePaths = append(parsedBinaryFilePaths, matchedFiles...)
 
-			if strings.Contains(info.Name(), ".dex") || strings.Contains(info.Name(), ".so") {
-				fmt.Println("We have a dex file: ", path)
-
-				parsedBinaryFilePaths = append(parsedBinaryFilePaths, path)
-			}
-
-			// fmt.Println(path, info.Size(), info.Name())
-			return nil
-		})
-	if err != nil {
-		fmt.Println(err)
-	}
+	fmt.Println(parsedBinaryFilePaths)
 
 	// manifestProps := utils.GetDroidManifest(utils.AnalysisBinPath)
 	// fmt.Println(manifestProps)
