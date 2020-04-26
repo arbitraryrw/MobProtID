@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
@@ -33,8 +34,13 @@ func Start(bp string) {
 				return err
 			}
 
-			fmt.Println(path, info.Size(), info.Name())
+			if strings.Contains(info.Name(), ".dex") || strings.Contains(info.Name(), ".so") {
+				fmt.Println("We have a dex file: ", path)
 
+				parsedBinaryFilePaths = append(parsedBinaryFilePaths, path)
+			}
+
+			// fmt.Println(path, info.Size(), info.Name())
 			return nil
 		})
 	if err != nil {
