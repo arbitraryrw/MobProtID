@@ -101,10 +101,25 @@ func GetDroidManifest(abs string) map[string]string {
 
 		}
 
+		/*
+					Potentially also parse intent-filters?
+					      E: activity (line=21)
+			        A: android:name(0x01010003)="com.example.dummyapplication.MainActivity" (Raw: "com.example.dummyapplication.MainActivity")
+			        E: intent-filter (line=22)
+			          E: action (line=23)
+			            A: android:name(0x01010003)="android.intent.action.MAIN" (Raw: "android.intent.action.MAIN")
+			          E: category (line=25)
+			            A: android:name(0x01010003)="android.intent.category.LAUNCHER" (Raw: "android.intent.category.LAUNCHER")
+		*/
+
 		return parsedOutput
 
 	} else {
 		panic("Unable to find aapt installed, make sure android-sdk is installed.")
 	}
 
+}
+
+func GetDroidPermissions() {
+	// aapt d permissions dummy_app_MobProtID.apk
 }
