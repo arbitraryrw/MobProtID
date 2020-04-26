@@ -2,7 +2,9 @@ package engine
 
 import (
 	"fmt"
+	"sync"
 
+	"github.com/arbitraryrw/MobProtID/internal/pkg/r2handler"
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
 
@@ -23,7 +25,7 @@ func Start(bp string) {
 
 	parsedBinaryFilePaths := make([]string, 0)
 
-	parsedBinaryFilePaths = append(parsedBinaryFilePaths, bp, "/bin/bash")
+	// parsedBinaryFilePaths = append(parsedBinaryFilePaths, bp, "/bin/bash")
 
 	filesOfInterest := []string{".so", ".dex"}
 	matchedFiles := utils.FindFilesInDir(filesOfInterest, utils.UnzippedAnalBinPath)
@@ -31,18 +33,18 @@ func Start(bp string) {
 
 	fmt.Println(parsedBinaryFilePaths)
 
-	// manifestProps := utils.GetDroidManifest(utils.AnalysisBinPath)
-	// fmt.Println(manifestProps)
+	manifestProps := utils.GetDroidManifest(utils.AnalysisBinPath)
+	fmt.Println(manifestProps)
 
-	// var wg sync.WaitGroup
+	var wg sync.WaitGroup
 
-	// wg.Add(1)
-	// go r2handler.PrepareAnal(parsedBinaryFilePaths, &wg)
+	wg.Add(1)
+	go r2handler.PrepareAnal(parsedBinaryFilePaths, &wg)
 
-	// // fmt.Println("[INFO] Yara Running...")
-	// // yarahandler.Main()
+	// fmt.Println("[INFO] Yara Running...")
+	// yarahandler.Main()
 
-	// wg.Wait()
+	wg.Wait()
 
 	// r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
 	// nextRule := ruleSequence(r...)

@@ -91,7 +91,7 @@ func anal() {
 
 	fmt.Println("Analysing", len(allStringsInBinary), "strings")
 	fmt.Println("Analysing", len(allSymbolsInBinary), "symbols")
-	fmt.Println("Analysing", allSyscall, "syscalls")
+	fmt.Println("Analysing", len(allSyscall), "syscalls")
 
 	//ToDO: Analysis logic here
 	// faccesstat, open, stat64
