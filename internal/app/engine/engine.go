@@ -2,6 +2,8 @@ package engine
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
@@ -25,7 +27,22 @@ func Start(bp string) {
 
 	parsedBinaryFilePaths = append(parsedBinaryFilePaths, bp, "/bin/bash")
 
-	fmt.Println(utils.GetDroidManifest(utils.AnalysisBinPath))
+	err := filepath.Walk(utils.UnzippedAnalBinPath,
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			fmt.Println(path, info.Size(), info.Name())
+
+			return nil
+		})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// manifestProps := utils.GetDroidManifest(utils.AnalysisBinPath)
+	// fmt.Println(manifestProps)
 
 	// var wg sync.WaitGroup
 
