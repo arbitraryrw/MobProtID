@@ -33,7 +33,8 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 
 	for index, path := range binaryPath {
 		fmt.Println(index, path)
-		getFunctions(openR2Pipe(path))
+
+		fmt.Println("functions in binary: ", getFunctions(openR2Pipe(path)))
 
 		// strings := make(chan []string)
 		// binaryInfo := make(chan map[string]string)
@@ -293,10 +294,10 @@ func getExports(r2session r2pipe.Pipe) {
 
 }
 
-func getFunctions(r2session r2pipe.Pipe) {
+func getFunctions(r2session r2pipe.Pipe) []map[string]string {
 
 	// Instruct r2 to analyse the binary
-	r2session.Cmdj("aaa")
+	r2session.Cmd("aaa")
 
 	buf, err := r2session.Cmdj("aflj")
 
@@ -304,14 +305,17 @@ func getFunctions(r2session r2pipe.Pipe) {
 		panic(err)
 	}
 
-	functionsInBinary := make([]string, 0)
+	functionsInBinary := make([]map[string]string, 0)
+	var counter int = 0
 
 	if buf, ok := buf.([]interface{}); ok {
 		for _, funcBundle := range buf {
 
+			funBundle := make(map[string]string)
+
 			if fun, ok := funcBundle.(map[string]interface{}); ok {
 
-				fmt.Println("[DEBUG] r2 func object ->", fun)
+				// fmt.Println("[DEBUG] r2 func object ->", fun)
 
 				/*
 					R2 sample response:
@@ -324,19 +328,30 @@ func getFunctions(r2session r2pipe.Pipe) {
 				*/
 
 				if funName, ok := fun["name"].(string); ok {
-					functionsInBinary = append(functionsInBinary, funName)
+					funBundle["name"] = funName
 				}
 
 				if funOffset, ok := fun["offset"]; ok {
-					functionsInBinary = append(functionsInBinary, fmt.Sprintf("%g", funOffset))
+					funBundle["offset"] = fmt.Sprintf("%g", funOffset)
 				}
 
+				if funType, ok := fun["type"].(string); ok {
+					funBundle["type"] = funType
+				}
+			}
+
+			// Append the individual function to the parent array
+			functionsInBinary = append(functionsInBinary, funBundle)
+
+			counter++
+
+			if counter > 1 {
 				// Break on the first object for now..
 				break
 			}
+
 		}
 	}
 
-	fmt.Println("functions in binary: ", functionsInBinary)
-
+	return functionsInBinary
 }
