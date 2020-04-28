@@ -108,6 +108,30 @@ func anal() {
 	fmt.Println("Analysing", len(allSyscall), "syscalls")
 	fmt.Println("Analysing", allBinFuncs, "binFuncs")
 
+	detectionStrings := []string{"root", "jailbreak", "BusinessLogic"}
+	// Analyse functions
+	for _, bf := range allBinFuncs {
+
+		if val, ok := bf["name"]; ok {
+
+			for _, ds := range detectionStrings {
+				fmt.Println("Detection strings->", ds)
+
+				if strings.Contains(val, ds) {
+					fmt.Println("We have a match!", ds, "was in", val)
+				}
+
+			}
+			fmt.Println(val)
+		}
+
+		// for k, v := range bf {
+		// 	fmt.Println(k, v)
+
+		// 	if strings.Contains()
+		// }
+	}
+
 	//ToDO: Analysis logic here
 	// faccesstat, open, stat64
 }
