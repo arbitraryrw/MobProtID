@@ -17,12 +17,14 @@ var allStringsInBinary map[string][]string
 var allSymbolsInBinary map[string][]string
 var allbinaryInfo map[string]map[string]string
 var allSyscall map[string]map[string]string
+var allBinFuncs []map[string]string
 
 func init() {
 	allStringsInBinary = make(map[string][]string, 0)
 	allSymbolsInBinary = make(map[string][]string, 0)
 	allSyscall = make(map[string]map[string]string, 0)
 	allbinaryInfo = make(map[string]map[string]string, 0)
+	allBinFuncs = make([]map[string]string, 0)
 }
 
 // PrepareAnal - gathers all the relevant data required for analysis
@@ -34,12 +36,13 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 	for index, path := range binaryPath {
 		fmt.Println(index, path)
 
-		fmt.Println("functions in binary: ", getFunctions(openR2Pipe(path)))
+		// fmt.Println("functions in binary: ", reflect.TypeOf(getFunctions(openR2Pipe(path))))
 
 		// strings := make(chan []string)
 		// binaryInfo := make(chan map[string]string)
 		// symbols := make(chan []string)
 		// syscalls := make(chan map[string]string)
+		binFuncs := make(chan []map[string]string)
 
 		// fmt.Println(index, path)
 
@@ -67,17 +70,25 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 		// 	r2sessionMap.Close()
 		// }(path)
 
+		go func(p string) {
+			r2Session := openR2Pipe(path)
+			binFuncs <- getFunctions(r2Session)
+			r2Session.Close()
+		}(path)
+
 		// allStringsInBinary[path] = <-strings
 		// allSymbolsInBinary[path] = <-symbols
 		// allSyscall[path] = <-syscalls
 		// allbinaryInfo[path] = <-binaryInfo
+		allBinFuncs = <-binFuncs
 
 		// close(strings)
 		// close(symbols)
 		// close(syscalls)
 		// close(binaryInfo)
+		close(binFuncs)
 
-		// anal()
+		anal()
 	}
 
 	// writeString("Letsa go!")
@@ -95,6 +106,7 @@ func anal() {
 	fmt.Println("Analysing", len(allStringsInBinary), "strings")
 	fmt.Println("Analysing", len(allSymbolsInBinary), "symbols")
 	fmt.Println("Analysing", len(allSyscall), "syscalls")
+	fmt.Println("Analysing", allBinFuncs, "binFuncs")
 
 	//ToDO: Analysis logic here
 	// faccesstat, open, stat64
