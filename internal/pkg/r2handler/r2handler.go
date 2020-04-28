@@ -122,14 +122,9 @@ func anal() {
 				}
 
 			}
-			fmt.Println(val)
+			// Function name
+			// fmt.Println("[DEBUG]", val)
 		}
-
-		// for k, v := range bf {
-		// 	fmt.Println(k, v)
-
-		// 	if strings.Contains()
-		// }
 	}
 
 	//ToDO: Analysis logic here
