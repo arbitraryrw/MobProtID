@@ -17,14 +17,14 @@ var allStringsInBinary map[string][]string
 var allSymbolsInBinary map[string][]string
 var allbinaryInfo map[string]map[string]string
 var allSyscall map[string]map[string]string
-var allBinFuncs []map[string]string
+var allBinFuncs map[string][]map[string]string
 
 func init() {
 	allStringsInBinary = make(map[string][]string, 0)
 	allSymbolsInBinary = make(map[string][]string, 0)
 	allSyscall = make(map[string]map[string]string, 0)
 	allbinaryInfo = make(map[string]map[string]string, 0)
-	allBinFuncs = make([]map[string]string, 0)
+	allBinFuncs = make(map[string][]map[string]string, 0)
 }
 
 // PrepareAnal - gathers all the relevant data required for analysis
@@ -78,7 +78,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 		allSymbolsInBinary[path] = <-symbols
 		allSyscall[path] = <-syscalls
 		allbinaryInfo[path] = <-binaryInfo
-		allBinFuncs = <-binFuncs
+		allBinFuncs[path] = <-binFuncs
 
 		close(strings)
 		close(symbols)
@@ -104,20 +104,22 @@ func anal() {
 
 	detectionStrings := []string{"root", "jailbreak", "BusinessLogic"}
 	// Analyse functions
-	for _, bf := range allBinFuncs {
 
-		if val, ok := bf["name"]; ok {
+	for _, f := range allBinFuncs {
+		for _, bf := range f {
+			if val, ok := bf["name"]; ok {
 
-			for _, ds := range detectionStrings {
-				// fmt.Println("Detection strings->", ds)
+				for _, ds := range detectionStrings {
+					// fmt.Println("Detection strings->", ds)
 
-				if strings.Contains(val, ds) {
-					fmt.Println("We have a match!", ds, "was in", val)
+					if strings.Contains(val, ds) {
+						fmt.Println("We have a match!", ds, "was in", val)
+					}
+
 				}
-
+				// Function name
+				// fmt.Println("[DEBUG]", val)
 			}
-			// Function name
-			// fmt.Println("[DEBUG]", val)
 		}
 	}
 
