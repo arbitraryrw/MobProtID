@@ -36,39 +36,37 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 	for index, path := range binaryPath {
 		fmt.Println(index, path)
 
-		// fmt.Println("functions in binary: ", reflect.TypeOf(getFunctions(openR2Pipe(path))))
-
-		// strings := make(chan []string)
-		// binaryInfo := make(chan map[string]string)
-		// symbols := make(chan []string)
-		// syscalls := make(chan map[string]string)
+		strings := make(chan []string)
+		binaryInfo := make(chan map[string]string)
+		symbols := make(chan []string)
+		syscalls := make(chan map[string]string)
 		binFuncs := make(chan []map[string]string)
 
 		// fmt.Println(index, path)
 
-		// go func(p string) {
-		// 	r2Session := openR2Pipe(path)
-		// 	binaryInfo <- getBinaryInfo(r2Session)
-		// 	r2Session.Close()
-		// }(path)
+		go func(p string) {
+			r2Session := openR2Pipe(path)
+			binaryInfo <- getBinaryInfo(r2Session)
+			r2Session.Close()
+		}(path)
 
-		// go func(p string) {
-		// 	r2Session := openR2Pipe(path)
-		// 	strings <- getStringEntireBinary(r2Session)
-		// 	r2Session.Close()
-		// }(path)
+		go func(p string) {
+			r2Session := openR2Pipe(path)
+			strings <- getStringEntireBinary(r2Session)
+			r2Session.Close()
+		}(path)
 
-		// go func(p string) {
-		// 	r2Session := openR2Pipe(path)
-		// 	symbols <- getSymbols(r2Session)
-		// 	r2Session.Close()
-		// }(path)
+		go func(p string) {
+			r2Session := openR2Pipe(path)
+			symbols <- getSymbols(r2Session)
+			r2Session.Close()
+		}(path)
 
-		// go func(p string) {
-		// 	r2sessionMap := openR2Pipe(path)
-		// 	syscalls <- getSysCalls(r2sessionMap)
-		// 	r2sessionMap.Close()
-		// }(path)
+		go func(p string) {
+			r2sessionMap := openR2Pipe(path)
+			syscalls <- getSysCalls(r2sessionMap)
+			r2sessionMap.Close()
+		}(path)
 
 		go func(p string) {
 			r2Session := openR2Pipe(path)
@@ -76,26 +74,22 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 			r2Session.Close()
 		}(path)
 
-		// allStringsInBinary[path] = <-strings
-		// allSymbolsInBinary[path] = <-symbols
-		// allSyscall[path] = <-syscalls
-		// allbinaryInfo[path] = <-binaryInfo
+		allStringsInBinary[path] = <-strings
+		allSymbolsInBinary[path] = <-symbols
+		allSyscall[path] = <-syscalls
+		allbinaryInfo[path] = <-binaryInfo
 		allBinFuncs = <-binFuncs
 
-		// close(strings)
-		// close(symbols)
-		// close(syscalls)
-		// close(binaryInfo)
+		close(strings)
+		close(symbols)
+		close(syscalls)
+		close(binaryInfo)
 		close(binFuncs)
 
 		anal()
 	}
 
 	// writeString("Letsa go!")
-	// fmt.Println("Lets see if r2 has returned the goods:", <-binaryInfo)
-	// fmt.Println("Found", len(<-allStrings), "strings in binary")
-	// fmt.Println("Found", len(<-symbols), "symbols in binary")
-	// fmt.Println("Found", <-syscalls, "syscalls in binary")
 
 	return
 }
@@ -115,7 +109,7 @@ func anal() {
 		if val, ok := bf["name"]; ok {
 
 			for _, ds := range detectionStrings {
-				fmt.Println("Detection strings->", ds)
+				// fmt.Println("Detection strings->", ds)
 
 				if strings.Contains(val, ds) {
 					fmt.Println("We have a match!", ds, "was in", val)

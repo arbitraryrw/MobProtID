@@ -18,7 +18,6 @@ func init() {
 
 	utils.CreateAnalysisDir(abs)
 	utils.PrepBinaryForAnal(abs)
-
 }
 
 func TestUgetStringEntireBinary(t *testing.T) {
