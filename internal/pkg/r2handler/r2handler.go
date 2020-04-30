@@ -124,15 +124,21 @@ func anal() {
 		}
 	}
 
+	badStrings := []string{"~+rootdete"}
+
 	// Search through strings in binary for detectionStrings
 	fmt.Println("[INFO] Searching binary strings..")
 	for k, v := range allStringsInBinary {
 		fmt.Println("[INFO] File ->", k)
 
 		for _, s := range v {
-			if strings.Contains(s, "key") {
-				fmt.Println("We have a match!", s, "was in", "key")
+
+			for _, nns := range badStrings {
+				if strings.Contains(s, nns) {
+					fmt.Println("We have a match!", s, "was in", nns)
+				}
 			}
+
 		}
 	}
 
