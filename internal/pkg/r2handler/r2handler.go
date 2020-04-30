@@ -100,11 +100,12 @@ func anal() {
 	fmt.Println("Analysing", len(allStringsInBinary), "strings")
 	fmt.Println("Analysing", len(allSymbolsInBinary), "symbols")
 	fmt.Println("Analysing", len(allSyscall), "syscalls")
-	fmt.Println("Analysing", allBinFuncs, "binFuncs")
+	fmt.Println("Analysing", len(allBinFuncs), "binFuncs")
 
 	detectionStrings := []string{"root", "jailbreak", "BusinessLogic"}
-	// Analyse functions
 
+	// Search through functions for matches to detectionStrings
+	fmt.Println("[INFO] Searching binary functions..")
 	for _, f := range allBinFuncs {
 		for _, bf := range f {
 			if val, ok := bf["name"]; ok {
@@ -119,6 +120,18 @@ func anal() {
 				}
 				// Function name
 				// fmt.Println("[DEBUG]", val)
+			}
+		}
+	}
+
+	// Search through strings in binary for detectionStrings
+	fmt.Println("[INFO] Searching binary strings..")
+	for k, v := range allStringsInBinary {
+		fmt.Println("[INFO] File ->", k)
+
+		for _, s := range v {
+			if strings.Contains(s, "key") {
+				fmt.Println("We have a match!", s, "was in", "key")
 			}
 		}
 	}
@@ -333,7 +346,6 @@ func getFunctions(r2session r2pipe.Pipe) []map[string]string {
 	}
 
 	functionsInBinary := make([]map[string]string, 0)
-	var counter int = 0
 
 	if buf, ok := buf.([]interface{}); ok {
 		for _, funcBundle := range buf {
@@ -369,13 +381,6 @@ func getFunctions(r2session r2pipe.Pipe) []map[string]string {
 
 			// Append the individual function to the parent array
 			functionsInBinary = append(functionsInBinary, funBundle)
-
-			counter++
-
-			if counter > 1 {
-				// Break on the first object for now..
-				break
-			}
 
 		}
 	}
