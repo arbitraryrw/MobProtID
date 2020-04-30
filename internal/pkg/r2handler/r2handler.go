@@ -102,7 +102,45 @@ func anal() {
 	fmt.Println("Analysing", len(allSyscall), "syscalls")
 	fmt.Println("Analysing", len(allBinFuncs), "binFuncs")
 
-	detectionStrings := []string{"root", "jailbreak", "BusinessLogic"}
+	droidRootDetectSigs := []string{
+		"root",
+		"BusinessLogic",
+		"rootdetect",
+		"rooted",
+		"supersecret",
+		"/sbin/su",
+		"/system/bin/su",
+		"/system/bin/failsafe/su",
+		"/system/xbin/su",
+		"/system/xbin/busybox",
+		"/system/sd/xbin/su",
+		"/data/local/su",
+		"/data/local/xbin/su",
+		"/data/local/bin/su",
+		"/system/app/Superuser.apk",
+		"/system/etc/init.d/99SuperSUDaemon",
+		"/dev/com.koushikdutta.superuser.daemon/",
+		"/system/xbin/daemonsu",
+	}
+
+	jbDetectSigs := []string{
+		"cydia",
+	}
+
+	emulatorSigs := []string{
+		"emulator",
+	}
+
+	debuggerSigs := []string{
+		"isDebuggerConnected",
+	}
+	dynamicInstSigs := []string{
+		"xposed",
+		"substrate",
+		"frida",
+	}
+
+	fmt.Println(droidRootDetectSigs, jbDetectSigs, emulatorSigs, debuggerSigs, dynamicInstSigs)
 
 	// Search through functions for matches to detectionStrings
 	fmt.Println("[INFO] Searching binary functions..")
@@ -110,7 +148,7 @@ func anal() {
 		for _, bf := range f {
 			if val, ok := bf["name"]; ok {
 
-				for _, ds := range detectionStrings {
+				for _, ds := range droidRootDetectSigs {
 					// fmt.Println("Detection strings->", ds)
 
 					if strings.Contains(val, ds) {
@@ -124,8 +162,6 @@ func anal() {
 		}
 	}
 
-	badStrings := []string{"~+rootdete"}
-
 	// Search through strings in binary for detectionStrings
 	fmt.Println("[INFO] Searching binary strings..")
 	for k, v := range allStringsInBinary {
@@ -133,8 +169,8 @@ func anal() {
 
 		for _, s := range v {
 
-			for _, nns := range badStrings {
-				if strings.Contains(s, nns) {
+			for _, nns := range droidRootDetectSigs {
+				if strings.Contains(strings.ToLower(s), nns) {
 					fmt.Println("We have a match!", s, "was in", nns)
 				}
 			}
