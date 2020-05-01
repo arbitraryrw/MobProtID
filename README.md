@@ -22,6 +22,13 @@ go test ./...
 // To clean the test cache:
 go clean -testcache ./...
 ```
+
+### Useful RASP References
+- [MSTG](https://mobile-security.gitbook.io/mobile-security-testing-guide/)
+- [MSTG Android - resiliency against reverse engineering](https://mobile-security.gitbook.io/mobile-security-testing-guide/android-testing-guide/0x05j-testing-resiliency-against-reverse-engineering)
+- [MSTG iOS - resiliency against reverse engineering](https://mobile-security.gitbook.io/mobile-security-testing-guide/ios-testing-guide/0x06j-testing-resiliency-against-reverse-engineering)
+- [RedNaga](https://rednaga.io/)
+
 ### Dependencies
 - [r2pipe-go](https://github.com/radareorg/radare2-r2pipe/tree/master/go)
 - [radare2](https://github.com/radareorg/radare2)
