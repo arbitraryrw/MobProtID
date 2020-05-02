@@ -2,6 +2,8 @@ package r2handler
 
 import (
 	"fmt"
+	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -120,7 +122,34 @@ func Anal() {
 		}
 	}
 
-	// allSymbolsInBinary map[string][]string
+	fmt.Println("[INFO] Analysing binary info..")
+	for k, v := range allbinaryInfo {
+		fmt.Println("[INFO] File ->", k, v)
+
+		if len(k) > 4 {
+
+			fileEnding := filepath.Base(k)[len(filepath.Base(k))-4:]
+
+			if fileEnding == ".so" || fileEnding == ".dylib" ||
+				fileEnding == ".ipa" || fileEnding == ".dex" {
+
+				if val, ok := v["canary"]; ok {
+
+					b, err := strconv.ParseBool(val)
+
+					if err != nil {
+						panic("Unable to parse canary binary info bool")
+					}
+
+					if !b {
+						fmt.Println("[FINDING] File is not compiled with canary flag:", k)
+					}
+				}
+
+			}
+		}
+	}
+
 	// allbinaryInfo map[string]map[string]string
 	// allSyscall map[string]map[string]string
 
