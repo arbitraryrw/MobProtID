@@ -102,7 +102,7 @@ func anal() {
 	fmt.Println("Analysing", len(allSyscall), "syscalls")
 	fmt.Println("Analysing", len(allBinFuncs), "binFuncs")
 
-	droidRootDetectSigs := []string{
+	rootDetectSigs := []string{
 		"BusinessLogic",
 		"rootdetect",
 		"rooted",
@@ -172,22 +172,40 @@ func anal() {
 		"/Library/MobileSubstrate/MobileSubstrate.dylib",
 	}
 
-	fmt.Println(droidRootDetectSigs, jbDetectSigs, emulatorSigs, debuggerSigs, dynamicInstSigs)
-
 	// Search through functions for matches to detectionStrings
 	fmt.Println("[INFO] Searching binary functions..")
 	for _, f := range allBinFuncs {
 		for _, bf := range f {
 			if val, ok := bf["name"]; ok {
 
-				for _, ds := range droidRootDetectSigs {
-					// fmt.Println("Detection strings->", ds)
-
+				for _, ds := range rootDetectSigs {
 					if strings.Contains(val, ds) {
-						fmt.Println("We have a match!", ds, "was in", val)
+						fmt.Println("[INFO] Root Detection - We have a match!", ds, "was in", val)
 					}
-
 				}
+
+				for _, ds := range jbDetectSigs {
+					if strings.Contains(val, ds) {
+						fmt.Println("[INFO] Jailbreak Detection - We have a match!", ds, "was in", val)
+					}
+				}
+				for _, ds := range emulatorSigs {
+					if strings.Contains(val, ds) {
+						fmt.Println("[INFO] Emulator Detection - We have a match!", ds, "was in", val)
+					}
+				}
+				for _, ds := range debuggerSigs {
+					if strings.Contains(val, ds) {
+						fmt.Println("[INFO] Debugger Instrumentation Detection - We have a match!", ds, "was in", val)
+					}
+				}
+
+				for _, ds := range dynamicInstSigs {
+					if strings.Contains(val, ds) {
+						fmt.Println("[INFO] Dynamic Instrumentation Detection - We have a match!", ds, "was in", val)
+					}
+				}
+
 				// Function name
 				// fmt.Println("[DEBUG]", val)
 			}
@@ -201,7 +219,7 @@ func anal() {
 
 		for _, s := range v {
 
-			for _, nns := range droidRootDetectSigs {
+			for _, nns := range rootDetectSigs {
 				if strings.Contains(strings.ToLower(s), nns) {
 					fmt.Println("We have a match!", s, "was in", nns)
 				}
