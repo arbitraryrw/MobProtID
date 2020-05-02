@@ -124,7 +124,7 @@ func Anal() {
 
 	fmt.Println("[INFO] Analysing binary info..")
 	for k, v := range allbinaryInfo {
-		fmt.Println("[INFO] File ->", k, v)
+		fmt.Println("[INFO] File ->", k)
 
 		if len(k) > 4 {
 
@@ -184,7 +184,18 @@ func Anal() {
 		}
 	}
 
-	// allSyscall map[string]map[string]string
+	fmt.Println("[INFO] Analysing syscalls..")
+	for k, v := range allSyscall {
+		fmt.Println("[INFO] File ->", k)
+
+		if len(v) > 1 {
+			fmt.Println("[FINDING] There are some syscalls! A total of", len(v), "were found")
+		}
+
+		// for offset, syscall := range v {
+		// 	fmt.Println(syscall, offset)
+		// }
+	}
 
 	//ToDO: Analysis logic here
 	// faccesstat, open, stat64
