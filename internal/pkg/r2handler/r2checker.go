@@ -146,6 +146,27 @@ func Anal() {
 					}
 				}
 
+				if val, ok := v["compiler"]; ok {
+
+					// Expand this to identify certain compilers like ollvm..
+					if val != "" {
+						fmt.Println("[FINDING] Compiled using :", k)
+					}
+				}
+
+				if val, ok := v["pic"]; ok {
+
+					b, err := strconv.ParseBool(val)
+
+					if err != nil {
+						panic("Unable to parse canary binary info bool")
+					}
+
+					if !b {
+						fmt.Println("[FINDING] File is not compiled with PIC/PIE flag:", k)
+					}
+				}
+
 			}
 		}
 	}
