@@ -49,8 +49,10 @@ func Start(bp string) {
 
 	fmt.Println(parsedBinaryFilePaths)
 
-	manifestProps := utils.GetDroidManifest(utils.AnalysisBinPath)
-	fmt.Println(manifestProps)
+	if platform == "android" {
+		manifestProps := utils.GetDroidManifest(utils.AnalysisBinPath)
+		fmt.Println(manifestProps)
+	}
 
 	var wg sync.WaitGroup
 

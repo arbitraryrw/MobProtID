@@ -159,7 +159,7 @@ func Anal() {
 					b, err := strconv.ParseBool(val)
 
 					if err != nil {
-						panic("Unable to parse canary binary info bool")
+						panic("Unable to parse pic binary info bool")
 					}
 
 					if !b {
@@ -167,11 +167,23 @@ func Anal() {
 					}
 				}
 
+				if val, ok := v["stripped"]; ok {
+
+					b, err := strconv.ParseBool(val)
+
+					if err != nil {
+						panic("Unable to parse stripped binary info bool")
+					}
+
+					if !b {
+						fmt.Println("[FINDING] File is not compiled with stripped flag:", k)
+					}
+				}
+
 			}
 		}
 	}
 
-	// allbinaryInfo map[string]map[string]string
 	// allSyscall map[string]map[string]string
 
 	//ToDO: Analysis logic here
