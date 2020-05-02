@@ -160,29 +160,29 @@ func Anal() {
 func checkAgainstSigs(s string) {
 	for _, ds := range rootDetectSigs {
 		if strings.Contains(strings.ToLower(s), ds) {
-			fmt.Println("[INFO] Root Detection - We have a match!", ds, "was in", s)
+			fmt.Println("[FINDING] Root Detection - We have a match!", ds, "was in", s)
 		}
 	}
 
 	for _, ds := range jbDetectSigs {
 		if strings.Contains(strings.ToLower(s), ds) {
-			fmt.Println("[INFO] Jailbreak Detection - We have a match!", ds, "was in", s)
+			fmt.Println("[FINDING] Jailbreak Detection - We have a match!", ds, "was in", s)
 		}
 	}
 	for _, ds := range emulatorSigs {
 		if strings.Contains(strings.ToLower(s), ds) {
-			fmt.Println("[INFO] Emulator Detection - We have a match!", ds, "was in", s)
+			fmt.Println("[FINDING] Emulator Detection - We have a match!", ds, "was in", s)
 		}
 	}
 	for _, ds := range debuggerSigs {
 		if strings.Contains(strings.ToLower(s), ds) {
-			fmt.Println("[INFO] Debugger Instrumentation Detection - We have a match!", ds, "was in", s)
+			fmt.Println("[FINDING] Debugger Instrumentation Detection - We have a match!", ds, "was in", s)
 		}
 	}
 
 	for _, ds := range dynamicInstSigs {
 		if strings.Contains(strings.ToLower(s), ds) {
-			fmt.Println("[INFO] Dynamic Instrumentation Detection - We have a match!", ds, "was in", s)
+			fmt.Println("[FINDING] Dynamic Instrumentation Detection - We have a match!", ds, "was in", s)
 		}
 	}
 }
