@@ -66,9 +66,11 @@ var debuggerSigs = []string{
 	"isDebuggerConnected",
 }
 var dynamicInstSigs = []string{
-	"xposed",
+	"XposedBridge.jar",
+	"/system/framework/XposedBridge.jar",
 	"substrate",
-	"frida",
+	"frida-agent",
+	"frida-gadget",
 	"/usr/sbin/frida-server",
 	"/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist",
 	"/Library/MobileSubstrate/DynamicLibraries/Veency.plist",
