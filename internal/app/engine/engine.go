@@ -25,7 +25,7 @@ func Start(bp string) {
 
 	if analFileBaseName[len(analFileBaseName)-4:] == ".apk" {
 		platform = "android"
-		filesOfInterest = append(filesOfInterest, ".so", ".dex")
+		filesOfInterest = append(filesOfInterest, ".so", "2.dex")
 	} else if analFileBaseName[len(analFileBaseName)-4:] == ".ipa" {
 		platform = "ios"
 		filesOfInterest = append(filesOfInterest, ".dylib")
