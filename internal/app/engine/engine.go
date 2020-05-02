@@ -62,6 +62,8 @@ func Start(bp string) {
 
 	wg.Wait()
 
+	r2handler.Anal()
+
 	// r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
 	// nextRule := ruleSequence(r...)
 	// fmt.Println(nextRule())
