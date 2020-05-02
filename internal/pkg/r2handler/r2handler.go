@@ -342,6 +342,9 @@ func getFunctions(r2session r2pipe.Pipe) []map[string]string {
 
 // Seems to overlap alot with getFunctions() investigate if this has value
 func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]string {
+
+	fAndCInBinary := make([]map[string]string, 0)
+
 	buf, err := r2session.Cmdj("icj")
 
 	if err != nil {
@@ -349,4 +352,6 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]string {
 	}
 
 	fmt.Println(buf)
+
+	return fAndCInBinary
 }
