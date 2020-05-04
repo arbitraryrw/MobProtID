@@ -28,6 +28,8 @@ go clean -testcache ./...
 - [MSTG Android - resiliency against reverse engineering](https://mobile-security.gitbook.io/mobile-security-testing-guide/android-testing-guide/0x05j-testing-resiliency-against-reverse-engineering)
 - [MSTG iOS - resiliency against reverse engineering](https://mobile-security.gitbook.io/mobile-security-testing-guide/ios-testing-guide/0x06j-testing-resiliency-against-reverse-engineering)
 - [RedNaga](https://rednaga.io/)
+- [iOS Anti-Reversing Defenses](https://github.com/OWASP/owasp-mstg/blob/master/Document/0x06j-Testing-Resiliency-Against-Reverse-Engineering.md)
+- [Android Anti-Reversing Defenses](https://github.com/OWASP/owasp-mstg/blob/master/Document/0x05j-Testing-Resiliency-Against-Reverse-Engineering.md)
 
 ### Dependencies
 - [r2pipe-go](https://github.com/radareorg/radare2-r2pipe/tree/master/go)
