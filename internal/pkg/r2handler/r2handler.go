@@ -416,6 +416,19 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]string {
 						if m, ok := method.(map[string]interface{}); ok {
 
 							fmt.Println("Methods ->", m)
+
+							if mName, ok := m["name"].(string); ok {
+								fmt.Println("Method name: ", mName)
+							}
+
+							if flags, ok := m["flags"].([]interface{}); ok {
+								fmt.Println("Method flags: ", flags)
+							}
+
+							if addr, ok := m["addr"].(float64); ok {
+								fmt.Println("Method address: ", addr)
+							}
+
 						}
 					}
 				}
