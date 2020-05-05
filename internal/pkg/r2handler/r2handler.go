@@ -36,6 +36,10 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 	for index, path := range binaryPath {
 		fmt.Println(index, path)
 
+		fmt.Println(getFunctionsAndClasses(openR2Pipe(path)))
+
+		return
+
 		strings := make(chan []string)
 		binaryInfo := make(chan map[string]string)
 		symbols := make(chan []string)
@@ -351,7 +355,17 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]string {
 		panic(err)
 	}
 
-	fmt.Println(buf)
+	if buf, ok := buf.([]interface{}); ok {
+
+		for _, funcBundle := range buf {
+
+			if data, ok := funcBundle.(map[string]interface{}); ok {
+				fmt.Println(data)
+
+				break
+			}
+		}
+	}
 
 	return fAndCInBinary
 }
