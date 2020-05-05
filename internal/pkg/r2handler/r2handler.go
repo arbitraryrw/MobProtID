@@ -357,10 +357,38 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]string {
 
 	if buf, ok := buf.([]interface{}); ok {
 
-		for _, funcBundle := range buf {
+		for _, packedData := range buf {
 
-			if data, ok := funcBundle.(map[string]interface{}); ok {
-				fmt.Println(data)
+			if data, ok := packedData.(map[string]interface{}); ok {
+
+				/*
+					R2 Sample Response:
+					map[addr:56908 classname:Landroidx/appcompat/R$anim
+					fields:[map[addr:10060 flags:[static public final]
+					name:Landroidx/appcompat/R$anim.sfield_abc_fade_in:I] map[addr:10068 flags:[static public final]
+					name:Landroidx/appcompat/R$anim.sfield_abc_fade_out:I] map[addr:1007 6 flags:[static public final]
+					name:Landroidx/appcompat/R$anim.sfield_abc_grow_fade_in_from_bottom:I] map[addr:10084 flags:[static public final]
+					name:Landroidx/appcompat/R$anim.sfield_abc_popup_enter:I] map[addr:10092 flags:[static public final]
+					name:Landroidx/appcompat/R$anim.sfield_abc_popup_exit:I] map[addr:10100 flags:[static public final]
+					name:Landroidx/appcompat/R$anim.sfield_abc_shrink_fade_out_from_bottom:I] map[addr:10108 flags:[static public final]
+					name:Landroidx/appcompat/R$anim.sfield_abc_slide_in_bottom:I] map[addr:10116 flags:[static public final]
+					name:Landroidx/appcompat/R$anim.sfield_abc_slide_in_top:I] map[addr:10124 flags:[static public final]
+					name:Landroidx/appcompat/R$anim.sfield_abc_slide_out_bottom:I] map[addr:10132 flags:[static public final]
+					name:Landroidx/appcompat/R$anim.sfield_abc_slide_out_top:I] map[addr:10140 flags:[static public final]
+					name:Landroidx/appcompat/R$anim.sfield_abc_tooltip_enter:I] map[addr:10148 flags:[static public final]
+					name:Landroidx/appcompat/R$anim.sfield_abc_tooltip_exit:I]] index:0
+					methods:[map[addr:63452 flags:[private constructor]
+					name:Landroidx/appcompat/R$anim.method.<init>()V]]
+					super:Ljava/lang/Object; visibility:PUBLIC FINAL]
+				*/
+
+				if cName, ok := data["classname"].(string); ok {
+					fmt.Println("Class name: ", cName)
+				}
+
+				if fields, ok := data["fields"]; ok {
+					fmt.Println("Fields: ", fields)
+				}
 
 				break
 			}
