@@ -64,7 +64,9 @@ func Start(bp string) {
 
 	wg.Wait()
 
-	r2handler.Anal()
+	results := r2handler.Anal()
+
+	fmt.Println("[INFO] Static analysis results:", results)
 
 	// r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
 	// nextRule := ruleSequence(r...)

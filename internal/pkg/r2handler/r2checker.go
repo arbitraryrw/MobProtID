@@ -79,8 +79,16 @@ var dynamicInstSigs = []string{
 	"/Library/MobileSubstrate/MobileSubstrate.dylib",
 }
 
+var detectionAnalResults = make(map[string]bool, 0)
+
 //Anal - analyses the information gathered by r2
-func Anal() {
+func Anal() map[string]bool {
+
+	detectionAnalResults["jbOrRootDetection"] = false
+	detectionAnalResults["emulatorDetection"] = false
+	detectionAnalResults["debugDetection"] = false
+	detectionAnalResults["dniDetection"] = false
+
 	fmt.Println("Performing Analysis")
 
 	fmt.Println("Analysing", len(allStringsInBinary), "strings")
@@ -199,34 +207,43 @@ func Anal() {
 
 	//ToDO: Analysis logic here
 	// faccesstat, open, stat64
+
+	return detectionAnalResults
 }
 
 func checkAgainstSigs(s string) {
 	for _, ds := range rootDetectSigs {
 		if strings.Contains(strings.ToLower(s), ds) {
 			fmt.Println("[FINDING] Root Detection - We have a match!", ds, "was in", s)
+
+			detectionAnalResults["jbOrRootDetection"] = false
 		}
 	}
 
 	for _, ds := range jbDetectSigs {
 		if strings.Contains(strings.ToLower(s), ds) {
 			fmt.Println("[FINDING] Jailbreak Detection - We have a match!", ds, "was in", s)
+			detectionAnalResults["jbOrRootDetection"] = false
 		}
 	}
 	for _, ds := range emulatorSigs {
 		if strings.Contains(strings.ToLower(s), ds) {
 			fmt.Println("[FINDING] Emulator Detection - We have a match!", ds, "was in", s)
+
+			detectionAnalResults["emulatorDetection"] = false
 		}
 	}
 	for _, ds := range debuggerSigs {
 		if strings.Contains(strings.ToLower(s), ds) {
 			fmt.Println("[FINDING] Debugger Instrumentation Detection - We have a match!", ds, "was in", s)
+			detectionAnalResults["debugDetection"] = false
 		}
 	}
 
 	for _, ds := range dynamicInstSigs {
 		if strings.Contains(strings.ToLower(s), ds) {
 			fmt.Println("[FINDING] Dynamic Instrumentation Detection - We have a match!", ds, "was in", s)
+			detectionAnalResults["dniDetection"] = false
 		}
 	}
 }
