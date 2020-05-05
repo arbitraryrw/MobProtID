@@ -386,8 +386,29 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]string {
 					fmt.Println("Class name: ", cName)
 				}
 
-				if fields, ok := data["fields"]; ok {
-					fmt.Println("Fields: ", fields)
+				if packedFieldData, ok := data["fields"].([]interface{}); ok {
+
+					for _, field := range packedFieldData {
+
+						fmt.Println("neep", field)
+
+						if f, ok := field.(map[string]interface{}); ok {
+
+							if fName, ok := f["name"].(string); ok {
+								fmt.Println("Field name: ", fName)
+							}
+
+							if flags, ok := f["flags"].([]interface{}); ok {
+								fmt.Println("Field flags: ", flags)
+							}
+
+							if addr, ok := f["addr"].(float64); ok {
+								fmt.Println("Field address: ", addr)
+							}
+
+						}
+
+					}
 				}
 
 				break
