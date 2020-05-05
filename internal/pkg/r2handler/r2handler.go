@@ -390,8 +390,6 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]string {
 
 					for _, field := range packedFieldData {
 
-						fmt.Println("neep", field)
-
 						if f, ok := field.(map[string]interface{}); ok {
 
 							if fName, ok := f["name"].(string); ok {
@@ -408,6 +406,17 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]string {
 
 						}
 
+					}
+				}
+
+				if packedMethods, ok := data["methods"].([]interface{}); ok {
+
+					for _, method := range packedMethods {
+
+						if m, ok := method.(map[string]interface{}); ok {
+
+							fmt.Println("Methods ->", m)
+						}
 					}
 				}
 
