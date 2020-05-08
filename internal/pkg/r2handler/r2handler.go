@@ -345,9 +345,9 @@ func getFunctions(r2session r2pipe.Pipe) []map[string]string {
 }
 
 // Seems to overlap alot with getFunctions() investigate if this has value
-func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]string {
+func getFunctionsAndClasses(r2session r2pipe.Pipe) map[string][]string {
 
-	fAndCInBinary := make([]map[string]string, 0)
+	cAndMInBinary := make(map[string][]string, 0)
 
 	buf, err := r2session.Cmdj("icj")
 
@@ -388,32 +388,34 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]string {
 					]
 				*/
 
+				// if packedFieldData, ok := data["fields"].([]interface{}); ok {
+
+				// 	for _, field := range packedFieldData {
+
+				// 		if f, ok := field.(map[string]interface{}); ok {
+
+				// 			if fName, ok := f["name"].(string); ok {
+				// 				fmt.Println("Field name: ", fName)
+				// 			}
+
+				// 			if flags, ok := f["flags"].([]interface{}); ok {
+				// 				fmt.Println("Field flags: ", flags)
+				// 			}
+
+				// 			if addr, ok := f["addr"].(float64); ok {
+				// 				fmt.Println("Field address: ", addr)
+				// 			}
+
+				// 		}
+
+				// 	}
+				// }
+
 				if cName, ok := data["classname"].(string); ok {
 					fmt.Println("Class name: ", cName)
 				}
 
-				if packedFieldData, ok := data["fields"].([]interface{}); ok {
-
-					for _, field := range packedFieldData {
-
-						if f, ok := field.(map[string]interface{}); ok {
-
-							if fName, ok := f["name"].(string); ok {
-								fmt.Println("Field name: ", fName)
-							}
-
-							if flags, ok := f["flags"].([]interface{}); ok {
-								fmt.Println("Field flags: ", flags)
-							}
-
-							if addr, ok := f["addr"].(float64); ok {
-								fmt.Println("Field address: ", addr)
-							}
-
-						}
-
-					}
-				}
+				methods := make([]string, 0)
 
 				if packedMethods, ok := data["methods"].([]interface{}); ok {
 
@@ -425,24 +427,27 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]string {
 
 							if mName, ok := m["name"].(string); ok {
 								fmt.Println("Method name: ", mName)
+								methods = append(methods, mName)
 							}
 
-							if flags, ok := m["flags"].([]interface{}); ok {
-								fmt.Println("Method flags: ", flags)
-							}
+							// if flags, ok := m["flags"].([]interface{}); ok {
+							// 	fmt.Println("Method flags: ", flags)
+							// }
 
-							if addr, ok := m["addr"].(float64); ok {
-								fmt.Println("Method address: ", addr)
-							}
+							// if addr, ok := m["addr"].(float64); ok {
+							// 	fmt.Println("Method address: ", addr)
+							// }
 
 						}
 					}
 				}
+
+				cAndMInBinary["methods"] = methods
 
 				break
 			}
 		}
 	}
 
-	return fAndCInBinary
+	return cAndMInBinary
 }
