@@ -411,10 +411,6 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) map[string][]string {
 				// 	}
 				// }
 
-				if cName, ok := data["classname"].(string); ok {
-					fmt.Println("Class name: ", cName)
-				}
-
 				methods := make([]string, 0)
 
 				if packedMethods, ok := data["methods"].([]interface{}); ok {
@@ -442,7 +438,10 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) map[string][]string {
 					}
 				}
 
-				cAndMInBinary["methods"] = methods
+				if cName, ok := data["classname"].(string); ok {
+					fmt.Println("Class name: ", cName)
+					cAndMInBinary[data["classname"].(string)] = methods
+				}
 
 				break
 			}
