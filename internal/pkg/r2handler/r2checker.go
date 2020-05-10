@@ -7,10 +7,11 @@ import (
 	"strings"
 )
 
+var detectionAnalResults map[string]bool
+
 //Anal - analyses the information gathered by r2
 func Anal() map[string]bool {
-
-	detectionAnalResults := make(map[string]bool, 0)
+	detectionAnalResults = make(map[string]bool, 0)
 
 	detectionAnalResults["jbOrRootDetection"] = false
 	detectionAnalResults["emulatorDetection"] = false
@@ -22,7 +23,6 @@ func Anal() map[string]bool {
 	fmt.Println("Analysing", len(allStringsInBinary), "strings")
 	fmt.Println("Analysing", len(allSymbolsInBinary), "symbols")
 	fmt.Println("Analysing", len(allSyscall), "syscalls")
-	fmt.Println("Analysing", len(allBinFuncs), "binFuncs")
 	fmt.Println("Analysing", len(allBinClassAndFunc), "binClassAndFunc")
 
 	// Search through Classes and functions in binary
@@ -32,50 +32,25 @@ func Anal() map[string]bool {
 
 		// Iterate over each class function bundle
 		for c, funcBundle := range bundle {
-			fmt.Println("Class:", c)
+			CheckAllSigs(c)
 
 			// Iterate over func bundle
 			for _, f := range funcBundle {
-				fmt.Println("\t\tFunction:", f)
+				CheckAllSigs(f)
 			}
 		}
 	}
 
+	// ** Disabled as allBinClassAndFunc handles this functionality for now
 	// Search through functions for matches to detectionStrings
-	fmt.Println("[INFO] Searching binary functions..")
-	for _, f := range allBinFuncs {
-		for _, bf := range f {
-			if val, ok := bf["name"]; ok {
-
-				if !detectionAnalResults["jbOrRootDetection"] {
-					if checkForJBOrRoot(val) {
-						detectionAnalResults["jbOrRootDetection"] = true
-					}
-				}
-
-				if !detectionAnalResults["emulatorDetection"] {
-					if checkForEmulator(val) {
-						detectionAnalResults["emulatorDetection"] = true
-					}
-				}
-
-				if !detectionAnalResults["debugDetection"] {
-					if checkForDebugger(val) {
-						detectionAnalResults["debugDetection"] = true
-					}
-				}
-
-				if !detectionAnalResults["dniDetection"] {
-					if checkForDni(val) {
-						detectionAnalResults["dniDetection"] = true
-					}
-				}
-
-				// Function name
-				// fmt.Println("[DEBUG]", val)
-			}
-		}
-	}
+	// fmt.Println("[INFO] Searching binary functions..")
+	// for _, f := range allBinFuncs {
+	// 	for _, bf := range f {
+	// 		if val, ok := bf["name"]; ok {
+	// 			CheckAllSigs(val)
+	// 		}
+	// 	}
+	// }
 
 	// Search through strings in binary for detectionStrings
 	fmt.Println("[INFO] Searching binary strings..")
@@ -84,29 +59,7 @@ func Anal() map[string]bool {
 
 		for _, s := range v {
 
-			if !detectionAnalResults["jbOrRootDetection"] {
-				if checkForJBOrRoot(s) {
-					detectionAnalResults["jbOrRootDetection"] = true
-				}
-			}
-
-			if !detectionAnalResults["emulatorDetection"] {
-				if checkForEmulator(s) {
-					detectionAnalResults["emulatorDetection"] = true
-				}
-			}
-
-			if !detectionAnalResults["debugDetection"] {
-				if checkForDebugger(s) {
-					detectionAnalResults["debugDetection"] = true
-				}
-			}
-
-			if !detectionAnalResults["dniDetection"] {
-				if checkForDni(s) {
-					detectionAnalResults["dniDetection"] = true
-				}
-			}
+			CheckAllSigs(s)
 		}
 	}
 
@@ -115,29 +68,7 @@ func Anal() map[string]bool {
 		fmt.Println("[INFO] File ->", k)
 		for _, s := range v {
 
-			if !detectionAnalResults["jbOrRootDetection"] {
-				if checkForJBOrRoot(s) {
-					detectionAnalResults["jbOrRootDetection"] = true
-				}
-			}
-
-			if !detectionAnalResults["emulatorDetection"] {
-				if checkForEmulator(s) {
-					detectionAnalResults["emulatorDetection"] = true
-				}
-			}
-
-			if !detectionAnalResults["debugDetection"] {
-				if checkForDebugger(s) {
-					detectionAnalResults["debugDetection"] = true
-				}
-			}
-
-			if !detectionAnalResults["dniDetection"] {
-				if checkForDni(s) {
-					detectionAnalResults["dniDetection"] = true
-				}
-			}
+			CheckAllSigs(s)
 		}
 	}
 
@@ -351,4 +282,30 @@ func checkForDni(s string) bool {
 	}
 
 	return false
+}
+
+func CheckAllSigs(val string) {
+	if !detectionAnalResults["jbOrRootDetection"] {
+		if checkForJBOrRoot(val) {
+			detectionAnalResults["jbOrRootDetection"] = true
+		}
+	}
+
+	if !detectionAnalResults["emulatorDetection"] {
+		if checkForEmulator(val) {
+			detectionAnalResults["emulatorDetection"] = true
+		}
+	}
+
+	if !detectionAnalResults["debugDetection"] {
+		if checkForDebugger(val) {
+			detectionAnalResults["debugDetection"] = true
+		}
+	}
+
+	if !detectionAnalResults["dniDetection"] {
+		if checkForDni(val) {
+			detectionAnalResults["dniDetection"] = true
+		}
+	}
 }
