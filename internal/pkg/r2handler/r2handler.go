@@ -18,6 +18,7 @@ var allSymbolsInBinary map[string][]string
 var allbinaryInfo map[string]map[string]string
 var allSyscall map[string]map[string]string
 var allBinFuncs map[string][]map[string]string
+var allBinClassAndFunc map[string][]string
 
 func init() {
 	allStringsInBinary = make(map[string][]string, 0)
@@ -25,6 +26,7 @@ func init() {
 	allSyscall = make(map[string]map[string]string, 0)
 	allbinaryInfo = make(map[string]map[string]string, 0)
 	allBinFuncs = make(map[string][]map[string]string, 0)
+	allBinClassAndFunc = make(map[string][]string, 0)
 }
 
 // PrepareAnal - gathers all the relevant data required for analysis
@@ -388,6 +390,7 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) map[string][]string {
 					]
 				*/
 
+				// Field Parsing, no real need for this currently though
 				// if packedFieldData, ok := data["fields"].([]interface{}); ok {
 
 				// 	for _, field := range packedFieldData {
@@ -419,10 +422,10 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) map[string][]string {
 
 						if m, ok := method.(map[string]interface{}); ok {
 
-							fmt.Println("Methods ->", m)
+							// fmt.Println("Methods ->", m)
 
 							if mName, ok := m["name"].(string); ok {
-								fmt.Println("Method name: ", mName)
+								// fmt.Println("Method name: ", mName)
 								methods = append(methods, mName)
 							}
 
@@ -439,11 +442,11 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) map[string][]string {
 				}
 
 				if cName, ok := data["classname"].(string); ok {
-					fmt.Println("Class name: ", cName)
-					cAndMInBinary[data["classname"].(string)] = methods
+					// fmt.Println("Class name: ", cName)
+					cAndMInBinary[cName] = methods
 				}
 
-				break
+				// break
 			}
 		}
 	}
