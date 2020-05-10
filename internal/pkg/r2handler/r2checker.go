@@ -11,6 +11,7 @@ import (
 func Anal() map[string]bool {
 
 	detectionAnalResults := make(map[string]bool, 0)
+
 	detectionAnalResults["jbOrRootDetection"] = false
 	detectionAnalResults["emulatorDetection"] = false
 	detectionAnalResults["debugDetection"] = false
@@ -22,6 +23,23 @@ func Anal() map[string]bool {
 	fmt.Println("Analysing", len(allSymbolsInBinary), "symbols")
 	fmt.Println("Analysing", len(allSyscall), "syscalls")
 	fmt.Println("Analysing", len(allBinFuncs), "binFuncs")
+	fmt.Println("Analysing", len(allBinClassAndFunc), "binClassAndFunc")
+
+	// Search through Classes and functions in binary
+	fmt.Println("[INFO] Searching binary classes and functions..")
+	for f, bundle := range allBinClassAndFunc {
+		fmt.Println("[INFO] Searching file", f)
+
+		// Iterate over each class function bundle
+		for c, funcBundle := range bundle {
+			fmt.Println("Class:", c)
+
+			// Iterate over func bundle
+			for _, f := range funcBundle {
+				fmt.Println("\t\tFunction:", f)
+			}
+		}
+	}
 
 	// Search through functions for matches to detectionStrings
 	fmt.Println("[INFO] Searching binary functions..")

@@ -18,7 +18,7 @@ var allSymbolsInBinary map[string][]string
 var allbinaryInfo map[string]map[string]string
 var allSyscall map[string]map[string]string
 var allBinFuncs map[string][]map[string]string
-var allBinClassAndFunc map[string][]string
+var allBinClassAndFunc map[string]map[string][]string
 
 func init() {
 	allStringsInBinary = make(map[string][]string, 0)
@@ -26,7 +26,7 @@ func init() {
 	allSyscall = make(map[string]map[string]string, 0)
 	allbinaryInfo = make(map[string]map[string]string, 0)
 	allBinFuncs = make(map[string][]map[string]string, 0)
-	allBinClassAndFunc = make(map[string][]string, 0)
+	allBinClassAndFunc = make(map[string]map[string][]string, 0)
 }
 
 // PrepareAnal - gathers all the relevant data required for analysis
@@ -38,15 +38,12 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 	for index, path := range binaryPath {
 		fmt.Println(index, path)
 
-		fmt.Println(getFunctionsAndClasses(openR2Pipe(path)))
-
-		return
-
 		strings := make(chan []string)
 		binaryInfo := make(chan map[string]string)
 		symbols := make(chan []string)
 		syscalls := make(chan map[string]string)
 		binFuncs := make(chan []map[string]string)
+		binClassAndFuncs := make(chan map[string][]string)
 
 		// fmt.Println(index, path)
 
@@ -80,17 +77,25 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 			r2Session.Close()
 		}(path)
 
+		go func(p string) {
+			r2Session := openR2Pipe(path)
+			binClassAndFuncs <- getFunctionsAndClasses(r2Session)
+			r2Session.Close()
+		}(path)
+
 		allStringsInBinary[path] = <-strings
 		allSymbolsInBinary[path] = <-symbols
 		allSyscall[path] = <-syscalls
 		allbinaryInfo[path] = <-binaryInfo
 		allBinFuncs[path] = <-binFuncs
+		allBinClassAndFunc[path] = <-binClassAndFuncs
 
 		close(strings)
 		close(symbols)
 		close(syscalls)
 		close(binaryInfo)
 		close(binFuncs)
+		close(binClassAndFuncs)
 	}
 
 	// writeString("Letsa go!")
