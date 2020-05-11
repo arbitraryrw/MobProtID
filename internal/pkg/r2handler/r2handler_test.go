@@ -93,3 +93,32 @@ func TestUgetFunctions(t *testing.T) {
 		t.Errorf("getFunctions() = could not find %q in %q r2 reponse", expect, matchedFiles[0])
 	}
 }
+
+func TestUgetFunctionsAndClasses(t *testing.T) {
+
+	classResult := false
+
+	testFile := []string{"classes2.dex"}
+	matchedFiles := utils.FindFilesInDir(testFile, utils.UnzippedAnalBinPath)
+
+	if len(matchedFiles) < 0 {
+		t.Errorf("Unable to find test file %q in analysis directory %q", testFile[0], utils.UnzippedAnalBinPath)
+	}
+
+	r2s := openR2Pipe(matchedFiles[0])
+
+	expectClass := "com/example/dummyapplication/SensitiveLogic"
+
+	got := getFunctionsAndClasses(r2s)
+
+	for c, _ := range got {
+		if strings.Contains(c, expectClass) {
+			classResult = true
+		}
+	}
+
+	if classResult == false {
+		t.Errorf("getFunctionsAndClasses() = could not find class %q in %q r2 reponse", expectClass, matchedFiles[0])
+	}
+
+}
