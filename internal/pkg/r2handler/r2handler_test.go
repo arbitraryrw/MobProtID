@@ -97,6 +97,7 @@ func TestUgetFunctions(t *testing.T) {
 func TestUgetFunctionsAndClasses(t *testing.T) {
 
 	classResult := false
+	funcResult := false
 
 	testFile := []string{"classes2.dex"}
 	matchedFiles := utils.FindFilesInDir(testFile, utils.UnzippedAnalBinPath)
@@ -108,12 +109,19 @@ func TestUgetFunctionsAndClasses(t *testing.T) {
 	r2s := openR2Pipe(matchedFiles[0])
 
 	expectClass := "com/example/dummyapplication/SensitiveLogic"
+	expectFunction := "rootDetection"
 
 	got := getFunctionsAndClasses(r2s)
 
-	for c, _ := range got {
+	for c, fBundle := range got {
 		if strings.Contains(c, expectClass) {
 			classResult = true
+		}
+
+		for _, f := range fBundle {
+			if strings.Contains(f, expectFunction) {
+				funcResult = true
+			}
 		}
 	}
 
@@ -121,4 +129,7 @@ func TestUgetFunctionsAndClasses(t *testing.T) {
 		t.Errorf("getFunctionsAndClasses() = could not find class %q in %q r2 reponse", expectClass, matchedFiles[0])
 	}
 
+	if funcResult == false {
+		t.Errorf("getFunctionsAndClasses() = could not find function %q in %q r2 reponse", expectFunction, matchedFiles[0])
+	}
 }
