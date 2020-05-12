@@ -37,8 +37,9 @@ go clean -testcache ./...
 - [go-yara](https://github.com/hillu/go-yara)
 - [yara](https://virustotal.github.io/yara/)
 - [android sdk (cli tools)](https://developer.android.com/studio/index.html#command-tools)
+- [frida](https://github.com/frida/frida)
 
-### Useful Go References
+### Useful References / Docs
 - [project-layout](https://github.com/golang-standards/project-layout)
 - [fmt docs](https://golang.org/pkg/fmt/)
 - [testing docs](https://golang.org/pkg/testing/)
@@ -46,7 +47,8 @@ go clean -testcache ./...
 - [gobyexample](https://gobyexample.com/)
 - [r2pipe-go docs](https://godoc.org/github.com/radare/r2pipe-go)
 - [go-yara docs](https://godoc.org/github.com/hillu/go-yara)
-- [Installing yara](https://yara.readthedocs.io/en/stable/gettingstarted.html)
+- [installing yara](https://yara.readthedocs.io/en/stable/gettingstarted.html)
+- [frida API docs](https://frida.re/docs/javascript-api/)
 
 ### License
 [GNU General Public License v3.0](https://github.com/arbitraryrw/MobProtID/blob/master/LICENSE)
