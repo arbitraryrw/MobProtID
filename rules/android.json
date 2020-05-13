@@ -1,0 +1,18 @@
+{
+    
+    "rules": [
+      {
+        "ruleName": "jailbreak",
+        "condition": "ALL",
+        "part_1": {
+            "type": "static",
+            "signature": [
+                "cydia",
+                "apt"
+            ]
+        }
+
+      }
+    ]
+
+  }

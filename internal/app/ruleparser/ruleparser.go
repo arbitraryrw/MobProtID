@@ -24,5 +24,5 @@ func ParseRuleFile() {
 	var result map[string]interface{}
 	json.Unmarshal([]byte(byteValue), &result)
 
-	// fmt.Println(result["users"])
+	fmt.Println("rules:", result["users"])
 }
