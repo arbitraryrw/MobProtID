@@ -1,14 +1,16 @@
 {
-    
+
     "rules": [
       {
-        "ruleName": "jailbreak",
+        "ruleName": "rootdetection_files",
         "condition": "ALL",
         "part_1": {
             "type": "static",
             "signature": [
-                "cydia",
-                "apt"
+                "/sbin/su",
+                "/system/bin/su",
+                "/system/bin/failsafe/su",
+                "/system/xbin/su"
             ]
         }
 
