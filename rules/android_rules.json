@@ -2,7 +2,7 @@
 
     "rules": [
       {
-        "ruleName": "rootdetection_files",
+        "ruleName": "rootdetectionFiles",
         "condition": "ALL",
         "part_1": {
             "type": "static",
