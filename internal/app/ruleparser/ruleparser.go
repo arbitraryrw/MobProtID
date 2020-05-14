@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"reflect"
 	"strings"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
@@ -20,7 +21,7 @@ func ParseRuleFile() {
 
 	err := filepath.Walk(ruleDir, func(path string, info os.FileInfo, err error) error {
 
-		if strings.Contains(filepath.Base(path), "_rules.json") {
+		if strings.Contains(filepath.Base(path), "android_rules.json") {
 			ruleFiles = append(ruleFiles, path)
 		}
 
@@ -48,7 +49,24 @@ func ParseRuleFile() {
 		var result map[string]interface{}
 		json.Unmarshal([]byte(byteValue), &result)
 
-		fmt.Println("rules:", result)
+		if res, ok := result["rules"].([]interface{}); ok {
+			getObjectFromJSON("signature", res)
+		}
+
+	}
+
+}
+
+func getObjectFromJSON(needle string, haystack []interface{}) {
+
+	for k, value := range haystack {
+		fmt.Println("CANARY -- ", k, reflect.TypeOf(value))
+
+		if v, ok := value.([]interface{}); ok {
+			fmt.Println("\t", v)
+			// getObjectFromJSON(needle, v)
+		}
+
 	}
 
 }
