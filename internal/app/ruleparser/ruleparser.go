@@ -7,7 +7,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"reflect"
 	"strings"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
@@ -60,21 +59,21 @@ func ParseRuleFile() {
 
 func parseUnstructuredJSON(haystack []interface{}) {
 
-	for k, value := range haystack {
-		fmt.Println("CANARY -- ", k, reflect.TypeOf(value))
-		fmt.Println("CANARY -- ", k, value)
-
-		if v, ok := value.([]interface{}); ok {
-			fmt.Println("\t", v)
-			// getObjectFromJSON(needle, v)
-		}
+	for _, value := range haystack {
 
 		if v, ok := value.(map[string]interface{}); ok {
 			fmt.Println("[INFO] Original Rule", v)
 
+			var condition string
+
+			if condition, ok = v["condition"].(string); ok {
+				fmt.Println("Condition is", condition)
+			}
+
 			for key, value := range v {
+
 				if strings.Contains(key, "part_") {
-					fmt.Println("[DEBUG] Rule -> ", key, reflect.TypeOf(value))
+					fmt.Println("[DEBUG] Rule -> ", key, value, condition)
 
 					if rule, ok := value.(map[string]interface{}); ok {
 						parseJSONRule(rule)
@@ -88,18 +87,14 @@ func parseUnstructuredJSON(haystack []interface{}) {
 }
 
 func parseJSONRule(jsonRule map[string]interface{}) {
-	fmt.Println("\t", jsonRule)
+	fmt.Println("\t[jsonrule]", jsonRule)
 
 	var rule Rule
 
-	if val, ok := jsonRule["condition"]; ok {
-		fmt.Println("We have a condition sub rule!", val)
-		fmt.Println("We have a condition sub rule!", reflect.TypeOf(jsonRule["sub_3_part_1"]))
-		fmt.Println("We have a condition sub rule!", jsonRule)
+	if _, ok := jsonRule["condition"]; ok {
 
 		for key, val := range jsonRule {
 			if strings.Contains(key, "part_") {
-
 				parseJSONRule(val.(map[string]interface{}))
 			}
 		}
@@ -141,7 +136,7 @@ func parseJSONRule(jsonRule map[string]interface{}) {
 		panic(err)
 	}
 
-	fmt.Println("[RULE DEBUG]", rule)
+	fmt.Println("\n[INFO] Parsed rule :", rule, "\n")
 }
 
 type Rule struct {
