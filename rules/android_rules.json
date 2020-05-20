@@ -20,6 +20,7 @@
         "condition": "ALL",
         "part_1": {
             "type": "static",
+            "handler": "radare2",
             "signature": [
                 "emulatorSignature1",
                 "emulatorSignature2",
@@ -28,6 +29,7 @@
         },
           "part_2": {
             "type": "static",
+            "handler": "yara",
             "signature": [
                 "emulatorSignature4",
                 "emulatorSignature5",

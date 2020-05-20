@@ -51,14 +51,14 @@ func ParseRuleFile() {
 		json.Unmarshal([]byte(byteValue), &result)
 
 		if res, ok := result["rules"].([]interface{}); ok {
-			getObjectFromJSON("signature", res)
+			parseUnstructuredJSON(res)
 		}
 
 	}
 
 }
 
-func getObjectFromJSON(needle string, haystack []interface{}) {
+func parseUnstructuredJSON(haystack []interface{}) {
 
 	for k, value := range haystack {
 		fmt.Println("CANARY -- ", k, reflect.TypeOf(value))
@@ -70,11 +70,18 @@ func getObjectFromJSON(needle string, haystack []interface{}) {
 		}
 
 		if v, ok := value.(map[string]interface{}); ok {
+			fmt.Println("[INFO] Original Rule", v)
 
 			for key, value := range v {
-				fmt.Println("[DEBUG] Rule -> ", key, value)
 
-				parseJSONRule(v)
+				if strings.Contains(key, "part_") {
+					fmt.Println("[DEBUG] Rule -> ", key, reflect.TypeOf(value))
+
+					if rule, ok := value.(map[string]interface{}); ok {
+						parseJSONRule(rule)
+					}
+
+				}
 			}
 		}
 
@@ -83,5 +90,13 @@ func getObjectFromJSON(needle string, haystack []interface{}) {
 }
 
 func parseJSONRule(jsonRule map[string]interface{}) {
-	// fmt.Println("Parsing rule:", jsonRule)
+	fmt.Println("\t", jsonRule)
+
+	if val, ok := jsonRule["type"]; ok {
+		fmt.Println("\tRule type", val)
+	}
+
+	if val, ok := jsonRule["signature"]; ok {
+		fmt.Println("\tRule signatures", val)
+	}
 }

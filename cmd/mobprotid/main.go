@@ -38,6 +38,8 @@ func main() {
 		if _, err := os.Stat(targetPath); err == nil {
 
 			ruleparser.ParseRuleFile()
+
+			return
 			engine.Start(targetPath)
 
 		} else {
