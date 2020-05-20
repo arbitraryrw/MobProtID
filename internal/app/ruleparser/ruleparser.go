@@ -47,6 +47,7 @@ func ParseRuleFile() {
 		byteValue, _ := ioutil.ReadAll(jsonFile)
 
 		var result map[string]interface{}
+
 		json.Unmarshal([]byte(byteValue), &result)
 
 		if res, ok := result["rules"].([]interface{}); ok {
@@ -61,12 +62,26 @@ func getObjectFromJSON(needle string, haystack []interface{}) {
 
 	for k, value := range haystack {
 		fmt.Println("CANARY -- ", k, reflect.TypeOf(value))
+		fmt.Println("CANARY -- ", k, value)
 
 		if v, ok := value.([]interface{}); ok {
 			fmt.Println("\t", v)
 			// getObjectFromJSON(needle, v)
 		}
 
+		if v, ok := value.(map[string]interface{}); ok {
+
+			for key, value := range v {
+				fmt.Println("[DEBUG] Rule -> ", key, value)
+
+				parseJSONRule(v)
+			}
+		}
+
 	}
 
+}
+
+func parseJSONRule(jsonRule map[string]interface{}) {
+	// fmt.Println("Parsing rule:", jsonRule)
 }
