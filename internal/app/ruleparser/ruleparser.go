@@ -76,7 +76,9 @@ func parseUnstructuredJSON(haystack []interface{}) {
 					fmt.Println("[DEBUG] Rule -> ", key, value, condition)
 
 					if rule, ok := value.(map[string]interface{}); ok {
-						parseJSONRule(rule)
+						res := parseJSONRule(rule)
+
+						fmt.Println("Rule returned", res, "\n\n")
 					}
 				}
 			}
@@ -86,57 +88,92 @@ func parseUnstructuredJSON(haystack []interface{}) {
 
 }
 
-func parseJSONRule(jsonRule map[string]interface{}) {
+func parseJSONRule(jsonRule map[string]interface{}) bool {
 	fmt.Println("\t[jsonrule]", jsonRule)
 
-	var rule Rule
+	if condition, ok := jsonRule["condition"]; ok {
 
-	if _, ok := jsonRule["condition"]; ok {
+		condition = strings.ToUpper(condition.(string))
+
+		var subResults []bool
 
 		for key, val := range jsonRule {
 			if strings.Contains(key, "part_") {
-				parseJSONRule(val.(map[string]interface{}))
+
+				res := parseJSONRule(val.(map[string]interface{}))
+
+				subResults = append(subResults, res)
+
+				fmt.Println("-------- RULE EVALUATED:", res)
+
 			}
 		}
 
-		return
-	}
+		fmt.Println("-------- FINAL RESULTS:", subResults)
 
-	if val, ok := jsonRule["type"]; ok {
+		if condition == "OR" {
+			for _, b := range subResults {
+				if b {
+					return true
+				}
+			}
 
-		if val, ok := val.(string); ok {
-			rule.Type = val
+			return false
+
+		} else if condition == "AND" {
+			for _, b := range subResults {
+				if !b {
+					return false
+				}
+			}
+
+			return true
 		}
 
 	} else {
-		err := fmt.Sprintf("Could not parse rule, missing type in %q", jsonRule)
-		panic(err)
-	}
+		var rule Rule
 
-	if val, ok := jsonRule["handler"]; ok {
-
-		if val, ok := val.(string); ok {
-			rule.Handler = val
+		if val, ok := jsonRule["type"]; ok {
+			if val, ok := val.(string); ok {
+				rule.Type = val
+			}
+		} else {
+			err := fmt.Sprintf("Could not parse rule, missing type in %q", jsonRule)
+			panic(err)
 		}
 
-	} else {
-		err := fmt.Sprintf("Could not parse rule, missing handler in %q", jsonRule)
-		panic(err)
-	}
-
-	if val, ok := jsonRule["signature"]; ok {
-
-		if val, ok := val.([]interface{}); ok {
-
-			rule.Signature = val
+		if val, ok := jsonRule["handler"]; ok {
+			if val, ok := val.(string); ok {
+				rule.Handler = val
+			}
+		} else {
+			err := fmt.Sprintf("Could not parse rule, missing handler in %q", jsonRule)
+			panic(err)
 		}
 
-	} else {
-		err := fmt.Sprintf("Could not parse rule, missing signature in %q", jsonRule)
-		panic(err)
+		if val, ok := jsonRule["signature"]; ok {
+			if val, ok := val.([]interface{}); ok {
+				rule.Signature = val
+			}
+		} else {
+			err := fmt.Sprintf("Could not parse rule, missing signature in %q", jsonRule)
+			panic(err)
+		}
+		// Evaluate the parsed rule
+		return evalRule(rule)
 	}
 
-	fmt.Println("\n[INFO] Parsed rule :", rule, "\n")
+	return false
+}
+
+func evalRule(r Rule) bool {
+	fmt.Println("[INFO] Evaluating rule:", r)
+
+	if r.Handler == "yara" {
+		return true
+	}
+
+	return false
 }
 
 type Rule struct {

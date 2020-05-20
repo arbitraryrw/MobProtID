@@ -38,7 +38,7 @@
           ]
         },
         "part_3": {
-          "condition": "OR",
+          "condition": "AND",
           "sub_3_part_1": {
             "type": "static",
             "handler": "yara",
@@ -55,7 +55,7 @@
           }
         },
         "part_4": {
-          "condition": "OR",
+          "condition": "AND",
           "sub_4_part_1": {
             "type": "static",
             "handler": "yara",
@@ -65,7 +65,7 @@
           },
           "sub_4_part_2": {
             "type": "static",
-            "handler": "yara",
+            "handler": "aaa",
             "signature": [
                 "subRuleSigTest5"
             ]
