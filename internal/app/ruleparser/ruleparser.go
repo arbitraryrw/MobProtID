@@ -128,9 +128,7 @@ func parseJSONRule(jsonRule map[string]interface{}) {
 		panic(err)
 	}
 
-	fmt.Println("[RULE DEBUG]", rule.Type)
-	fmt.Println("[RULE DEBUG]", rule.Handler)
-	fmt.Println("[RULE DEBUG]", rule.Signature)
+	fmt.Println("[RULE DEBUG]", rule)
 }
 
 type Rule struct {

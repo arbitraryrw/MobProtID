@@ -3,7 +3,7 @@
     "rules": [
       {
         "ruleName": "rootdetectionFiles",
-        "condition": "ALL",
+        "condition": "AND",
         "part_1": {
             "type": "static",
             "handler": "radare2",
@@ -18,7 +18,7 @@
       },
       {
         "ruleName": "emulatorDetectionFiles",
-        "condition": "ALL",
+        "condition": "AND",
         "part_1": {
             "type": "static",
             "handler": "radare2",
@@ -36,9 +36,26 @@
                 "emulatorSignature5",
                 "emulatorSignature6"
             ]
-        }
+        },
+          "part_3": {
+            "condition": "OR",
+            "sub_3_part_1": {
+              "type": "static",
+              "handler": "yara",
+              "signature": [
+                  "subRuleSigTest1"
+              ]
+            },
+            "sub_3_part_2": {
+              "type": "static",
+              "handler": "yara",
+              "signature": [
+                  "subRuleSigTest2"
+              ]
+            }
 
+        }
       }
+
     ]
-    
   }
