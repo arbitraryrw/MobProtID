@@ -28,33 +28,51 @@
                 "emulatorSignature3"
             ]
         },
-          "part_2": {
+        "part_2": {
+          "type": "static",
+          "handler": "yara",
+          "signature": [
+              "emulatorSignature4",
+              "emulatorSignature5",
+              "emulatorSignature6"
+          ]
+        },
+        "part_3": {
+          "condition": "OR",
+          "sub_3_part_1": {
             "type": "static",
             "handler": "yara",
             "signature": [
-                "emulatorSignature4",
-                "emulatorSignature5",
-                "emulatorSignature6"
+                "subRuleSigTest1"
             ]
+          },
+          "sub_3_part_2": {
+            "type": "static",
+            "handler": "yara",
+            "signature": [
+                "subRuleSigTest2"
+            ]
+          }
         },
-          "part_3": {
-            "condition": "OR",
-            "sub_3_part_1": {
-              "type": "static",
-              "handler": "yara",
-              "signature": [
-                  "subRuleSigTest1"
-              ]
-            },
-            "sub_3_part_2": {
-              "type": "static",
-              "handler": "yara",
-              "signature": [
-                  "subRuleSigTest2"
-              ]
-            }
-
+        "part_4": {
+          "condition": "OR",
+          "sub_4_part_1": {
+            "type": "static",
+            "handler": "yara",
+            "signature": [
+                "subRuleSigTest4"
+            ]
+          },
+          "sub_4_part_2": {
+            "type": "static",
+            "handler": "yara",
+            "signature": [
+                "subRuleSigTest5"
+            ]
+          }
         }
+
+
       }
 
     ]

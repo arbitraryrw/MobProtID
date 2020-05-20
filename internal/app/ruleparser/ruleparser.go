@@ -73,14 +73,12 @@ func parseUnstructuredJSON(haystack []interface{}) {
 			fmt.Println("[INFO] Original Rule", v)
 
 			for key, value := range v {
-
 				if strings.Contains(key, "part_") {
 					fmt.Println("[DEBUG] Rule -> ", key, reflect.TypeOf(value))
 
 					if rule, ok := value.(map[string]interface{}); ok {
 						parseJSONRule(rule)
 					}
-
 				}
 			}
 		}
@@ -93,6 +91,21 @@ func parseJSONRule(jsonRule map[string]interface{}) {
 	fmt.Println("\t", jsonRule)
 
 	var rule Rule
+
+	if val, ok := jsonRule["condition"]; ok {
+		fmt.Println("We have a condition sub rule!", val)
+		fmt.Println("We have a condition sub rule!", reflect.TypeOf(jsonRule["sub_3_part_1"]))
+		fmt.Println("We have a condition sub rule!", jsonRule)
+
+		for key, val := range jsonRule {
+			if strings.Contains(key, "part_") {
+
+				parseJSONRule(val.(map[string]interface{}))
+			}
+		}
+
+		return
+	}
 
 	if val, ok := jsonRule["type"]; ok {
 
