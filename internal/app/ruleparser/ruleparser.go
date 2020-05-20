@@ -64,24 +64,28 @@ func parseUnstructuredJSON(haystack []interface{}) {
 		if v, ok := value.(map[string]interface{}); ok {
 			fmt.Println("[INFO] Original Rule", v)
 
-			var condition string
+			fmt.Println("*********** FINAL RESULT:", parseJSONRule(v))
 
-			if condition, ok = v["condition"].(string); ok {
-				fmt.Println("Condition is", condition)
-			}
+			// var condition string
 
-			for key, value := range v {
+			// if condition, ok = v["condition"].(string); ok {
+			// 	fmt.Println("Condition is", condition)
+			// }
 
-				if strings.Contains(key, "part_") {
-					fmt.Println("[DEBUG] Rule -> ", key, value, condition)
+			// for key, value := range v {
 
-					if rule, ok := value.(map[string]interface{}); ok {
-						res := parseJSONRule(rule)
+			// 	fmt.Println("reeeeeeeeeeeeee", value)
 
-						fmt.Println("Rule returned", res, "\n\n")
-					}
-				}
-			}
+			// 	if strings.Contains(key, "part_") {
+			// 		fmt.Println("[DEBUG] Rule -> ", key, value, condition)
+
+			// 		if rule, ok := value.(map[string]interface{}); ok {
+			// 			res := parseJSONRule(rule)
+
+			// 			fmt.Println("Rule returned", res, "\n\n")
+			// 		}
+			// 	}
+			// }
 		}
 
 	}
@@ -101,15 +105,13 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 			if strings.Contains(key, "part_") {
 
 				res := parseJSONRule(val.(map[string]interface{}))
-
 				subResults = append(subResults, res)
 
 				fmt.Println("-------- RULE EVALUATED:", res)
-
 			}
 		}
 
-		fmt.Println("-------- FINAL RESULTS:", subResults)
+		// fmt.Println("************* FINAL RESULTS:", subResults)
 
 		if condition == "OR" {
 			for _, b := range subResults {

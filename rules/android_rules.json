@@ -21,7 +21,7 @@
         "condition": "AND",
         "part_1": {
             "type": "static",
-            "handler": "radare2",
+            "handler": "yara",
             "signature": [
                 "emulatorSignature1",
                 "emulatorSignature2",
@@ -38,7 +38,7 @@
           ]
         },
         "part_3": {
-          "condition": "AND",
+          "condition": "OR",
           "sub_3_part_1": {
             "type": "static",
             "handler": "yara",
@@ -55,7 +55,7 @@
           }
         },
         "part_4": {
-          "condition": "AND",
+          "condition": "OR",
           "sub_4_part_1": {
             "type": "static",
             "handler": "yara",
