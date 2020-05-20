@@ -92,11 +92,49 @@ func parseUnstructuredJSON(haystack []interface{}) {
 func parseJSONRule(jsonRule map[string]interface{}) {
 	fmt.Println("\t", jsonRule)
 
+	var rule Rule
+
 	if val, ok := jsonRule["type"]; ok {
-		fmt.Println("\tRule type", val)
+
+		if val, ok := val.(string); ok {
+			rule.Type = val
+		}
+
+	} else {
+		err := fmt.Sprintf("Could not parse rule, missing type in %q", jsonRule)
+		panic(err)
+	}
+
+	if val, ok := jsonRule["handler"]; ok {
+
+		if val, ok := val.(string); ok {
+			rule.Handler = val
+		}
+
+	} else {
+		err := fmt.Sprintf("Could not parse rule, missing handler in %q", jsonRule)
+		panic(err)
 	}
 
 	if val, ok := jsonRule["signature"]; ok {
-		fmt.Println("\tRule signatures", val)
+
+		if val, ok := val.([]interface{}); ok {
+
+			rule.Signature = val
+		}
+
+	} else {
+		err := fmt.Sprintf("Could not parse rule, missing signature in %q", jsonRule)
+		panic(err)
 	}
+
+	fmt.Println("[RULE DEBUG]", rule.Type)
+	fmt.Println("[RULE DEBUG]", rule.Handler)
+	fmt.Println("[RULE DEBUG]", rule.Signature)
+}
+
+type Rule struct {
+	Type      string
+	Handler   string
+	Signature []interface{}
 }

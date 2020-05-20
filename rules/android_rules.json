@@ -6,6 +6,7 @@
         "condition": "ALL",
         "part_1": {
             "type": "static",
+            "handler": "radare2",
             "signature": [
                 "/sbin/su",
                 "/system/bin/su",
