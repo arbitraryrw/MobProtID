@@ -70,26 +70,6 @@ func parseUnstructuredJSON(haystack []interface{}) {
 				fmt.Println("[RESULT] ", ruleName, parseJSONRule(v), "\n\n")
 			}
 
-			// var condition string
-
-			// if condition, ok = v["condition"].(string); ok {
-			// 	fmt.Println("Condition is", condition)
-			// }
-
-			// for key, value := range v {
-
-			// 	fmt.Println("reeeeeeeeeeeeee", value)
-
-			// 	if strings.Contains(key, "part_") {
-			// 		fmt.Println("[DEBUG] Rule -> ", key, value, condition)
-
-			// 		if rule, ok := value.(map[string]interface{}); ok {
-			// 			res := parseJSONRule(rule)
-
-			// 			fmt.Println("Rule returned", res, "\n\n")
-			// 		}
-			// 	}
-			// }
 		}
 
 	}
