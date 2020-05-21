@@ -8,11 +8,20 @@ import (
 
 func TestEvalRule(t *testing.T) {
 
-	var expect = "test"
-	var got = "test"
+	var expect = false
+	var r Rule
 
-	if expect == "dummy val" {
+	var sigs []interface{}
+	sigs = append(sigs, "test1", "test2", "test3")
+
+	r.Handler="test"
+	r.Signature=sigs
+	r.Type="test"
+
+	var got = evalRule(r)
+
+	if got != expect {
 		fmt.Println("Failed comparison!")
-		t.Errorf("Description() = %q; want %q", got, expect)
+		t.Errorf("evalRule() = %t; want %t", got, expect)
 	}
 }
