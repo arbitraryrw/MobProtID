@@ -36,52 +36,7 @@
               "emulatorSignature5",
               "emulatorSignature6"
           ]
-        },
-        "part_3": {
-          "condition": "OR",
-          "sub_3_part_1": {
-            "type": "static",
-            "handler": "yara",
-            "signature": [
-                "subRuleSigTest1"
-            ]
-          },
-          "sub_3_part_2": {
-            "type": "static",
-            "handler": "yara",
-            "signature": [
-                "subRuleSigTest2"
-            ]
-          }
-        },
-        "part_4": {
-          "condition": "AND",
-          "sub_4_part_1": {
-              "condition": "AND",
-              "sub_sub_4_part_1": {
-                "type": "static",
-                "handler": "yara",
-                "signature": [
-                    "subSubRuleCondition1"
-                ]
-              },
-              "sub_sub_4_part_2": {
-                "type": "static",
-                "handler": "yara",
-                "signature": [
-                    "subSubRuleCondition2"
-                ]
-              }
-          },
-          "sub_4_part_2": {
-            "type": "static",
-            "handler": "yara",
-            "signature": [
-                "subRuleSigTest5"
-            ]
-          }
         }
-
 
       }
 
