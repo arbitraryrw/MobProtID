@@ -64,7 +64,11 @@ func parseUnstructuredJSON(haystack []interface{}) {
 		if v, ok := value.(map[string]interface{}); ok {
 			fmt.Println("[INFO] Original Rule", v)
 
-			fmt.Println("*********** FINAL RESULT:", parseJSONRule(v))
+			if ruleName, ok := v["ruleName"]; ok {
+				fmt.Println("--- Beginning analysis of", ruleName, "---")
+
+				fmt.Println("[RESULT] ", ruleName, parseJSONRule(v), "\n\n")
+			}
 
 			// var condition string
 
@@ -93,7 +97,7 @@ func parseUnstructuredJSON(haystack []interface{}) {
 }
 
 func parseJSONRule(jsonRule map[string]interface{}) bool {
-	fmt.Println("\t[jsonrule]", jsonRule)
+	fmt.Println("\n[jsonrule]", jsonRule)
 
 	if condition, ok := jsonRule["condition"]; ok {
 
@@ -111,7 +115,7 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 			}
 		}
 
-		// fmt.Println("************* FINAL RESULTS:", subResults)
+		fmt.Println("************* BOOL ARRAY RESULTS:", subResults)
 
 		if condition == "OR" {
 			for _, b := range subResults {
