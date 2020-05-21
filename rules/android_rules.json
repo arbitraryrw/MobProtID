@@ -6,7 +6,7 @@
         "condition": "AND",
         "part_1": {
             "type": "static",
-            "handler": "radare2",
+            "handler": "yara",
             "signature": [
                 "/sbin/su",
                 "/system/bin/su",
@@ -55,17 +55,27 @@
           }
         },
         "part_4": {
-          "condition": "OR",
+          "condition": "AND",
           "sub_4_part_1": {
-            "type": "static",
-            "handler": "yara",
-            "signature": [
-                "subRuleSigTest4"
-            ]
+              "condition": "AND",
+              "sub_sub_4_part_1": {
+                "type": "static",
+                "handler": "yara",
+                "signature": [
+                    "subSubRuleCondition1"
+                ]
+              },
+              "sub_sub_4_part_2": {
+                "type": "static",
+                "handler": "yara",
+                "signature": [
+                    "subSubRuleCondition2"
+                ]
+              }
           },
           "sub_4_part_2": {
             "type": "static",
-            "handler": "aaa",
+            "handler": "yara",
             "signature": [
                 "subRuleSigTest5"
             ]
