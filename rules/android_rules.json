@@ -18,7 +18,7 @@
       },
       {
         "ruleName": "emulatorDetectionFiles",
-        "condition": "AND",
+        "condition": "OR",
         "part_1": {
             "type": "static",
             "handler": "yara",
@@ -30,7 +30,7 @@
         },
         "part_2": {
           "type": "static",
-          "handler": "yara",
+          "handler": "aaa",
           "signature": [
               "emulatorSignature4",
               "emulatorSignature5",

@@ -67,9 +67,8 @@ func parseUnstructuredJSON(haystack []interface{}) {
 			if ruleName, ok := v["ruleName"]; ok {
 				fmt.Println("--- Beginning analysis of", ruleName, "---")
 
-				fmt.Println("[RESULT] ", ruleName, parseJSONRule(v), "\n\n")
+				fmt.Println("[RESULT] ", ruleName, parseJSONRule(v))
 			}
-
 		}
 
 	}
@@ -82,7 +81,6 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 	if condition, ok := jsonRule["condition"]; ok {
 
 		condition = strings.ToUpper(condition.(string))
-
 		var subResults []bool
 
 		for key, val := range jsonRule {
@@ -103,7 +101,6 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 					return true
 				}
 			}
-
 			return false
 
 		} else if condition == "AND" {
@@ -112,7 +109,6 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 					return false
 				}
 			}
-
 			return true
 		}
 
@@ -149,12 +145,14 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 		return evalRule(rule)
 	}
 
+	// Redundant return but the compiler insists
 	return false
 }
 
 func evalRule(r Rule) bool {
 	fmt.Println("[INFO] Evaluating rule:", r)
 
+	// ToDo: Tie individual handler parsers into this logic
 	if r.Handler == "yara" {
 		return true
 	}
