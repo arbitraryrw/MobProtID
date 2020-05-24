@@ -14,9 +14,10 @@ func TestEvalRule(t *testing.T) {
 	var sigs []interface{}
 	sigs = append(sigs, "test1", "test2", "test3")
 
-	r.Handler="test"
-	r.Signature=sigs
-	r.Type="test"
+	r.Handler = "test"
+	r.MatchType = "test"
+	r.MatchValue = sigs
+	r.Type = "test"
 
 	var got = evalRule(r)
 
