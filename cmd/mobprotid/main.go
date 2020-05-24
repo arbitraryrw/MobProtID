@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	"github.com/arbitraryrw/MobProtID/internal/app/engine"
-	"github.com/arbitraryrw/MobProtID/internal/app/ruleparser"
 )
 
 func init() {
@@ -37,9 +36,6 @@ func main() {
 
 		if _, err := os.Stat(targetPath); err == nil {
 
-			ruleparser.ParseRuleFile()
-
-			return
 			engine.Start(targetPath)
 
 		} else {
