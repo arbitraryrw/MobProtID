@@ -2,7 +2,9 @@
 
     "rules": [
       {
+        "ruleId":"001",
         "ruleName": "rootdetectionFiles",
+        "description" : "Checks for the presence of the SU binaries statically",
         "condition": "AND",
         "part_1": {
             "type": "static",
@@ -17,7 +19,9 @@
 
       },
       {
+        "ruleId":"002",
         "ruleName": "emulatorDetectionFiles",
+        "description" : "Checks for the prence of Emulator strings",
         "condition": "OR",
         "part_1": {
             "type": "static",

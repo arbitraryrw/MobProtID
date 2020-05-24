@@ -64,10 +64,12 @@ func parseUnstructuredJSON(haystack []interface{}) {
 		if v, ok := value.(map[string]interface{}); ok {
 			fmt.Println("[INFO] Original Rule", v)
 
-			if ruleName, ok := v["ruleName"]; ok {
-				fmt.Println("--- Beginning analysis of", ruleName, "---")
+			var rName string
 
-				fmt.Println("[RESULT] ", ruleName, parseJSONRule(v))
+			if ruleName, ok := v["ruleName"].(string); ok {
+				fmt.Println("--- Beginning analysis of", ruleName, "---")
+				rName = ruleName
+				fmt.Println("[RESULT] eeee", rName, parseJSONRule(v))
 			}
 		}
 
