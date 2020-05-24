@@ -9,7 +9,8 @@
         "part_1": {
             "type": "static",
             "handler": "yara",
-            "signature": [
+            "matchType": "regex",
+            "matchValue": [
                 "/sbin/su",
                 "/system/bin/su",
                 "/system/bin/failsafe/su",
@@ -26,7 +27,8 @@
         "part_1": {
             "type": "static",
             "handler": "yara",
-            "signature": [
+            "matchType": "regex",
+            "matchValue": [
                 "emulatorSignature1",
                 "emulatorSignature2",
                 "emulatorSignature3"
@@ -35,7 +37,8 @@
         "part_2": {
           "type": "static",
           "handler": "aaa",
-          "signature": [
+          "matchType": "exact",
+          "matchValue": [
               "emulatorSignature4",
               "emulatorSignature5",
               "emulatorSignature6"

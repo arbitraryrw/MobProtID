@@ -145,14 +145,24 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 			panic(err)
 		}
 
-		if val, ok := jsonRule["signature"]; ok {
-			if val, ok := val.([]interface{}); ok {
-				rule.Signature = val
+		if val, ok := jsonRule["matchType"]; ok {
+			if val, ok := val.(string); ok {
+				rule.MatchType = val
 			}
 		} else {
-			err := fmt.Sprintf("Could not parse rule, missing signature in %q", jsonRule)
+			err := fmt.Sprintf("Could not parse rule, missing matchType in %q", jsonRule)
 			panic(err)
 		}
+
+		if val, ok := jsonRule["matchValue"]; ok {
+			if val, ok := val.([]interface{}); ok {
+				rule.MatchValue = val
+			}
+		} else {
+			err := fmt.Sprintf("Could not parse rule, missing MatchValue in %q", jsonRule)
+			panic(err)
+		}
+
 		// Evaluate the parsed rule
 		return evalRule(rule)
 	}
@@ -164,8 +174,14 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 func evalRule(r Rule) bool {
 	fmt.Println("[INFO] Evaluating rule:", r)
 
+	for _, i := range r.MatchValue {
+		fmt.Println("\t", i)
+	}
+
 	// ToDo: Tie individual handler parsers into this logic
 	if r.Handler == "yara" {
+		return true
+	} else if r.Handler == "radare2" {
 		return true
 	}
 
@@ -173,7 +189,8 @@ func evalRule(r Rule) bool {
 }
 
 type Rule struct {
-	Type      string
-	Handler   string
-	Signature []interface{}
+	Type       string
+	Handler    string
+	MatchType  string
+	MatchValue []interface{}
 }
