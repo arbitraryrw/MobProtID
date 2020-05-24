@@ -65,14 +65,24 @@ func parseUnstructuredJSON(haystack []interface{}) {
 			fmt.Println("[INFO] Original Rule", v)
 
 			var rName string
+			var rID string
+			var desc string
 
 			if ruleName, ok := v["ruleName"].(string); ok {
-				fmt.Println("--- Beginning analysis of", ruleName, "---")
 				rName = ruleName
-				fmt.Println("[RESULT] eeee", rName, parseJSONRule(v))
 			}
-		}
 
+			if ruleID, ok := v["ruleId"].(string); ok {
+				rID = ruleID
+			}
+
+			if description, ok := v["description"].(string); ok {
+				desc = description
+			}
+
+			fmt.Println("[RULE START] Starting to analyse:", rName, rID, desc)
+			fmt.Println("[RULE END]", rName, parseJSONRule(v))
+		}
 	}
 
 }
