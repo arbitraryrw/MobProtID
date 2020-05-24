@@ -290,3 +290,23 @@ func FindFilesInDir(needles []string, haystack string) []string {
 
 	return matchedFilePaths
 }
+
+func GetRuleFiles(partialOrFullName string) []string {
+	var ruleFiles []string
+	ruleDir := path.Join(GetProjectRootDir(), "rules/")
+
+	err := filepath.Walk(ruleDir, func(path string, info os.FileInfo, err error) error {
+
+		if strings.Contains(filepath.Base(path), partialOrFullName) {
+			ruleFiles = append(ruleFiles, path)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	return ruleFiles
+}

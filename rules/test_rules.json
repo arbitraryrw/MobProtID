@@ -6,6 +6,7 @@
       "part_1": {
           "type": "static",
           "handler": "yara",
+          "matchType": "regex",
           "signature": [
               "/sbin/su",
               "/system/bin/su",
@@ -21,6 +22,7 @@
       "part_1": {
           "type": "static",
           "handler": "yara",
+          "matchType": "regex", 
           "signature": [
               "emulatorSignature1",
               "emulatorSignature2",
@@ -29,7 +31,8 @@
       },
       "part_2": {
         "type": "static",
-        "handler": "aaa",
+        "handler": "yara",
+        "matchType": "regex",
         "signature": [
             "emulatorSignature4",
             "emulatorSignature5",
@@ -41,6 +44,7 @@
         "sub_3_part_1": {
           "type": "static",
           "handler": "yara",
+          "matchType": "regex",
           "signature": [
               "subRuleSigTest1"
           ]
@@ -48,6 +52,7 @@
         "sub_3_part_2": {
           "type": "static",
           "handler": "yara",
+          "matchType": "regex",
           "signature": [
               "subRuleSigTest2"
           ]
@@ -60,6 +65,7 @@
             "sub_sub_4_part_1": {
               "type": "static",
               "handler": "yara",
+              "matchType": "regex",
               "signature": [
                   "subSubRuleCondition1"
               ]
@@ -67,6 +73,7 @@
             "sub_sub_4_part_2": {
               "type": "static",
               "handler": "yara",
+              "matchType": "regex",
               "signature": [
                   "subSubRuleCondition2"
               ]
@@ -75,6 +82,7 @@
         "sub_4_part_2": {
           "type": "static",
           "handler": "yara",
+          "matchType": "regex",
           "signature": [
               "subRuleSigTest5"
           ]

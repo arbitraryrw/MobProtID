@@ -23,7 +23,7 @@
         "ruleId":"002",
         "ruleName": "emulatorDetectionFiles",
         "description" : "Checks for the prence of Emulator strings",
-        "condition": "OR",
+        "condition": "AND",
         "part_1": {
             "type": "static",
             "handler": "yara",
