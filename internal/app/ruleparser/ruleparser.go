@@ -137,6 +137,15 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 			panic(err)
 		}
 
+		if val, ok := jsonRule["invert"]; ok {
+			if val, ok := val.(bool); ok {
+				rule.Invert = val
+			}
+		} else {
+			// Default to false as this is optional
+			rule.Invert = false
+		}
+
 		if val, ok := jsonRule["matchValue"]; ok {
 			if val, ok := val.([]interface{}); ok {
 				rule.MatchValue = val
@@ -157,11 +166,6 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 func evalRule(r model.Rule) bool {
 	fmt.Println("[INFO] Evaluating rule:", r)
 
-	// for _, i := range r.MatchValue {
-	// 	fmt.Println("\t", i)
-	// }
-
-	// ToDo: Tie individual handler parsers into this logic
 	if r.Handler == "yara" {
 		return yarahandler.HandleRule(r)
 	} else if r.Handler == "radare2" {

@@ -10,7 +10,7 @@
             "type": "static",
             "handler": "yara",
             "matchType": "regex",
-            "invert" : "false",
+            "invert" : true,
             "matchValue": [
                 "/sbin/su",
                 "/system/bin/su",
@@ -27,9 +27,8 @@
         "condition": "AND",
         "part_1": {
             "type": "static",
-            "handler": "yara",
+            "handler": "radare2",
             "matchType": "regex",
-            "invert" : "false",
             "matchValue": [
                 "emulatorSignature1",
                 "emulatorSignature2",
@@ -38,9 +37,9 @@
         },
         "part_2": {
           "type": "static",
-          "handler": "aaa",
+          "handler": "dummyTestHandlerFail",
           "matchType": "exact",
-          "invert" : "false",
+          "invert" : true,
           "matchValue": [
               "emulatorSignature4",
               "emulatorSignature5",

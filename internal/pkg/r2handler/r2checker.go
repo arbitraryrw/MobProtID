@@ -14,6 +14,22 @@ var detectionAnalResults map[string]bool
 func HandleRule(r model.Rule) bool {
 	fmt.Println("[INFO] Handling rule: ", r)
 
+	matchType := r.MatchType
+	matchValue := r.MatchValue
+	ruleType := r.Type
+	invert := r.Invert
+
+	fmt.Println("[INFO] RuleType: ", ruleType)
+	fmt.Println("[INFO] Matching against: ", matchType)
+
+	for _, i := range matchValue {
+		fmt.Println("\t", i)
+	}
+
+	if invert {
+		//ToDO invert match
+	}
+
 	return true
 }
 
