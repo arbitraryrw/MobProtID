@@ -1,0 +1,65 @@
+{
+  "rules": [
+    {
+      "ruleId":"001",
+      "ruleName": "Single AND condition - pass",
+      "description" : "Success single AND condition",
+      "condition": "AND",
+      "part_1": {
+          "type": "static",
+          "handler": "dummyTestHandlerPass",
+          "matchType": "regex",
+          "matchValue": [
+              "value1",
+              "value2"
+          ]
+      }
+    },
+    {
+      "ruleId":"002",
+      "ruleName": "Single OR condition - pass",
+      "description" : "Success Check single OR condition",
+      "condition": "OR",
+      "part_1": {
+        "type": "static",
+        "handler": "dummyTestHandlerPass",
+        "matchType": "regex",
+        "matchValue": [
+            "value1",
+            "value2"
+        ]
+      }
+    },
+    {
+      "ruleId":"003",
+      "ruleName": "Single AND condition - fail",
+      "description" : "Success single AND condition",
+      "condition": "AND",
+      "part_1": {
+          "type": "static",
+          "handler": "dummyTestHandlerFail",
+          "matchType": "regex",
+          "matchValue": [
+              "value1",
+              "value2"
+          ]
+      }
+    },
+    {
+      "ruleId":"004",
+      "ruleName": "Single OR condition - fail",
+      "description" : "Success Check single OR condition",
+      "condition": "OR",
+      "part_1": {
+        "type": "static",
+        "handler": "dummyTestHandlerFail",
+        "matchType": "regex",
+        "matchValue": [
+            "value1",
+            "value2"
+        ]
+      }
+    }
+    
+  ]
+}

@@ -153,14 +153,16 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 func evalRule(r Rule) bool {
 	fmt.Println("[INFO] Evaluating rule:", r)
 
-	for _, i := range r.MatchValue {
-		fmt.Println("\t", i)
-	}
+	// for _, i := range r.MatchValue {
+	// 	fmt.Println("\t", i)
+	// }
 
 	// ToDo: Tie individual handler parsers into this logic
 	if r.Handler == "yara" {
 		return true
 	} else if r.Handler == "radare2" {
+		return true
+	} else if r.Handler == "dummyTestHandlerPass" {
 		return true
 	}
 
