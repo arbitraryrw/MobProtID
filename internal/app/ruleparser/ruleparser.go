@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/arbitraryrw/MobProtID/internal/pkg/model"
 )
 
 func ParseRuleFile(ruleFiles []string) {
@@ -29,14 +31,14 @@ func ParseRuleFile(ruleFiles []string) {
 		json.Unmarshal([]byte(byteValue), &result)
 
 		if res, ok := result["rules"].([]interface{}); ok {
-			parseUnstructuredJSON(res)
+			parseUnstructuredRuleJSON(res)
 		}
 
 	}
 
 }
 
-func parseUnstructuredJSON(haystack []interface{}) {
+func parseUnstructuredRuleJSON(haystack []interface{}) {
 
 	for _, value := range haystack {
 
@@ -104,7 +106,7 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 		}
 
 	} else {
-		var rule Rule
+		var rule model.Rule
 
 		if val, ok := jsonRule["type"]; ok {
 			if val, ok := val.(string); ok {
@@ -150,7 +152,7 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 	return false
 }
 
-func evalRule(r Rule) bool {
+func evalRule(r model.Rule) bool {
 	fmt.Println("[INFO] Evaluating rule:", r)
 
 	// for _, i := range r.MatchValue {
@@ -167,11 +169,4 @@ func evalRule(r Rule) bool {
 	}
 
 	return false
-}
-
-type Rule struct {
-	Type       string
-	Handler    string
-	MatchType  string
-	MatchValue []interface{}
 }

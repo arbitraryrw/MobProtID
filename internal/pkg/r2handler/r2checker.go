@@ -5,9 +5,15 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/arbitraryrw/MobProtID/internal/pkg/model"
 )
 
 var detectionAnalResults map[string]bool
+
+func HandleRule(r model.Rule) {
+	fmt.Println("[INFO] Handling rule: ", r)
+}
 
 //Anal - analyses the information gathered by r2
 func Anal() map[string]bool {

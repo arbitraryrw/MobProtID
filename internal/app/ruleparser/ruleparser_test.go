@@ -5,11 +5,12 @@ import (
 
 	"testing"
 
+	"github.com/arbitraryrw/MobProtID/internal/pkg/model"
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
 
 func TestParseRuleFile(t *testing.T) {
-	t.Log("ayyy")
+	t.Log("[DEBUG] Running..")
 
 	var expect = false
 	var got = false
@@ -27,7 +28,7 @@ func TestParseRuleFile(t *testing.T) {
 
 func TestEvalRulePositive(t *testing.T) {
 	var expect = true
-	var r Rule
+	var r model.Rule
 
 	var sigs []interface{}
 	sigs = append(sigs, "test1", "test2", "test3")
@@ -47,7 +48,7 @@ func TestEvalRulePositive(t *testing.T) {
 
 func TestEvalRuleNegative(t *testing.T) {
 	var expect = false
-	var r Rule
+	var r model.Rule
 
 	var sigs []interface{}
 	sigs = append(sigs, "test1", "test2", "test3")
