@@ -11,8 +11,10 @@ import (
 
 var detectionAnalResults map[string]bool
 
-func HandleRule(r model.Rule) {
+func HandleRule(r model.Rule) bool {
 	fmt.Println("[INFO] Handling rule: ", r)
+
+	return true
 }
 
 //Anal - analyses the information gathered by r2

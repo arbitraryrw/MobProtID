@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/model"
+	"github.com/arbitraryrw/MobProtID/internal/pkg/r2handler"
+	"github.com/arbitraryrw/MobProtID/internal/pkg/yarahandler"
 )
 
 func ParseRuleFile(ruleFiles []string) {
@@ -161,9 +163,9 @@ func evalRule(r model.Rule) bool {
 
 	// ToDo: Tie individual handler parsers into this logic
 	if r.Handler == "yara" {
-		return true
+		return yarahandler.HandleRule(r)
 	} else if r.Handler == "radare2" {
-		return true
+		return r2handler.HandleRule(r)
 	} else if r.Handler == "dummyTestHandlerPass" {
 		return true
 	}

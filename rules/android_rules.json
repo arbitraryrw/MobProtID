@@ -10,6 +10,7 @@
             "type": "static",
             "handler": "yara",
             "matchType": "regex",
+            "invert" : "false",
             "matchValue": [
                 "/sbin/su",
                 "/system/bin/su",
@@ -28,6 +29,7 @@
             "type": "static",
             "handler": "yara",
             "matchType": "regex",
+            "invert" : "false",
             "matchValue": [
                 "emulatorSignature1",
                 "emulatorSignature2",
@@ -38,6 +40,7 @@
           "type": "static",
           "handler": "aaa",
           "matchType": "exact",
+          "invert" : "false",
           "matchValue": [
               "emulatorSignature4",
               "emulatorSignature5",
