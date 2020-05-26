@@ -11,7 +11,7 @@ import (
 
 var detectionAnalResults map[string]bool
 
-func HandleRule(r model.Rule) bool {
+func HandleRule(r model.Rule) (bool, []map[string]string) {
 	fmt.Println("[INFO] Handling rule: ", r)
 
 	matchType := r.MatchType
@@ -22,15 +22,29 @@ func HandleRule(r model.Rule) bool {
 	fmt.Println("[INFO] RuleType: ", ruleType)
 	fmt.Println("[INFO] Matching against: ", matchType)
 
-	for _, i := range matchValue {
-		fmt.Println("\t", i)
-	}
+	var evidence []map[string]string
 
-	if invert {
+	for _, val := range matchValue {
+		match := make(map[string]string, 0)
+
+		match["offset"] = "0x1"
+		match["name"] = val.(string)
+
 		//ToDO invert match
+		if invert {
+		}
+
+		if len(match) > 0 {
+			evidence = append(evidence, match)
+		}
 	}
 
-	return true
+	if len(evidence) > 0 {
+		return true, evidence
+	} else {
+		return false, evidence
+	}
+
 }
 
 //Anal - analyses the information gathered by r2

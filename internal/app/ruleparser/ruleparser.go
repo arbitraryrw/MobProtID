@@ -169,7 +169,11 @@ func evalRule(r model.Rule) bool {
 	if r.Handler == "yara" {
 		return yarahandler.HandleRule(r)
 	} else if r.Handler == "radare2" {
-		return r2handler.HandleRule(r)
+
+		res, evidence := r2handler.HandleRule(r)
+		fmt.Println("Evidence from rule", evidence)
+		return res
+
 	} else if r.Handler == "dummyTestHandlerPass" {
 		return true
 	}
