@@ -157,32 +157,43 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 		}
 
 		// Evaluate the parsed rule
-		boolRes, _ := evalRule(rule)
-		return boolRes
+		res := evalRule(rule)
+
+		fmt.Println("Evidence from rule", res)
+		return res.Match
 	}
 
 	// Redundant return but the compiler insists
 	return false
 }
 
-func evalRule(r model.Rule) (bool, []model.Evidence) {
+func evalRule(r model.Rule) model.RuleResult {
 	fmt.Println("[INFO] Evaluating rule:", r)
 
 	var evidence []model.Evidence
+	var ruleResult model.RuleResult
 
 	if r.Handler == "yara" {
 
-		return yarahandler.HandleRule(r), evidence
+		ruleResult.Match = yarahandler.HandleRule(r)
+		ruleResult.Evidence = evidence
+
+		return ruleResult
 
 	} else if r.Handler == "radare2" {
 
-		b, e := r2handler.HandleRule(r)
-		fmt.Println("Evidence from rule", e)
-		return b, e
+		return r2handler.HandleRule(r)
 
 	} else if r.Handler == "dummyTestHandlerPass" {
-		return true, evidence
+
+		ruleResult.Match = true
+		ruleResult.Evidence = evidence
+
+		return ruleResult
 	}
 
-	return false, evidence
+	ruleResult.Match = false
+	ruleResult.Evidence = evidence
+
+	return ruleResult
 }

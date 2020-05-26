@@ -12,3 +12,8 @@ type Evidence struct {
 	Name   string
 	Offset string
 }
+
+type RuleResult struct {
+	Match    bool
+	Evidence []Evidence
+}

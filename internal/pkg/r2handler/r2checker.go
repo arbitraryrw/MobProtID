@@ -11,7 +11,7 @@ import (
 
 var detectionAnalResults map[string]bool
 
-func HandleRule(r model.Rule) (bool, []model.Evidence) {
+func HandleRule(r model.Rule) model.RuleResult {
 	fmt.Println("[INFO] Handling rule: ", r)
 
 	matchType := r.MatchType
@@ -41,10 +41,15 @@ func HandleRule(r model.Rule) (bool, []model.Evidence) {
 
 	}
 
+	var ruleResult model.RuleResult
+	ruleResult.Evidence = evidenceInstances
+
 	if len(evidenceInstances) > 0 {
-		return true, evidenceInstances
+		ruleResult.Match = true
+		return ruleResult
 	} else {
-		return false, evidenceInstances
+		ruleResult.Match = false
+		return ruleResult
 	}
 
 }
