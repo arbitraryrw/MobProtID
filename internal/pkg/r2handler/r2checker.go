@@ -29,6 +29,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 		evidence.Name = val.(string)
 		evidence.Offset = "0x1"
+		evidence.RuleName = r.Name
 
 		//ToDO invert match
 		if invert {

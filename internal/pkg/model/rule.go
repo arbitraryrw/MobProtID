@@ -1,6 +1,7 @@
 package model
 
 type Rule struct {
+	Name       string
 	Type       string
 	Handler    string
 	Invert     bool
@@ -9,8 +10,9 @@ type Rule struct {
 }
 
 type Evidence struct {
-	Name   string
-	Offset string
+	RuleName string
+	Name     string
+	Offset   string
 }
 
 type RuleResult struct {

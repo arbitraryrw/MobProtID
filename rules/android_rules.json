@@ -1,5 +1,4 @@
 {
-
     "rules": [
       {
         "ruleId":"001",
@@ -37,7 +36,7 @@
         },
         "part_2": {
           "type": "static",
-          "handler": "dummyTestHandlerFail",
+          "handler": "dummyTestHandlerPass",
           "matchType": "exact",
           "invert" : true,
           "matchValue": [

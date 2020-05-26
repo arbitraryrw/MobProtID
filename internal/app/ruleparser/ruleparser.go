@@ -64,24 +64,24 @@ func parseUnstructuredRuleJSON(haystack []interface{}) {
 			}
 
 			fmt.Println("[RULE START] Starting to analyse:", rName, rID, desc)
-			fmt.Println("[RULE END]", rName, parseJSONRule(v))
+			fmt.Println("[RULE END]", rName, parseJSONRule(v, rName))
 		}
 	}
 
 }
 
-func parseJSONRule(jsonRule map[string]interface{}) bool {
+func parseJSONRule(jsonRule map[string]interface{}, ruleName string) model.RuleResult {
 	fmt.Println("\n[jsonrule]", jsonRule)
 
 	if condition, ok := jsonRule["condition"]; ok {
 
 		condition = strings.ToUpper(condition.(string))
-		var subResults []bool
+		var subResults []model.RuleResult
 
 		for key, val := range jsonRule {
 			if strings.Contains(key, "part_") {
 
-				res := parseJSONRule(val.(map[string]interface{}))
+				res := parseJSONRule(val.(map[string]interface{}), key)
 				subResults = append(subResults, res)
 
 				fmt.Println("-------- RULE", key, "EVALUATED:", res)
@@ -90,26 +90,38 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 
 		fmt.Println("************* BOOL ARRAY RESULTS:", subResults)
 
+		var res model.RuleResult
+
 		if condition == "OR" {
 			for _, b := range subResults {
-				if b {
-					return true
+				if b.Match {
+					res.Match = true
+					res.Evidence = append(res.Evidence, b.Evidence...)
 				}
 			}
-			return false
+
+			if res.Match {
+				return res
+			}
+
+			return model.RuleResult{}
 
 		} else if condition == "AND" {
-
 			for _, b := range subResults {
-				if !b {
-					return false
+				if !b.Match {
+					return model.RuleResult{}
 				}
+				res.Evidence = append(res.Evidence, b.Evidence...)
 			}
-			return true
+
+			res.Match = true
+			return res
 		}
 
 	} else {
 		var rule model.Rule
+
+		rule.Name = ruleName
 
 		if val, ok := jsonRule["type"]; ok {
 			if val, ok := val.(string); ok {
@@ -158,13 +170,12 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 
 		// Evaluate the parsed rule
 		res := evalRule(rule)
-
-		fmt.Println("Evidence from rule", res)
-		return res.Match
+		// fmt.Println("[DEBUG] Evidence from rule", res)
+		return res
 	}
 
 	// Redundant return but the compiler insists
-	return false
+	return model.RuleResult{}
 }
 
 func evalRule(r model.Rule) model.RuleResult {
@@ -185,8 +196,15 @@ func evalRule(r model.Rule) model.RuleResult {
 		return r2handler.HandleRule(r)
 
 	} else if r.Handler == "dummyTestHandlerPass" {
-
 		ruleResult.Match = true
+
+		var e model.Evidence
+
+		e.Name = "dummyMatch"
+		e.Offset = "0x00000001"
+		e.RuleName = r.Name
+
+		evidence = append(evidence, e)
 		ruleResult.Evidence = evidence
 
 		return ruleResult
