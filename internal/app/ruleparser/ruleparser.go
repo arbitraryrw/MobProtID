@@ -84,7 +84,7 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 				res := parseJSONRule(val.(map[string]interface{}))
 				subResults = append(subResults, res)
 
-				fmt.Println("-------- RULE EVALUATED:", res)
+				fmt.Println("-------- RULE", key, "EVALUATED:", res)
 			}
 		}
 
@@ -99,6 +99,7 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 			return false
 
 		} else if condition == "AND" {
+
 			for _, b := range subResults {
 				if !b {
 					return false
@@ -156,27 +157,32 @@ func parseJSONRule(jsonRule map[string]interface{}) bool {
 		}
 
 		// Evaluate the parsed rule
-		return evalRule(rule)
+		boolRes, _ := evalRule(rule)
+		return boolRes
 	}
 
 	// Redundant return but the compiler insists
 	return false
 }
 
-func evalRule(r model.Rule) bool {
+func evalRule(r model.Rule) (bool, []model.Evidence) {
 	fmt.Println("[INFO] Evaluating rule:", r)
 
+	var evidence []model.Evidence
+
 	if r.Handler == "yara" {
-		return yarahandler.HandleRule(r)
+
+		return yarahandler.HandleRule(r), evidence
+
 	} else if r.Handler == "radare2" {
 
-		res, evidence := r2handler.HandleRule(r)
-		fmt.Println("Evidence from rule", evidence)
-		return res
+		b, e := r2handler.HandleRule(r)
+		fmt.Println("Evidence from rule", e)
+		return b, e
 
 	} else if r.Handler == "dummyTestHandlerPass" {
-		return true
+		return true, evidence
 	}
 
-	return false
+	return false, evidence
 }

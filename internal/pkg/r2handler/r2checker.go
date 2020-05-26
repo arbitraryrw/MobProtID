@@ -11,7 +11,7 @@ import (
 
 var detectionAnalResults map[string]bool
 
-func HandleRule(r model.Rule) (bool, []map[string]string) {
+func HandleRule(r model.Rule) (bool, []model.Evidence) {
 	fmt.Println("[INFO] Handling rule: ", r)
 
 	matchType := r.MatchType
@@ -22,27 +22,29 @@ func HandleRule(r model.Rule) (bool, []map[string]string) {
 	fmt.Println("[INFO] RuleType: ", ruleType)
 	fmt.Println("[INFO] Matching against: ", matchType)
 
-	var evidence []map[string]string
+	var evidenceInstances []model.Evidence
 
 	for _, val := range matchValue {
-		match := make(map[string]string, 0)
+		var evidence model.Evidence
 
-		match["offset"] = "0x1"
-		match["name"] = val.(string)
+		evidence.Name = val.(string)
+		evidence.Offset = "0x1"
 
 		//ToDO invert match
 		if invert {
 		}
 
-		if len(match) > 0 {
-			evidence = append(evidence, match)
+		// Check if the evidence struct has been populated
+		if (model.Evidence{}) != evidence {
+			evidenceInstances = append(evidenceInstances, evidence)
 		}
+
 	}
 
-	if len(evidence) > 0 {
-		return true, evidence
+	if len(evidenceInstances) > 0 {
+		return true, evidenceInstances
 	} else {
-		return false, evidence
+		return false, evidenceInstances
 	}
 
 }

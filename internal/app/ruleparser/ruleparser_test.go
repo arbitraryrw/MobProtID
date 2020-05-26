@@ -38,7 +38,7 @@ func TestEvalRulePositive(t *testing.T) {
 	r.MatchValue = sigs
 	r.Type = "test"
 
-	var got = evalRule(r)
+	var got, _ = evalRule(r)
 
 	if got != expect {
 		fmt.Println("Failed comparison!")
@@ -58,7 +58,7 @@ func TestEvalRuleNegative(t *testing.T) {
 	r.MatchValue = sigs
 	r.Type = "test"
 
-	var got = evalRule(r)
+	var got, _ = evalRule(r)
 
 	if got != expect {
 		fmt.Println("Failed comparison!")

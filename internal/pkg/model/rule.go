@@ -7,3 +7,8 @@ type Rule struct {
 	MatchType  string
 	MatchValue []interface{}
 }
+
+type Evidence struct {
+	Name   string
+	Offset string
+}
