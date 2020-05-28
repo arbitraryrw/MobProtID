@@ -4,7 +4,7 @@
 [![Go Doc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](http://godoc.org/github.com/arbitraryrw/MobProtID)
 [![Release](https://img.shields.io/github/release/golang-standards/project-layout.svg?style=flat-square)](https://github.com/arbitraryrw/MobProtID/releases/latest)
 
-A simple Mobile Analysis POC tool to practice programming in [golang](https://golang.org/doc/code.html).
+A simple Mobile Analysis tool to practice programming in [golang](https://golang.org/doc/code.html). Currently MobProtID supports static analysis of Android and iOS binaries for RASP protections.
 
 ### Usage
 Run the compiled binary and specify a target binary to analyse as seen below:
