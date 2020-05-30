@@ -41,7 +41,8 @@ func Start(bp string) {
 	}
 
 	fmt.Println("RULE FILES ->", rules)
-	ruleparser.ParseRuleFile(rules)
+	ruleResults := ruleparser.ParseRuleFile(rules)
+	fmt.Println("[INFO] All Rule Files Results", ruleResults)
 
 	return
 

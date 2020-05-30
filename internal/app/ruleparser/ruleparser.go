@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/model"
@@ -12,7 +13,9 @@ import (
 	"github.com/arbitraryrw/MobProtID/internal/pkg/yarahandler"
 )
 
-func ParseRuleFile(ruleFiles []string) {
+func ParseRuleFile(ruleFiles []string) map[string][]model.RuleResult {
+
+	ruleFilesResults := make(map[string][]model.RuleResult, 0)
 
 	for _, file := range ruleFiles {
 		fmt.Println("[INFO] Analysing rule file:", file)
@@ -32,12 +35,14 @@ func ParseRuleFile(ruleFiles []string) {
 
 		json.Unmarshal([]byte(byteValue), &result)
 
-		if res, ok := result["rules"].([]interface{}); ok {
-			fmt.Println("Total result:", parseUnstructuredRuleJSON(res))
-		}
+		baseRuleFileName := filepath.Base(file)
 
+		if res, ok := result["rules"].([]interface{}); ok {
+			ruleFilesResults[baseRuleFileName] = parseUnstructuredRuleJSON(res)
+		}
 	}
 
+	return ruleFilesResults
 }
 
 func parseUnstructuredRuleJSON(haystack []interface{}) []model.RuleResult {
