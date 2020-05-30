@@ -15,6 +15,50 @@ func TestParseRuleFile(t *testing.T) {
 	t.Log("[DEBUG] Running..")
 
 	var file = "advanced_test_rules.json"
+
+	rules := utils.GetRuleFiles(file)
+	ruleFileResults := ParseRuleFile(rules)
+
+	for _, ruleResults := range ruleFileResults {
+
+		for _, resultBundle := range ruleResults {
+
+			expectDesc := "Check single OR condition"
+			if resultBundle.Description != expectDesc {
+				t.Errorf("TestParseRuleFile() = rule description missmatch: got %q; want %q",
+					resultBundle.Description,
+					expectDesc)
+			}
+
+			expectRuleID := "001"
+			if resultBundle.RuleID != expectRuleID {
+				t.Errorf("TestParseRuleFile() = rule ID missmatch: got %q; want %q",
+					resultBundle.RuleID,
+					expectRuleID)
+			}
+
+			expectRuleName := "Complex nested rule"
+			if resultBundle.RuleName != expectRuleName {
+				t.Errorf("TestParseRuleFile() = rule Name missmatch: got %q; want %q",
+					resultBundle.RuleName,
+					expectRuleName)
+			}
+
+			expectMatch := true
+			if expectMatch != resultBundle.Match {
+				t.Errorf("TestParseRuleFile() = rule Match missmatch: got %t; want %t",
+					resultBundle.Match,
+					expectMatch)
+			}
+		}
+	}
+
+}
+
+func TestParseRuleFileStructure(t *testing.T) {
+	t.Log("[DEBUG] Running..")
+
+	var file = "advanced_test_rules.json"
 	var got = false
 	var expect = true
 
@@ -37,6 +81,7 @@ func TestParseRuleFile(t *testing.T) {
 		fmt.Println("Failed comparison!")
 		t.Errorf("TestParseRuleFile() = %t; want %t", got, expect)
 	}
+
 }
 
 func TestEvalRulePositive(t *testing.T) {
