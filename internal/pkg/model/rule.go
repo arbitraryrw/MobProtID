@@ -16,6 +16,9 @@ type Evidence struct {
 }
 
 type RuleResult struct {
-	Match    bool
-	Evidence []Evidence
+	Match       bool
+	Evidence    []Evidence
+	RuleName    string
+	RuleID      string
+	Description string
 }

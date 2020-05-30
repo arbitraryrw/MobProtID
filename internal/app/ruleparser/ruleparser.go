@@ -33,16 +33,18 @@ func ParseRuleFile(ruleFiles []string) {
 		json.Unmarshal([]byte(byteValue), &result)
 
 		if res, ok := result["rules"].([]interface{}); ok {
-			parseUnstructuredRuleJSON(res)
+			fmt.Println("Total result:", parseUnstructuredRuleJSON(res))
 		}
 
 	}
 
 }
 
-func parseUnstructuredRuleJSON(haystack []interface{}) []model.RuleResult {
+func parseUnstructuredRuleJSON(haystack []interface{}) map[string]model.RuleResult {
 
-	var results []model.RuleResult
+	var results map[string]model.RuleResult
+
+	results = make(map[string]model.RuleResult, 0)
 
 	for _, value := range haystack {
 
@@ -71,7 +73,7 @@ func parseUnstructuredRuleJSON(haystack []interface{}) []model.RuleResult {
 
 			fmt.Println("[RULE END]", rName, ruleResult)
 
-			results = append(results, ruleResult)
+			results[rName] = ruleResult
 		}
 	}
 
