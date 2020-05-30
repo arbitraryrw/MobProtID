@@ -50,6 +50,35 @@ func TestParseRuleFile(t *testing.T) {
 					resultBundle.Match,
 					expectMatch)
 			}
+
+			expectEvidenceLen := 5
+
+			if len(resultBundle.Evidence) != 5 {
+				t.Errorf("TestParseRuleFile() = rule Evidence 0 missmatch: got %q ; want %q",
+					len(resultBundle.Evidence),
+					expectEvidenceLen)
+			}
+
+			// Ordered list of which rules should provide an evidence struct
+			expectedRuleNameInOrder := [5]string{
+				"part_1",
+				"sub_2_part_1",
+				"sub_2_part_2",
+				"sub_sub_3_part_2",
+				"sub_3_part_2"}
+
+			// Itterate over each piece of evidence
+			for i, e := range resultBundle.Evidence {
+
+				// If the sub-rule part name doesn't match what is expected then fail
+				if e.RuleName != expectedRuleNameInOrder[i] {
+					t.Errorf("TestParseRuleFile() = rule Evidence missmatch: got %q ; want %q",
+						e.RuleName,
+						expectedRuleNameInOrder[i])
+				}
+
+			}
+
 		}
 	}
 

@@ -226,6 +226,7 @@ func evalRule(r model.Rule) model.RuleResult {
 		e.RuleName = r.Name
 
 		evidence = append(evidence, e)
+
 		ruleResult.Evidence = evidence
 
 		return ruleResult
