@@ -39,6 +39,10 @@ func ParseRuleFile(ruleFiles []string) map[string][]model.RuleResult {
 
 		if res, ok := result["rules"].([]interface{}); ok {
 			ruleFilesResults[baseRuleFileName] = parseUnstructuredRuleJSON(res)
+		} else {
+			panic(fmt.Sprintf(
+				"Unable to parse rule file %s, no \"rules\" attribute found.",
+				file))
 		}
 	}
 

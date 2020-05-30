@@ -2,6 +2,8 @@ package ruleparser
 
 import (
 	"fmt"
+	"reflect"
+	"strings"
 
 	"testing"
 
@@ -12,17 +14,28 @@ import (
 func TestParseRuleFile(t *testing.T) {
 	t.Log("[DEBUG] Running..")
 
-	var expect = false
+	var file = "advanced_test_rules.json"
 	var got = false
+	var expect = true
 
-	// rules := utils.GetRuleFiles("simple_test_rules.json")
-	rules := utils.GetRuleFiles("advanced_test_rules.json")
+	rules := utils.GetRuleFiles(file)
+	rulesResults := ParseRuleFile(rules)
 
-	ParseRuleFile(rules)
+	parsedRuleFileName := reflect.ValueOf(rulesResults).MapKeys()
+
+	if len(parsedRuleFileName) > 0 {
+		for _, key := range parsedRuleFileName {
+			if strings.Compare(key.String(), file) == 0 {
+				got = true
+			}
+		}
+	} else {
+		t.Errorf("TestParseRuleFile() = no items in rule response")
+	}
 
 	if got != expect {
 		fmt.Println("Failed comparison!")
-		t.Errorf("evalRule() = %t; want %t", got, expect)
+		t.Errorf("TestParseRuleFile() = %t; want %t", got, expect)
 	}
 }
 
