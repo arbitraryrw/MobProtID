@@ -3,6 +3,7 @@ package r2handler
 import (
 	"fmt"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -32,6 +33,22 @@ func HandleRule(r model.Rule) model.RuleResult {
 		tmpSearchData := "aa123emulatorSignature1abc1"
 
 		var matches []string
+
+		if strings.ToLower(ruleType) == "strings" {
+			//string search binary
+
+			fmt.Println("strings rule ->", reflect.TypeOf(allStringsInBinary))
+		} else if strings.ToLower(ruleType) == "symbols" {
+			//symbols search binary
+		} else if strings.ToLower(ruleType) == "syscalls" {
+			//syscalls search binary
+		} else if strings.ToLower(ruleType) == "binaryInfo" {
+			//binaryInfo search binary
+		} else if strings.ToLower(ruleType) == "classesAndFunctions" {
+			//classesAndFunctions search binary
+		} else {
+			panic(fmt.Sprintf("[ERROR] Unknown rule type %q in %q", r.Type, r.Name))
+		}
 
 		if strings.ToLower(matchType) == "regex" {
 			r, _ := regexp.Compile(val.(string))

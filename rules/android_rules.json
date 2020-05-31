@@ -25,7 +25,7 @@
         "description" : "Checks for the prence of Emulator strings",
         "condition": "AND",
         "part_1": {
-            "type": "static",
+            "type": "strings",
             "handler": "radare2",
             "matchType": "regex",
             "matchValue": [
