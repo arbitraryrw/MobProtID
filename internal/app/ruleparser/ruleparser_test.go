@@ -23,6 +23,10 @@ func TestParseRuleFile(t *testing.T) {
 
 		for _, resultBundle := range ruleResults {
 
+			if resultBundle.RuleID != "001" {
+				continue
+			}
+
 			expectDesc := "Check single OR condition"
 			if resultBundle.Description != expectDesc {
 				t.Errorf("TestParseRuleFile() = rule description missmatch: got %q; want %q",
@@ -69,14 +73,12 @@ func TestParseRuleFile(t *testing.T) {
 
 			// Itterate over each piece of evidence
 			for i, e := range resultBundle.Evidence {
-
 				// If the sub-rule part name doesn't match what is expected then fail
 				if e.RuleName != expectedRuleNameInOrder[i] {
 					t.Errorf("TestParseRuleFile() = rule Evidence missmatch: got %q ; want %q",
 						e.RuleName,
 						expectedRuleNameInOrder[i])
 				}
-
 			}
 
 		}

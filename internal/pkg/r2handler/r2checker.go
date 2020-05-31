@@ -3,6 +3,8 @@ package r2handler
 import (
 	"fmt"
 	"path/filepath"
+	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -30,6 +32,20 @@ func HandleRule(r model.Rule) model.RuleResult {
 		evidence.Name = val.(string)
 		evidence.Offset = "0x1"
 		evidence.RuleName = r.Name
+
+		tmpSearchData := "aa123emulatorSignature1abc1"
+
+		if strings.ToLower(matchType) == "regex" {
+			r, _ := regexp.Compile(val.(string))
+
+			if r.MatchString(tmpSearchData) {
+				match := r.FindString(tmpSearchData)
+				fmt.Println("[DEBUG] REGEX MATCH ->", reflect.TypeOf(match))
+			}
+
+		} else if strings.ToLower(matchType) == "exact" {
+			//todo
+		}
 
 		//ToDO invert match
 		if invert {
