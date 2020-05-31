@@ -3,7 +3,6 @@ package r2handler
 import (
 	"fmt"
 	"path/filepath"
-	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -21,39 +20,43 @@ func HandleRule(r model.Rule) model.RuleResult {
 	ruleType := r.Type
 	invert := r.Invert
 
+	regexMatchLimit := 25
+
 	fmt.Println("[INFO] RuleType: ", ruleType)
 	fmt.Println("[INFO] Matching against: ", matchType)
 
 	var evidenceInstances []model.Evidence
 
 	for _, val := range matchValue {
-		var evidence model.Evidence
-
-		evidence.Name = val.(string)
-		evidence.Offset = "0x1"
-		evidence.RuleName = r.Name
-
+		// ToDo -- Replace with actual binary data
 		tmpSearchData := "aa123emulatorSignature1abc1"
+
+		var matches []string
 
 		if strings.ToLower(matchType) == "regex" {
 			r, _ := regexp.Compile(val.(string))
 
 			if r.MatchString(tmpSearchData) {
-				match := r.FindString(tmpSearchData)
-				fmt.Println("[DEBUG] REGEX MATCH ->", reflect.TypeOf(match))
+				matches = r.FindAllString(tmpSearchData, regexMatchLimit)
 			}
 
 		} else if strings.ToLower(matchType) == "exact" {
 			//todo
 		}
 
-		//ToDO invert match
-		if invert {
-		}
+		fmt.Println("[DEBUG] REGEX MATCH ->", matches)
 
-		// Check if the evidence struct has been populated
-		if (model.Evidence{}) != evidence {
-			evidenceInstances = append(evidenceInstances, evidence)
+		for _, m := range matches {
+			var evidence model.Evidence
+
+			evidence.Name = m
+			evidence.Offset = "0x1"
+			evidence.RuleName = r.Name
+
+			// Check if the evidence struct has been populated
+			if (model.Evidence{}) != evidence {
+				evidenceInstances = append(evidenceInstances, evidence)
+			}
 		}
 
 	}
@@ -62,13 +65,21 @@ func HandleRule(r model.Rule) model.RuleResult {
 	ruleResult.Evidence = evidenceInstances
 
 	if len(evidenceInstances) > 0 {
-		ruleResult.Match = true
-		return ruleResult
+		if invert {
+			ruleResult.Match = false
+		} else {
+			ruleResult.Match = true
+		}
+
 	} else {
-		ruleResult.Match = false
-		return ruleResult
+		if invert {
+			ruleResult.Match = true
+		} else {
+			ruleResult.Match = false
+		}
 	}
 
+	return ruleResult
 }
 
 //Anal - analyses the information gathered by r2
