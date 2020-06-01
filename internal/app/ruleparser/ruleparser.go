@@ -224,6 +224,7 @@ func evalRule(r model.Rule) model.RuleResult {
 		e.Name = "dummyMatch"
 		e.Offset = "0x00000001"
 		e.RuleName = r.Name
+		e.File = "/usr/local/MobProtID"
 
 		evidence = append(evidence, e)
 

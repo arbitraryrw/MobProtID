@@ -16,6 +16,7 @@ var detectionAnalResults map[string]bool
 func HandleRule(r model.Rule) model.RuleResult {
 	fmt.Println("[INFO] Handling rule: ", r)
 
+	ruleName := r.Name
 	matchType := r.MatchType
 	matchValue := r.MatchValue
 	ruleType := r.Type
@@ -28,10 +29,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 	for _, val := range matchValue {
 
-		var matches []string
-
 		if strings.ToLower(ruleType) == "strings" {
-			//string search binary
 
 			fmt.Println("[INFO] Searching binary strings..")
 			for k, v := range allStringsInBinary {
@@ -39,7 +37,15 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 				for _, s := range v {
 					if strings.ToLower(matchType) == "regex" {
-						matches = append(matches, utils.RegexMatch(s, val.(string))...)
+
+						for _, m := range utils.RegexMatch(s, val.(string)) {
+
+							evidence := createEvidenceStruct(k, m, "0x0", ruleName)
+
+							if (model.Evidence{}) != evidence {
+								evidenceInstances = append(evidenceInstances, evidence)
+							}
+						}
 
 					} else if strings.ToLower(matchType) == "exact" {
 						//todo
@@ -59,27 +65,6 @@ func HandleRule(r model.Rule) model.RuleResult {
 			//classesAndFunctions search binary
 		} else {
 			panic(fmt.Sprintf("[ERROR] Unknown rule type %q in %q", r.Type, r.Name))
-		}
-
-		if strings.ToLower(matchType) == "regex" {
-			//todo
-		} else if strings.ToLower(matchType) == "exact" {
-			//todo
-		}
-
-		fmt.Println("[DEBUG] REGEX MATCH ->", matches)
-
-		for _, m := range matches {
-			var evidence model.Evidence
-
-			evidence.Name = m
-			evidence.Offset = "0x1"
-			evidence.RuleName = r.Name
-
-			// Check if the evidence struct has been populated
-			if (model.Evidence{}) != evidence {
-				evidenceInstances = append(evidenceInstances, evidence)
-			}
 		}
 
 	}
@@ -103,6 +88,17 @@ func HandleRule(r model.Rule) model.RuleResult {
 	}
 
 	return ruleResult
+}
+
+func createEvidenceStruct(file string, name string, offset string, ruleName string) model.Evidence {
+	var evidence model.Evidence
+
+	evidence.File = file
+	evidence.Name = name
+	evidence.Offset = offset
+	evidence.RuleName = ruleName
+
+	return evidence
 }
 
 //Anal - analyses the information gathered by r2

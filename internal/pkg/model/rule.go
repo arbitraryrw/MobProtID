@@ -10,6 +10,7 @@ type Rule struct {
 }
 
 type Evidence struct {
+	File     string
 	RuleName string
 	Name     string
 	Offset   string
