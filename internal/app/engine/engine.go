@@ -40,12 +40,6 @@ func Start(bp string) {
 		panic("Engine unable to recognise file ending, must be either ipa / apk.")
 	}
 
-	fmt.Println("RULE FILES ->", rules)
-	ruleResults := ruleparser.ParseRuleFile(rules)
-	fmt.Println("[INFO] All Rule Files Results", ruleResults)
-
-	return
-
 	utils.CreateAnalysisDir(bp)
 	utils.PrepBinaryForAnal(bp)
 
@@ -75,9 +69,9 @@ func Start(bp string) {
 
 	wg.Wait()
 
-	results := r2handler.Anal()
-
-	fmt.Println("[INFO] Static analysis results:", results)
+	fmt.Println("RULE FILES ->", rules)
+	ruleResults := ruleparser.ParseRuleFile(rules)
+	fmt.Println("[INFO] All Rule Files Results", ruleResults)
 
 	// r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
 	// nextRule := ruleSequence(r...)

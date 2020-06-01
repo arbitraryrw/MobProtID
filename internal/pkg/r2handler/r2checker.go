@@ -37,7 +37,18 @@ func HandleRule(r model.Rule) model.RuleResult {
 		if strings.ToLower(ruleType) == "strings" {
 			//string search binary
 
+			fmt.Println("[INFO] Searching binary strings..")
+			for k, v := range allStringsInBinary {
+				fmt.Println("[INFO] File ->", k)
+
+				for _, s := range v {
+					s = s
+					// fmt.Println(s)
+				}
+			}
+
 			fmt.Println("strings rule ->", reflect.TypeOf(allStringsInBinary))
+
 		} else if strings.ToLower(ruleType) == "symbols" {
 			//symbols search binary
 		} else if strings.ToLower(ruleType) == "syscalls" {
@@ -141,17 +152,6 @@ func Anal() map[string]bool {
 	// 		}
 	// 	}
 	// }
-
-	// Search through strings in binary for detectionStrings
-	fmt.Println("[INFO] Searching binary strings..")
-	for k, v := range allStringsInBinary {
-		fmt.Println("[INFO] File ->", k)
-
-		for _, s := range v {
-
-			CheckAllSigs(s)
-		}
-	}
 
 	fmt.Println("[INFO] Searching binary symbols..")
 	for k, v := range allSymbolsInBinary {
