@@ -29,7 +29,7 @@
             "handler": "radare2",
             "matchType": "regex",
             "matchValue": [
-              "([a-z]{2})"
+              "(^.*secret.*$)"
             ]
         },
         "part_2": {

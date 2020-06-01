@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
 	"time"
@@ -309,4 +310,17 @@ func GetRuleFiles(partialOrFullName string) []string {
 	}
 
 	return ruleFiles
+}
+
+func RegexMatch(haystack string, regularExp string) []string {
+	var matches []string
+	regexMatchLimit := 25
+
+	r, _ := regexp.Compile(regularExp)
+
+	if r.MatchString(haystack) {
+		matches = r.FindAllString(haystack, regexMatchLimit)
+	}
+
+	return matches
 }

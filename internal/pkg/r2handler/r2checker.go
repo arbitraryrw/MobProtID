@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"path/filepath"
 	"reflect"
-	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/model"
+	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
 
 var detectionAnalResults map[string]bool
@@ -21,16 +21,12 @@ func HandleRule(r model.Rule) model.RuleResult {
 	ruleType := r.Type
 	invert := r.Invert
 
-	regexMatchLimit := 25
-
 	fmt.Println("[INFO] RuleType: ", ruleType)
 	fmt.Println("[INFO] Matching against: ", matchType)
 
 	var evidenceInstances []model.Evidence
 
 	for _, val := range matchValue {
-		// ToDo -- Replace with actual binary data
-		tmpSearchData := "aa123emulatorSignature1abc1"
 
 		var matches []string
 
@@ -42,8 +38,12 @@ func HandleRule(r model.Rule) model.RuleResult {
 				fmt.Println("[INFO] File ->", k)
 
 				for _, s := range v {
-					s = s
-					// fmt.Println(s)
+					if strings.ToLower(matchType) == "regex" {
+						matches = append(matches, utils.RegexMatch(s, val.(string))...)
+
+					} else if strings.ToLower(matchType) == "exact" {
+						//todo
+					}
 				}
 			}
 
@@ -62,12 +62,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 		}
 
 		if strings.ToLower(matchType) == "regex" {
-			r, _ := regexp.Compile(val.(string))
-
-			if r.MatchString(tmpSearchData) {
-				matches = r.FindAllString(tmpSearchData, regexMatchLimit)
-			}
-
+			//todo
 		} else if strings.ToLower(matchType) == "exact" {
 			//todo
 		}
