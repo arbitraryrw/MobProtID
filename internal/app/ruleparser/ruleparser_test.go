@@ -63,22 +63,53 @@ func TestParseRuleFile(t *testing.T) {
 					expectEvidenceLen)
 			}
 
-			// Ordered list of which rules should provide an evidence struct
-			expectedRuleNameInOrder := [5]string{
-				"part_1",
-				"sub_2_part_1",
-				"sub_2_part_2",
-				"sub_sub_3_part_2",
-				"sub_3_part_2"}
+			part1 := false
+			sub2part1 := false
+			sub2part2 := false
+			subsub3part2 := false
+			sub3part2 := false
 
 			// Itterate over each piece of evidence
-			for i, e := range resultBundle.Evidence {
-				// If the sub-rule part name doesn't match what is expected then fail
-				if e.RuleName != expectedRuleNameInOrder[i] {
-					t.Errorf("TestParseRuleFile() = rule Evidence missmatch: got %q ; want %q",
-						e.RuleName,
-						expectedRuleNameInOrder[i])
+			for _, e := range resultBundle.Evidence {
+				if e.RuleName == "part_1" {
+					part1 = true
+				} else if e.RuleName == "sub_2_part_1" {
+					sub2part1 = true
+				} else if e.RuleName == "sub_2_part_2" {
+					sub2part2 = true
+				} else if e.RuleName == "sub_sub_3_part_2" {
+					subsub3part2 = true
+				} else if e.RuleName == "sub_3_part_2" {
+					sub3part2 = true
 				}
+
+			}
+
+			if !part1 {
+				t.Errorf("TestParseRuleFile() = rule Evidence missmatch: got %q ; missing %q",
+					resultBundle.Evidence,
+					"part_1")
+			}
+
+			if !sub2part1 {
+				t.Errorf("TestParseRuleFile() = rule Evidence missmatch: got %q ; missing %q",
+					resultBundle.Evidence,
+					"sub_2_part_1")
+			}
+			if !sub2part2 {
+				t.Errorf("TestParseRuleFile() = rule Evidence missmatch: got %q ; missing %q",
+					resultBundle.Evidence,
+					"sub_2_part_2")
+			}
+			if !subsub3part2 {
+				t.Errorf("TestParseRuleFile() = rule Evidence missmatch: got %q ; missing %q",
+					resultBundle.Evidence,
+					"sub_sub_3_part_2")
+			}
+			if !sub3part2 {
+				t.Errorf("TestParseRuleFile() = rule Evidence missmatch: got %q ; missing %q",
+					resultBundle.Evidence,
+					"sub_3_part_2")
 			}
 
 		}
