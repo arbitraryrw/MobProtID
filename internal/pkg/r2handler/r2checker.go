@@ -33,7 +33,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 			fmt.Println("[INFO] Searching binary strings..")
 			for k, v := range allStringsInBinary {
-				fmt.Println("[INFO] File ->", k)
+				// fmt.Println("[INFO] File ->", k)
 
 				for _, s := range v {
 					if strings.ToLower(matchType) == "regex" {

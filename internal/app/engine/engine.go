@@ -71,7 +71,18 @@ func Start(bp string) {
 
 	fmt.Println("RULE FILES ->", rules)
 	ruleResults := ruleparser.ParseRuleFile(rules)
-	fmt.Println("[INFO] All Rule Files Results", ruleResults)
+
+	for k, v := range ruleResults {
+		fmt.Println("[INFO] Results for rule file", k)
+		for _, rr := range v {
+			fmt.Println("\t", rr.RuleID, rr.RuleName, rr.Match)
+			fmt.Println("\t\t", len(rr.Evidence), "Evidence entries:")
+
+			for _, e := range rr.Evidence {
+				fmt.Println("\t\t", e)
+			}
+		}
+	}
 
 	// r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
 	// nextRule := ruleSequence(r...)

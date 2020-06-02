@@ -7,7 +7,7 @@
         "condition": "AND",
         "part_1": {
             "type": "static",
-            "handler": "yara",
+            "handler": "dummyTestHandlerFail",
             "matchType": "regex",
             "invert" : true,
             "matchValue": [
