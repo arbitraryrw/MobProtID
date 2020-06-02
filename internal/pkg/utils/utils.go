@@ -312,6 +312,7 @@ func GetRuleFiles(partialOrFullName string) []string {
 	return ruleFiles
 }
 
+// RegexMatch searching a string using a regex, returns matches
 func RegexMatch(haystack string, regularExp string) []string {
 	var matches []string
 	regexMatchLimit := 25
@@ -320,6 +321,17 @@ func RegexMatch(haystack string, regularExp string) []string {
 
 	if r.MatchString(haystack) {
 		matches = r.FindAllString(haystack, regexMatchLimit)
+	}
+
+	return matches
+}
+
+// ExactMatch searches for a string in a string, returns matches
+func ExactMatch(haystack string, needle string) []string {
+	var matches []string
+
+	if strings.Contains(haystack, needle) {
+		matches = append(matches, haystack)
 	}
 
 	return matches

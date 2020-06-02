@@ -33,14 +33,11 @@
             ]
         },
         "part_2": {
-          "type": "static",
-          "handler": "dummyTestHandlerPass",
+          "type": "strings",
+          "handler": "radare2",
           "matchType": "exact",
-          "invert" : true,
           "matchValue": [
-              "emulatorSignature4",
-              "emulatorSignature5",
-              "emulatorSignature6"
+              "root"
           ]
         }
 
