@@ -3,7 +3,6 @@ package r2handler
 import (
 	"fmt"
 	"path/filepath"
-	"reflect"
 	"strconv"
 	"strings"
 
@@ -59,8 +58,6 @@ func HandleRule(r model.Rule) model.RuleResult {
 					}
 				}
 			}
-
-			fmt.Println("strings rule ->", reflect.TypeOf(allStringsInBinary))
 
 		} else if strings.ToLower(ruleType) == "symbols" {
 			//symbols search binary

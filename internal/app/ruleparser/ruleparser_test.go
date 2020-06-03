@@ -11,10 +11,10 @@ import (
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
 
-func TestParseRuleFile(t *testing.T) {
+func TestParseRuleFilePositive(t *testing.T) {
 	t.Log("[DEBUG] Running..")
 
-	var file = "advanced_test_rules.json"
+	var file = "advanced_test_rules_positive.json"
 
 	rules := utils.GetRuleFiles(file)
 	ruleFileResults := ParseRuleFile(rules)
@@ -117,10 +117,66 @@ func TestParseRuleFile(t *testing.T) {
 
 }
 
+func TestParseRuleFileNegative(t *testing.T) {
+	t.Log("[DEBUG] Running..")
+
+	var file = "advanced_test_rules_negative.json"
+
+	rules := utils.GetRuleFiles(file)
+	ruleFileResults := ParseRuleFile(rules)
+
+	for _, ruleResults := range ruleFileResults {
+
+		for _, resultBundle := range ruleResults {
+
+			if resultBundle.RuleID != "001" {
+				continue
+			}
+
+			expectDesc := "Check single OR condition"
+			if resultBundle.Description != expectDesc {
+				t.Errorf("TestParseRuleFile() = rule description missmatch: got %q; want %q",
+					resultBundle.Description,
+					expectDesc)
+			}
+
+			expectRuleID := "001"
+			if resultBundle.RuleID != expectRuleID {
+				t.Errorf("TestParseRuleFile() = rule ID missmatch: got %q; want %q",
+					resultBundle.RuleID,
+					expectRuleID)
+			}
+
+			expectRuleName := "Complex nested rule"
+			if resultBundle.RuleName != expectRuleName {
+				t.Errorf("TestParseRuleFile() = rule Name missmatch: got %q; want %q",
+					resultBundle.RuleName,
+					expectRuleName)
+			}
+
+			expectMatch := false
+			if expectMatch != resultBundle.Match {
+				t.Errorf("TestParseRuleFile() = rule Match missmatch: got %t; want %t",
+					resultBundle.Match,
+					expectMatch)
+			}
+
+			expectEvidenceLen := 0
+			if len(resultBundle.Evidence) != 0 {
+				t.Errorf("TestParseRuleFile() = rule Evidence 0 missmatch: got %q ; want %q",
+					len(resultBundle.Evidence),
+					expectEvidenceLen)
+			}
+
+		}
+	}
+
+}
+
 func TestParseRuleFileStructure(t *testing.T) {
 	t.Log("[DEBUG] Running..")
 
-	var file = "advanced_test_rules.json"
+	var file = "advanced_test_rules_positive.json"
 	var got = false
 	var expect = true
 
