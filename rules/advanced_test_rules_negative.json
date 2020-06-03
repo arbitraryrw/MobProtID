@@ -1,0 +1,68 @@
+{
+  "rules": [
+    {
+      "ruleId":"001",
+      "ruleName": "Complex nested rule",
+      "description" : "Check single OR condition",
+      "condition": "OR",
+      "part_1": {
+        "type": "static",
+        "handler": "dummyTestHandlerFail",
+        "matchType": "regex",
+        "matchValue": [
+            "value1"
+        ]
+      },
+      "part_2": {
+        "condition": "AND",
+        "sub_2_part_1": {
+          "type": "static",
+          "handler": "dummyTestHandlerPass",
+          "matchType": "regex",
+          "matchValue": [
+              "value1"
+          ]
+        },
+        "sub_2_part_2": {
+          "type": "static",
+          "handler": "dummyTestHandlerFail",
+          "matchType": "regex",
+          "matchValue": [
+              "value2"
+          ]
+        }
+      },
+      "part_3": {
+        "condition": "AND",
+        "sub_3_part_1": {
+            "condition": "OR",
+            "sub_sub_3_part_1": {
+              "type": "static",
+              "handler": "dummyTestHandlerFail",
+              "matchType": "regex",
+              "matchValue": [
+                  "value1"
+              ]
+            },
+            "sub_sub_3_part_2": {
+              "type": "static",
+              "handler": "dummyTestHandlerPass",
+              "matchType": "regex",
+              "matchValue": [
+                  "value2"
+              ]
+            }
+        },
+        "sub_3_part_2": {
+          "type": "static",
+          "handler": "dummyTestHandlerFail",
+          "matchType": "regex",
+          "matchValue": [
+              "value1"
+          ]
+        }
+      }
+    }
+    
+  ]
+}
