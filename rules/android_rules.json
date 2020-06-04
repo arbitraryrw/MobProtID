@@ -41,6 +41,29 @@
           ]
         }
 
+      },
+      {
+        "ruleId":"003",
+        "ruleName": "dummyRadareRule",
+        "description" : "Test Android Radare 2 rule",
+        "condition": "AND",
+        "part_1": {
+            "type": "symbols",
+            "handler": "radare2",
+            "matchType": "regex",
+            "matchValue": [
+              "(^.*secret.*$)"
+            ]
+        },
+        "part_2": {
+          "type": "strings",
+          "handler": "radare2",
+          "matchType": "exact",
+          "matchValue": [
+              "root"
+          ]
+        }
+
       }
 
     ]
