@@ -52,17 +52,18 @@
             "handler": "radare2",
             "matchType": "regex",
             "matchValue": [
-              "(^.*secret.*$)"
+              "(?i)(^.*root.*$)"
             ]
         },
         "part_2": {
-          "type": "strings",
+          "type": "symbols",
           "handler": "radare2",
           "matchType": "exact",
           "matchValue": [
-              "root"
+            "secretkey",
+            "secret_key"
           ]
-        }
+      }
 
       }
 

@@ -63,10 +63,31 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 			fmt.Println("[INFO] Searching binary symbols..")
 			for k, v := range allSymbolsInBinary {
-				fmt.Println("[INFO] File ->", k)
+				fmt.Println("[INFO] Symbol File ->", k)
 				for _, s := range v {
 
-					fmt.Println("\tsymbol ->", s)
+					fmt.Println(s)
+					if strings.ToLower(matchType) == "regex" {
+
+						for _, m := range utils.RegexMatch(s, val.(string)) {
+							evidence := createEvidenceStruct(k, m, "0x0", ruleName)
+
+							if (model.Evidence{}) != evidence {
+								evidenceInstances = append(evidenceInstances, evidence)
+							}
+						}
+
+					} else if strings.ToLower(matchType) == "exact" {
+
+						for _, m := range utils.ExactMatch(s, val.(string)) {
+							evidence := createEvidenceStruct(k, m, "0x0", ruleName)
+
+							if (model.Evidence{}) != evidence {
+								evidenceInstances = append(evidenceInstances, evidence)
+							}
+						}
+
+					}
 				}
 			}
 
