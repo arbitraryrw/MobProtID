@@ -44,7 +44,18 @@ func TestRegexMatchPositive(t *testing.T) {
 
 	if got != expect {
 		t.Errorf(
-			"Regexmatch() could not find needle %q; in haystack %q",
+			"RegexMatch() could not find needle %q; in haystack %q",
+			needle,
+			haystack)
+	}
+
+	// Test for multiple matches within a haystack also
+	needle = "(?i)[a-zA-Z]{3}"
+	res = RegexMatch(haystack, needle)
+
+	if len(res) != 3 {
+		t.Errorf(
+			"RegexMatch() unexpected match count for reged %q; in haystack %q",
 			needle,
 			haystack)
 	}
@@ -65,7 +76,29 @@ func TestRegexMatchNegative(t *testing.T) {
 
 	if got != expect {
 		t.Errorf(
-			"Regexmatch() found need %q; in haystack %q when it should not be present.",
+			"RegexMatch() found need %q; in haystack %q when it should not be present.",
+			needle,
+			haystack)
+	}
+}
+
+func TestExactMatchPositive(t *testing.T) {
+	haystack := "Something"
+	needle := "Some"
+
+	got := false
+	expect := true
+
+	res := ExactMatch(haystack, needle)
+
+	fmt.Println(len(res))
+	if len(res) > 0 {
+		got = true
+	}
+
+	if got != expect {
+		t.Errorf(
+			"ExactMatch() could not find needle %q; in haystack %q.",
 			needle,
 			haystack)
 	}
