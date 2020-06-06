@@ -29,8 +29,8 @@ func TestIsCommandAvailable(t *testing.T) {
 	}
 }
 
-func TestRegexMatch(t *testing.T) {
-	haystack := "something"
+func TestRegexMatchPositive(t *testing.T) {
+	haystack := "Something"
 	needle := "(?i)(^some.*$)"
 
 	got := false
@@ -48,5 +48,25 @@ func TestRegexMatch(t *testing.T) {
 			needle,
 			haystack)
 	}
+}
 
+func TestRegexMatchNegative(t *testing.T) {
+	haystack := "Something"
+	needle := "(^some.*$)"
+
+	got := false
+	expect := false
+
+	res := RegexMatch(haystack, needle)
+
+	if len(res) > 0 {
+		got = true
+	}
+
+	if got != expect {
+		t.Errorf(
+			"Regexmatch() found need %q; in haystack %q when it should not be present.",
+			needle,
+			haystack)
+	}
 }
