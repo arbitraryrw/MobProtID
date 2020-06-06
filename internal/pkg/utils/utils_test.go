@@ -91,7 +91,6 @@ func TestExactMatchPositive(t *testing.T) {
 
 	res := ExactMatch(haystack, needle)
 
-	fmt.Println(len(res))
 	if len(res) > 0 {
 		got = true
 	}
@@ -99,6 +98,27 @@ func TestExactMatchPositive(t *testing.T) {
 	if got != expect {
 		t.Errorf(
 			"ExactMatch() could not find needle %q; in haystack %q.",
+			needle,
+			haystack)
+	}
+}
+
+func TestExactMatchNegative(t *testing.T) {
+	haystack := "Something"
+	needle := "some"
+
+	got := false
+	expect := false
+
+	res := ExactMatch(haystack, needle)
+
+	if len(res) > 0 {
+		got = true
+	}
+
+	if got != expect {
+		t.Errorf(
+			"ExactMatch() found needle %q; in haystack %q when it should not have.",
 			needle,
 			haystack)
 	}
