@@ -28,3 +28,25 @@ func TestIsCommandAvailable(t *testing.T) {
 		t.Error("ls111 command should not exist!")
 	}
 }
+
+func TestRegexMatch(t *testing.T) {
+	haystack := "something"
+	needle := "(?i)(^some.*$)"
+
+	got := false
+	expect := true
+
+	res := RegexMatch(haystack, needle)
+
+	if len(res) > 0 {
+		got = true
+	}
+
+	if got != expect {
+		t.Errorf(
+			"Regexmatch() could not find needle %q; in haystack %q",
+			needle,
+			haystack)
+	}
+
+}
