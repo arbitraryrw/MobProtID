@@ -44,15 +44,15 @@
       },
       {
         "ruleId":"003",
-        "ruleName": "dummyRadareRule",
-        "description" : "Test Android Radare 2 rule",
+        "ruleName": "Radare2 Symbol Rule",
+        "description" : "Checking for known symbols",
         "condition": "AND",
         "part_1": {
             "type": "symbols",
             "handler": "radare2",
             "matchType": "regex",
             "matchValue": [
-              "(?i)(^.*root.*$)"
+              "(?i)(.*sensitivelogic.*)"
             ]
         },
         "part_2": {
@@ -60,11 +60,9 @@
           "handler": "radare2",
           "matchType": "exact",
           "matchValue": [
-            "secretkey",
-            "secret_key"
+            "SecretKey"
           ]
-      }
-
+        }
       }
 
     ]

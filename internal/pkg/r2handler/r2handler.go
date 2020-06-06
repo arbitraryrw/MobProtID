@@ -14,14 +14,14 @@ import (
 )
 
 var allStringsInBinary map[string][]string
-var allSymbolsInBinary map[string][]string
+var allSymbolsInBinary map[string][]map[string]string
 var allbinaryInfo map[string]map[string]string
 var allSyscall map[string]map[string]string
 var allBinClassAndFunc map[string]map[string][]string
 
 func init() {
 	allStringsInBinary = make(map[string][]string, 0)
-	allSymbolsInBinary = make(map[string][]string, 0)
+	allSymbolsInBinary = make(map[string][]map[string]string, 0)
 	allSyscall = make(map[string]map[string]string, 0)
 	allbinaryInfo = make(map[string]map[string]string, 0)
 	allBinClassAndFunc = make(map[string]map[string][]string, 0)
@@ -38,7 +38,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 
 		strings := make(chan []string)
 		binaryInfo := make(chan map[string]string)
-		symbols := make(chan []string)
+		symbols := make(chan []map[string]string)
 		syscalls := make(chan map[string]string)
 		binClassAndFuncs := make(chan map[string][]string)
 
@@ -207,28 +207,39 @@ func getBinaryInfo(r2session r2pipe.Pipe) map[string]string {
 	return binaryInfo
 }
 
-func getSymbols(r2session r2pipe.Pipe) []string {
+func getSymbols(r2session r2pipe.Pipe) []map[string]string {
 
 	var buf interface{}
 
-	err := utils.Retry(5, 2*time.Second, func() (err error) {
-		// Example data from r2:
-		// map[bind:GLOBAL flagname:sym.main is_imported:false name:main
-		//ordinal:61 paddr:1706 realname:main size:56 type:FUNC vaddr:1706]
-		buf, err = r2session.Cmdj("isj")
-		return
-	})
+	// Example data from r2:
+	// map[bind:GLOBAL flagname:sym.main is_imported:false name:main
+	//ordinal:61 paddr:1706 realname:main size:56 type:FUNC vaddr:1706]
+	buf, err := r2session.Cmdj("isj")
 
 	if err != nil {
 		panic(err)
 	}
 
-	symbolsInBinary := make([]string, 0)
+	symbolsInBinary := make([]map[string]string, 0)
 
 	if buf, ok := buf.([]interface{}); ok {
 		for _, symMap := range buf {
 
 			// fmt.Println(symMap)
+			/*
+				map[
+					bind:GLOBAL
+					flagname:sym.Lcom_example_dummyapplication_SensitiveLogic.method.rootDetection__Z
+					is_imported:false
+					name:Lcom/example/dummyapplication/SensitiveLogic.method.rootDetection()Z
+					ordinal:5829
+					paddr:79828
+					realname:Lcom/example/dummyapplication/SensitiveLogic.method.rootDetection()Z
+					size:106
+					type:FUNC
+					vaddr:79828
+				]
+			*/
 
 			if sym, ok := symMap.(map[string]interface{}); ok {
 
@@ -236,7 +247,30 @@ func getSymbols(r2session r2pipe.Pipe) []string {
 
 					// Can be of type SECT / FILE / FUNC / OBJ / NOTYPE
 					if symType == "FUNC" {
-						symbolsInBinary = append(symbolsInBinary, sym["realname"].(string))
+
+						symbolMap := make(map[string]string, 0)
+
+						if symName, ok := sym["realname"].(string); ok {
+							symbolMap["name"] = symName
+						} else {
+							panic(
+								fmt.Sprintf(
+									"[ERROR] Unable to find %q in %q",
+									"realname",
+									sym))
+						}
+
+						if symOffset, ok := sym["paddr"]; ok {
+							symbolMap["offset"] = fmt.Sprintf("%g", symOffset)
+						} else {
+							panic(
+								fmt.Sprintf(
+									"[ERROR] Unable to find %q in %q",
+									"paddr",
+									sym))
+						}
+
+						symbolsInBinary = append(symbolsInBinary, symbolMap)
 					}
 				}
 			}
