@@ -101,14 +101,29 @@ func HandleRule(r model.Rule) model.RuleResult {
 			for f, bundle := range allBinClassAndFunc {
 				fmt.Println("[INFO] Searching file", f)
 
-				// Iterate over each class function bundle
-				for c, funcBundle := range bundle {
-					fmt.Println(c, funcBundle)
+				for _, b := range bundle {
 
-					// Iterate over func bundle
-					// for _, f := range funcBundle {
-					// 	fmt.Println(f)
-					// }
+					if classes, ok := b["class"]; ok {
+						for _, c := range classes {
+							fmt.Println("\t class name:", c["name"])
+							fmt.Println("\t class offset:", c["offset"])
+						}
+					}
+
+					if methods, ok := b["methods"]; ok {
+						for _, c := range methods {
+							fmt.Println("\t method name:", c["name"])
+							fmt.Println("\t method offset:", c["offset"])
+						}
+					}
+
+					if fields, ok := b["fields"]; ok {
+						for _, c := range fields {
+							fmt.Println("\t field name:", c["name"])
+							fmt.Println("\t field offset:", c["offset"])
+						}
+					}
+
 				}
 			}
 		} else {

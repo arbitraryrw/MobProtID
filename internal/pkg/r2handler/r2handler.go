@@ -520,7 +520,7 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string][]map[string]str
 
 				allObjectsMap = append(allObjectsMap, objectCollection)
 
-				// break
+				break
 			}
 		}
 	}
