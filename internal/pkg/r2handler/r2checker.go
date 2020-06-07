@@ -94,8 +94,23 @@ func HandleRule(r model.Rule) model.RuleResult {
 			//syscalls search binary
 		} else if strings.ToLower(ruleType) == "binaryInfo" {
 			//binaryInfo search binary
-		} else if strings.ToLower(ruleType) == "classesAndFunctions" {
-			//classesAndFunctions search binary
+		} else if strings.ToLower(ruleType) == "objects" {
+
+			// Search through Classes and functions in binary
+			fmt.Println("[INFO] Searching binary classes and functions..")
+			for f, bundle := range allBinClassAndFunc {
+				fmt.Println("[INFO] Searching file", f)
+
+				// Iterate over each class function bundle
+				for c, funcBundle := range bundle {
+					fmt.Println(c, funcBundle)
+
+					// Iterate over func bundle
+					// for _, f := range funcBundle {
+					// 	fmt.Println(f)
+					// }
+				}
+			}
 		} else {
 			panic(fmt.Sprintf("[ERROR] Unknown rule type %q in %q", r.Type, r.Name))
 		}
@@ -149,22 +164,6 @@ func Anal() map[string]bool {
 	fmt.Println("Analysing", len(allSymbolsInBinary), "symbols")
 	fmt.Println("Analysing", len(allSyscall), "syscalls")
 	fmt.Println("Analysing", len(allBinClassAndFunc), "binClassAndFunc")
-
-	// Search through Classes and functions in binary
-	fmt.Println("[INFO] Searching binary classes and functions..")
-	for f, bundle := range allBinClassAndFunc {
-		fmt.Println("[INFO] Searching file", f)
-
-		// Iterate over each class function bundle
-		for c, funcBundle := range bundle {
-			CheckAllSigs(c)
-
-			// Iterate over func bundle
-			for _, f := range funcBundle {
-				CheckAllSigs(f)
-			}
-		}
-	}
 
 	// ** Disabled as allBinClassAndFunc handles this functionality for now
 	// Search through functions for matches to detectionStrings

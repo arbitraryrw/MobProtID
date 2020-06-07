@@ -63,6 +63,20 @@
             "SecretKey"
           ]
         }
+      },
+      {
+        "ruleId":"004",
+        "ruleName": "Radare2 Classes and Function Rule",
+        "description" : "Checking for known classes / ",
+        "condition": "OR",
+        "part_1": {
+            "type": "objects",
+            "handler": "radare2",
+            "matchType": "regex",
+            "matchValue": [
+              "(?i)(.*sensitivelogic.*)"
+            ]
+        }
       }
 
     ]
