@@ -37,8 +37,8 @@ func HandleRule(r model.Rule) model.RuleResult {
 				for _, s := range v {
 					if strings.ToLower(matchType) == "regex" {
 
-						for _, m := range utils.RegexMatch(s, val.(string)) {
-							evidence := createEvidenceStruct(k, m, "0x0", ruleName)
+						for _, m := range utils.RegexMatch(s["name"], val.(string)) {
+							evidence := createEvidenceStruct(k, m, s["offset"], ruleName)
 
 							if (model.Evidence{}) != evidence {
 								evidenceInstances = append(evidenceInstances, evidence)
@@ -47,8 +47,8 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 					} else if strings.ToLower(matchType) == "exact" {
 
-						for _, m := range utils.ExactMatch(s, val.(string)) {
-							evidence := createEvidenceStruct(k, m, "0x0", ruleName)
+						for _, m := range utils.ExactMatch(s["name"], val.(string)) {
+							evidence := createEvidenceStruct(k, m, s["offset"], ruleName)
 
 							if (model.Evidence{}) != evidence {
 								evidenceInstances = append(evidenceInstances, evidence)

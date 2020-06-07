@@ -13,14 +13,14 @@ import (
 	"github.com/radare/r2pipe-go"
 )
 
-var allStringsInBinary map[string][]string
+var allStringsInBinary map[string][]map[string]string
 var allSymbolsInBinary map[string][]map[string]string
 var allbinaryInfo map[string]map[string]string
 var allSyscall map[string]map[string]string
 var allBinClassAndFunc map[string]map[string][]string
 
 func init() {
-	allStringsInBinary = make(map[string][]string, 0)
+	allStringsInBinary = make(map[string][]map[string]string, 0)
 	allSymbolsInBinary = make(map[string][]map[string]string, 0)
 	allSyscall = make(map[string]map[string]string, 0)
 	allbinaryInfo = make(map[string]map[string]string, 0)
@@ -36,7 +36,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 	for index, path := range binaryPath {
 		fmt.Println(index, path)
 
-		strings := make(chan []string)
+		strings := make(chan []map[string]string)
 		binaryInfo := make(chan map[string]string)
 		symbols := make(chan []map[string]string)
 		syscalls := make(chan map[string]string)
@@ -118,14 +118,11 @@ func writeString(s string, r2session r2pipe.Pipe) {
 	fmt.Println(buf)
 }
 
-func getStringEntireBinary(r2session r2pipe.Pipe) []string {
+func getStringEntireBinary(r2session r2pipe.Pipe) []map[string]string {
 
 	var buf interface{}
 
-	err := utils.Retry(5, 2*time.Second, func() (err error) {
-		buf, err = r2session.Cmdj("izzj")
-		return
-	})
+	buf, err := r2session.Cmdj("izzj")
 
 	// Example return of izzj
 	//map[length:8 ordinal:86 paddr:6549 section:.shstrtab size:9 string:.comment type:ascii vaddr:245]
@@ -135,12 +132,27 @@ func getStringEntireBinary(r2session r2pipe.Pipe) []string {
 		panic(err)
 	}
 
-	stringsInBinary := make([]string, 0)
+	stringsInBinary := make([]map[string]string, 0)
 
 	// Assert buf as map[string]interface{} and then parse if true
 	if buf, ok := buf.([]interface{}); ok {
 
 		for _, stringBundle := range buf {
+
+			/*
+				R2 example response:
+				map[
+					length:22
+					ordinal:2131
+					paddr:145924
+					section:data
+					size:23
+					string:windowActionBarOverlay
+					type:ascii
+					vaddr:145924
+				]
+			*/
+			// fmt.Println("[DEBUG] string bundle:", stringBundle)
 
 			if sb, ok := stringBundle.(map[string]interface{}); ok {
 
@@ -148,9 +160,29 @@ func getStringEntireBinary(r2session r2pipe.Pipe) []string {
 				// sDec, _ := base64.StdEncoding.DecodeString(sb["string"].(string))
 				// stringsInBinary = append(stringsInBinary, string(sDec))
 
-				if s, ok := sb["string"]; ok {
-					stringsInBinary = append(stringsInBinary, s.(string))
+				stringMap := make(map[string]string, 0)
+
+				if stringName, ok := sb["string"].(string); ok {
+					stringMap["name"] = stringName
+				} else {
+					panic(
+						fmt.Sprintf(
+							"[ERROR] Unable to find %q in %q",
+							"string",
+							sb))
 				}
+
+				if stringOffset, ok := sb["paddr"]; ok {
+					stringMap["offset"] = fmt.Sprintf("%g", stringOffset)
+				} else {
+					panic(
+						fmt.Sprintf(
+							"[ERROR] Unable to find %q in %q",
+							"paddr",
+							sb))
+				}
+
+				stringsInBinary = append(stringsInBinary, stringMap)
 
 			} else {
 				panic("Unexpected reponse from R2 while getting all strings in binary!")
