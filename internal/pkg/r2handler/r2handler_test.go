@@ -24,21 +24,22 @@ func TestUgetStringEntireBinary(t *testing.T) {
 
 	r2s := openR2Pipe("../../../test/sample_binary")
 
-	var expect = "It's MobProtID here!"
+	var expectString = "It's MobProtID here!"
+	var expectOffset = "1918"
 	got := getStringEntireBinary(r2s)
 
 	var result = false
 
 	for _, val := range got {
-		if strings.Compare(expect, val) == 0 {
-			// Successfully found the string in the slice
+		if strings.Compare(expectString, val["name"]) == 0 &&
+			val["offset"] == expectOffset {
 			result = true
 		}
 	}
 
 	if result == false {
 		fmt.Println("Failed comparison!")
-		t.Errorf("getStringEntireBinary() = could not find %q in sample_binary r2 reponse", expect)
+		t.Errorf("getStringEntireBinary() = could not find %q at offset %q in sample_binary r2 reponse", expectString, expectOffset)
 	}
 }
 
