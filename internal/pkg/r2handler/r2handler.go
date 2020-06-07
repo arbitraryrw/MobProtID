@@ -17,14 +17,14 @@ var allStringsInBinary map[string][]map[string]string
 var allSymbolsInBinary map[string][]map[string]string
 var allbinaryInfo map[string]map[string]string
 var allSyscall map[string]map[string]string
-var allBinClassAndFunc map[string][]map[string]interface{}
+var allBinClassAndFunc map[string][]map[string][]map[string]string
 
 func init() {
 	allStringsInBinary = make(map[string][]map[string]string, 0)
 	allSymbolsInBinary = make(map[string][]map[string]string, 0)
 	allSyscall = make(map[string]map[string]string, 0)
 	allbinaryInfo = make(map[string]map[string]string, 0)
-	allBinClassAndFunc = make(map[string][]map[string]interface{}, 0)
+	allBinClassAndFunc = make(map[string][]map[string][]map[string]string, 0)
 }
 
 // PrepareAnal - gathers all the relevant data required for analysis
@@ -40,7 +40,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 		binaryInfo := make(chan map[string]string)
 		symbols := make(chan []map[string]string)
 		syscalls := make(chan map[string]string)
-		binClassAndFuncs := make(chan []map[string]interface{})
+		binClassAndFuncs := make(chan []map[string][]map[string]string)
 
 		// fmt.Println(index, path)
 
@@ -407,9 +407,10 @@ func getFunctions(r2session r2pipe.Pipe) []map[string]string {
 }
 
 // Seems to overlap alot with getFunctions() investigate if this has value
-func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]interface{} {
+func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string][]map[string]string {
 
-	objectSummaryMap := make([]map[string]interface{}, 0)
+	// Map to store all classes, methods, and fields in a structured format
+	allObjectsMap := make([]map[string][]map[string]string, 0)
 
 	buf, err := r2session.Cmdj("icj")
 
@@ -423,7 +424,7 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]interface{} {
 
 			if data, ok := packedData.(map[string]interface{}); ok {
 
-				objectBundle := make(map[string]interface{}, 0)
+				objectCollection := make(map[string][]map[string]string, 0)
 
 				/*
 					R2 Sample Response:
@@ -452,7 +453,6 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]interface{} {
 					]
 				*/
 
-				// Field Parsing, no real need for this currently though
 				if packedFieldData, ok := data["fields"].([]interface{}); ok {
 
 					fieldCollection := make([]map[string]string, 0)
@@ -460,22 +460,21 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]interface{} {
 					for _, field := range packedFieldData {
 
 						if f, ok := field.(map[string]interface{}); ok {
-
-							singleField := make(map[string]string, 0)
+							fieldInstance := make(map[string]string, 0)
 
 							if fName, ok := f["name"].(string); ok {
-								singleField["name"] = fName
+								fieldInstance["name"] = fName
 							}
 
 							if addr, ok := f["addr"].(float64); ok {
-								singleField["offset"] = fmt.Sprintf("%g", addr)
+								fieldInstance["offset"] = fmt.Sprintf("%g", addr)
 							}
 
-							fieldCollection = append(fieldCollection, singleField)
+							fieldCollection = append(fieldCollection, fieldInstance)
 						}
 					}
 
-					objectBundle["fields"] = fieldCollection
+					objectCollection["fields"] = fieldCollection
 				}
 
 				if packedMethods, ok := data["methods"].([]interface{}); ok {
@@ -485,50 +484,46 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string]interface{} {
 					for _, method := range packedMethods {
 
 						if m, ok := method.(map[string]interface{}); ok {
-							singleMethod := make(map[string]string, 0)
-
-							// fmt.Println("Methods ->", m)
+							methodInstance := make(map[string]string, 0)
 
 							if mName, ok := m["name"].(string); ok {
 								fmt.Println("Method name: ", mName)
-								singleMethod["name"] = mName
+								methodInstance["name"] = mName
 							}
-
-							// if flags, ok := m["flags"].([]interface{}); ok {
-							// 	fmt.Println("Method flags: ", flags)
-							// }
 
 							if addr, ok := m["addr"].(float64); ok {
 								fmt.Println("Method address: ", addr)
-								singleMethod["offset"] = fmt.Sprintf("%g", addr)
+								methodInstance["offset"] = fmt.Sprintf("%g", addr)
 							}
 
-							methodCollection = append(methodCollection, singleMethod)
+							methodCollection = append(methodCollection, methodInstance)
 						}
 					}
-					objectBundle["methods"] = methodCollection
+					objectCollection["methods"] = methodCollection
 				}
 
-				classCollection := make(map[string]string, 0)
+				// Put into array of maps to make it consistent with methods / fields
+				classCollection := make([]map[string]string, 0)
+				classInstance := make(map[string]string)
 
 				if cName, ok := data["classname"].(string); ok {
-					// fmt.Println("Class name: ", cName)
-					classCollection["name"] = cName
+					classInstance["name"] = cName
 				}
 
 				if cOffset, ok := data["addr"].(float64); ok {
-					classCollection["offset"] = fmt.Sprintf("%g", cOffset)
+					classInstance["offset"] = fmt.Sprintf("%g", cOffset)
 				}
 
-				objectBundle["class"] = classCollection
+				classCollection = append(classCollection, classInstance)
 
-				objectSummaryMap = append(objectSummaryMap, objectBundle)
+				objectCollection["class"] = classCollection
 
-				break
+				allObjectsMap = append(allObjectsMap, objectCollection)
+
+				// break
 			}
 		}
 	}
 
-	fmt.Println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", objectSummaryMap)
-	return objectSummaryMap
+	return allObjectsMap
 }
