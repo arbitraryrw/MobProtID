@@ -487,12 +487,10 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string][]map[string]str
 							methodInstance := make(map[string]string, 0)
 
 							if mName, ok := m["name"].(string); ok {
-								fmt.Println("Method name: ", mName)
 								methodInstance["name"] = mName
 							}
 
 							if addr, ok := m["addr"].(float64); ok {
-								fmt.Println("Method address: ", addr)
 								methodInstance["offset"] = fmt.Sprintf("%g", addr)
 							}
 
@@ -520,7 +518,7 @@ func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string][]map[string]str
 
 				allObjectsMap = append(allObjectsMap, objectCollection)
 
-				break
+				// break
 			}
 		}
 	}

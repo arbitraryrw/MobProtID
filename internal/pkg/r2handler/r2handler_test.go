@@ -66,71 +66,116 @@ func TestUgetSysCalls(t *testing.T) {
 	}
 }
 
-// func TestUgetFunctions(t *testing.T) {
+func TestUgetFunctions(t *testing.T) {
 
-// 	result := false
+	result := false
 
-// 	testFile := []string{"classes2.dex"}
-// 	matchedFiles := utils.FindFilesInDir(testFile, utils.UnzippedAnalBinPath)
+	testFile := []string{"classes2.dex"}
+	matchedFiles := utils.FindFilesInDir(testFile, utils.UnzippedAnalBinPath)
 
-// 	if len(matchedFiles) < 0 {
-// 		t.Errorf("Unable to find test file %q in analysis directory %q", testFile[0], utils.UnzippedAnalBinPath)
-// 	}
+	if len(matchedFiles) < 0 {
+		t.Errorf("Unable to find test file %q in analysis directory %q", testFile[0], utils.UnzippedAnalBinPath)
+	}
 
-// 	r2s := openR2Pipe(matchedFiles[0])
+	r2s := openR2Pipe(matchedFiles[0])
 
-// 	expect := "com_example_dummyapplication_BusinessLogic"
-// 	got := getFunctions(r2s)
+	expect := "com_example_dummyapplication_BusinessLogic"
+	got := getFunctions(r2s)
 
-// 	for _, f := range got {
-// 		if name, ok := f["name"]; ok {
-// 			if strings.Contains(name, expect) {
-// 				result = true
-// 			}
-// 		}
-// 	}
+	for _, f := range got {
+		if name, ok := f["name"]; ok {
+			if strings.Contains(name, expect) {
+				result = true
+			}
+		}
+	}
 
-// 	if result == false {
-// 		t.Errorf("getFunctions() = could not find %q in %q r2 reponse", expect, matchedFiles[0])
-// 	}
-// }
+	if result == false {
+		t.Errorf("getFunctions() = could not find %q in %q r2 reponse", expect, matchedFiles[0])
+	}
+}
 
-// func TestUgetFunctionsAndClasses(t *testing.T) {
+func TestUgetFunctionsAndClasses(t *testing.T) {
 
-// 	classResult := false
-// 	funcResult := false
+	classResult := false
+	methodResult := false
+	fieldResult := false
 
-// 	testFile := []string{"classes2.dex"}
-// 	matchedFiles := utils.FindFilesInDir(testFile, utils.UnzippedAnalBinPath)
+	testFile := []string{"classes2.dex"}
+	matchedFiles := utils.FindFilesInDir(testFile, utils.UnzippedAnalBinPath)
 
-// 	if len(matchedFiles) < 0 {
-// 		t.Errorf("Unable to find test file %q in analysis directory %q", testFile[0], utils.UnzippedAnalBinPath)
-// 	}
+	if len(matchedFiles) < 0 {
+		t.Errorf(
+			"Unable to find test file %q in analysis directory %q",
+			testFile[0],
+			utils.UnzippedAnalBinPath)
+	}
 
-// 	r2s := openR2Pipe(matchedFiles[0])
+	r2s := openR2Pipe(matchedFiles[0])
 
-// 	expectClass := "com/example/dummyapplication/SensitiveLogic"
-// 	expectFunction := "rootDetection"
+	expectClassName := "com/example/dummyapplication/SensitiveLogic"
+	expectClassOffset := "63404"
 
-// 	got := getFunctionsAndClasses(r2s)
+	expectMethodName := "rootDetection"
+	expectMethodOffset := "79828"
 
-// 	for c, fBundle := range got {
-// 		if strings.Contains(c, expectClass) {
-// 			classResult = true
-// 		}
+	expectFieldName := "SensitiveLogic.ifield_c:Landroid/content/Context"
+	expectFieldOffset := "54820"
 
-// 		for _, f := range fBundle {
-// 			if strings.Contains(f, expectFunction) {
-// 				funcResult = true
-// 			}
-// 		}
-// 	}
+	got := getFunctionsAndClasses(r2s)
 
-// 	if classResult == false {
-// 		t.Errorf("getFunctionsAndClasses() = could not find class %q in %q r2 reponse", expectClass, matchedFiles[0])
-// 	}
+	for _, bundle := range got {
 
-// 	if funcResult == false {
-// 		t.Errorf("getFunctionsAndClasses() = could not find function %q in %q r2 reponse", expectFunction, matchedFiles[0])
-// 	}
-// }
+		if classBundle, ok := bundle["class"]; ok {
+			for _, c := range classBundle {
+				if strings.Contains(c["name"], expectClassName) &&
+					c["offset"] == expectClassOffset {
+					classResult = true
+				}
+			}
+		}
+
+		if methodBundle, ok := bundle["methods"]; ok {
+			for _, m := range methodBundle {
+				if strings.Contains(m["name"], expectMethodName) &&
+					m["offset"] == expectMethodOffset {
+					methodResult = true
+				}
+			}
+		}
+
+		if fieldBundle, ok := bundle["fields"]; ok {
+			for _, f := range fieldBundle {
+				if strings.Contains(f["name"], expectFieldName) &&
+					f["offset"] == expectFieldOffset {
+					fieldResult = true
+				}
+			}
+		}
+
+	}
+
+	if classResult == false {
+		t.Errorf(
+			"getFunctionsAndClasses() = could not find class %q at offset %q in %q r2 reponse",
+			expectClassName,
+			expectClassOffset,
+			matchedFiles[0])
+	}
+
+	if methodResult == false {
+		t.Errorf(
+			"getFunctionsAndClasses() = could not find method %q at offset %q in %q r2 reponse",
+			expectMethodName,
+			expectMethodOffset,
+			matchedFiles[0])
+	}
+
+	if fieldResult == false {
+		t.Errorf(
+			"getFunctionsAndClasses() = could not find field %q at offset %q in %q r2 reponse",
+			expectFieldName,
+			expectFieldOffset,
+			matchedFiles[0])
+	}
+}
