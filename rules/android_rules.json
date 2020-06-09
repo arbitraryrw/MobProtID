@@ -76,7 +76,15 @@
             "matchValue": [
               "(?i)(.*sensitivelogic.*)"
             ]
-        }
+        },
+        "part_2": {
+          "type": "classObjects",
+          "handler": "radare2",
+          "matchType": "exact",
+          "matchValue": [
+            "Activity"
+          ]
+      }
       }
 
     ]

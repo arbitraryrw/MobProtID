@@ -95,7 +95,6 @@ func HandleRule(r model.Rule) model.RuleResult {
 		} else if strings.ToLower(ruleType) == "binaryInfo" {
 			//binaryInfo search binary
 		} else if strings.ToLower(ruleType) == "classobjects" {
-			fmt.Println("[INFO] Searching binary classes and functions..")
 			for file, bundle := range allBinClassAndFunc {
 
 				for _, b := range bundle {
@@ -113,8 +112,20 @@ func HandleRule(r model.Rule) model.RuleResult {
 									}
 								}
 
+							} else if strings.ToLower(matchType) == "exact" {
+
+								for _, m := range utils.ExactMatch(c["name"], val.(string)) {
+									evidence := createEvidenceStruct(file, m, c["offset"], ruleName)
+
+									if (model.Evidence{}) != evidence {
+										evidenceInstances = append(evidenceInstances, evidence)
+									}
+								}
+
 							}
 						}
+					} else {
+						panic(fmt.Sprintf("[ERROR] No class object found in %q", b))
 					}
 
 				}
