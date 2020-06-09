@@ -94,12 +94,9 @@ func HandleRule(r model.Rule) model.RuleResult {
 			//syscalls search binary
 		} else if strings.ToLower(ruleType) == "binaryInfo" {
 			//binaryInfo search binary
-		} else if strings.ToLower(ruleType) == "objects" {
-
-			// Search through Classes and functions in binary
+		} else if strings.ToLower(ruleType) == "classobjects" {
 			fmt.Println("[INFO] Searching binary classes and functions..")
-			for f, bundle := range allBinClassAndFunc {
-				fmt.Println("[INFO] Searching file", f)
+			for _, bundle := range allBinClassAndFunc {
 
 				for _, b := range bundle {
 
@@ -109,6 +106,16 @@ func HandleRule(r model.Rule) model.RuleResult {
 							fmt.Println("\t class offset:", c["offset"])
 						}
 					}
+
+				}
+			}
+		} else if strings.ToLower(ruleType) == "objects" {
+			// Search through Classes and functions in binary
+			fmt.Println("[INFO] Searching binary classes and functions..")
+			for f, bundle := range allBinClassAndFunc {
+				fmt.Println("[INFO] Searching file", f)
+
+				for _, b := range bundle {
 
 					if methods, ok := b["methods"]; ok {
 						for _, c := range methods {

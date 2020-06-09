@@ -70,7 +70,7 @@
         "description" : "Checking for known classes / ",
         "condition": "OR",
         "part_1": {
-            "type": "objects",
+            "type": "classObjects",
             "handler": "radare2",
             "matchType": "regex",
             "matchValue": [
