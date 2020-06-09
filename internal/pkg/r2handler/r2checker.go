@@ -96,14 +96,24 @@ func HandleRule(r model.Rule) model.RuleResult {
 			//binaryInfo search binary
 		} else if strings.ToLower(ruleType) == "classobjects" {
 			fmt.Println("[INFO] Searching binary classes and functions..")
-			for _, bundle := range allBinClassAndFunc {
+			for file, bundle := range allBinClassAndFunc {
 
 				for _, b := range bundle {
 
 					if classes, ok := b["class"]; ok {
 						for _, c := range classes {
-							fmt.Println("\t class name:", c["name"])
-							fmt.Println("\t class offset:", c["offset"])
+
+							if strings.ToLower(matchType) == "regex" {
+
+								for _, m := range utils.RegexMatch(c["name"], val.(string)) {
+									evidence := createEvidenceStruct(file, m, c["offset"], ruleName)
+
+									if (model.Evidence{}) != evidence {
+										evidenceInstances = append(evidenceInstances, evidence)
+									}
+								}
+
+							}
 						}
 					}
 
