@@ -70,21 +70,13 @@
         "description" : "Checking for known classes / ",
         "condition": "OR",
         "part_1": {
-            "type": "classObjects",
+            "type": "methodObjects",
             "handler": "radare2",
             "matchType": "regex",
             "matchValue": [
               "(?i)(.*sensitivelogic.*)"
             ]
-        },
-        "part_2": {
-          "type": "classObjects",
-          "handler": "radare2",
-          "matchType": "exact",
-          "matchValue": [
-            "Activity"
-          ]
-      }
+        }
       }
 
     ]
