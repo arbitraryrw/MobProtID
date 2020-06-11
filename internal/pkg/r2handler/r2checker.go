@@ -131,15 +131,23 @@ func HandleRule(r model.Rule) model.RuleResult {
 				}
 			}
 		} else if strings.ToLower(ruleType) == "methodobjects" {
-			for f, bundle := range allBinClassAndFunc {
-				fmt.Println("[INFO] Searching file", f)
+			for file, bundle := range allBinClassAndFunc {
 
 				for _, b := range bundle {
 
 					if methods, ok := b["methods"]; ok {
-						for _, c := range methods {
-							fmt.Println("\t method name:", c["name"])
-							fmt.Println("\t method offset:", c["offset"])
+						for _, meth := range methods {
+
+							if strings.ToLower(matchType) == "regex" {
+
+								for _, m := range utils.RegexMatch(meth["name"], val.(string)) {
+									evidence := createEvidenceStruct(file, m, meth["offset"], ruleName)
+
+									if (model.Evidence{}) != evidence {
+										evidenceInstances = append(evidenceInstances, evidence)
+									}
+								}
+							}
 						}
 					}
 				}
