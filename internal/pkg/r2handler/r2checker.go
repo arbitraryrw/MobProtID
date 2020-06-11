@@ -92,8 +92,39 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 		} else if strings.ToLower(ruleType) == "syscalls" {
 			//syscalls search binary
-		} else if strings.ToLower(ruleType) == "binaryInfo" {
-			//binaryInfo search binary
+		} else if strings.ToLower(ruleType) == "compilerflags" {
+
+			for k, v := range allbinaryInfo {
+				fmt.Println("[------------------------------] File ->", k, v)
+
+				if len(k) > 4 {
+
+					fileEnding := filepath.Base(k)[len(filepath.Base(k))-4:]
+
+					if fileEnding == ".so" || fileEnding == ".dylib" ||
+						fileEnding == ".ipa" || fileEnding == ".dex" {
+
+						if val, ok := v["canary"]; ok {
+
+							b, err := strconv.ParseBool(val)
+
+							if err != nil {
+								panic("Unable to parse canary binary info bool")
+							}
+
+							if !b {
+								evidence := createEvidenceStruct(k, "Canary: False", "0x0", ruleName)
+
+								if (model.Evidence{}) != evidence {
+									evidenceInstances = append(evidenceInstances, evidence)
+								}
+							}
+						}
+
+					}
+				}
+			}
+
 		} else if strings.ToLower(ruleType) == "classobjects" {
 			for file, bundle := range allBinClassAndFunc {
 

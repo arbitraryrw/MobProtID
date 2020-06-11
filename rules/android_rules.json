@@ -106,7 +106,21 @@
           "matchValue": [
             "Secret"
           ]
-      }
+        }
+      },
+      {
+        "ruleId":"006",
+        "ruleName": "Radare2 compiler flags",
+        "description" : "TBC",
+        "condition": "OR",
+        "part_1": {
+            "type": "compilerflags",
+            "handler": "radare2",
+            "matchType": "regex",
+            "matchValue": [
+              "PIC"
+            ]
+        }
       }
 
     ]
