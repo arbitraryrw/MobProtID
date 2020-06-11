@@ -98,7 +98,15 @@
             "matchValue": [
               "(?i)(.*root.*)"
             ]
-        }
+        },
+        "part_2": {
+          "type": "fieldobjects",
+          "handler": "radare2",
+          "matchType": "exact",
+          "matchValue": [
+            "Secret"
+          ]
+      }
       }
 
     ]

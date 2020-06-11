@@ -181,6 +181,16 @@ func HandleRule(r model.Rule) model.RuleResult {
 									}
 								}
 
+							} else if strings.ToLower(matchType) == "exact" {
+
+								for _, m := range utils.ExactMatch(f["name"], val.(string)) {
+									evidence := createEvidenceStruct(file, m, f["offset"], ruleName)
+
+									if (model.Evidence{}) != evidence {
+										evidenceInstances = append(evidenceInstances, evidence)
+									}
+								}
+
 							}
 						}
 					}
