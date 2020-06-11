@@ -170,9 +170,18 @@ func HandleRule(r model.Rule) model.RuleResult {
 				for _, b := range bundle {
 
 					if fields, ok := b["fields"]; ok {
-						for _, c := range fields {
-							fmt.Println("\t field name:", c["name"])
-							fmt.Println("\t field offset:", c["offset"])
+						for _, f := range fields {
+							if strings.ToLower(matchType) == "regex" {
+
+								for _, m := range utils.RegexMatch(f["name"], val.(string)) {
+									evidence := createEvidenceStruct(file, m, f["offset"], ruleName)
+
+									if (model.Evidence{}) != evidence {
+										evidenceInstances = append(evidenceInstances, evidence)
+									}
+								}
+
+							}
 						}
 					}
 

@@ -96,7 +96,7 @@
             "handler": "radare2",
             "matchType": "regex",
             "matchValue": [
-              "(?i)(.*rootdetection.*)"
+              "(?i)(.*root.*)"
             ]
         }
       }
