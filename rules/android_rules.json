@@ -84,7 +84,21 @@
           "matchValue": [
             "SuperSecret"
           ]
-      }
+        }
+      },
+      {
+        "ruleId":"005",
+        "ruleName": "Radare2 field objects Rule",
+        "description" : "Checking for known classes / ",
+        "condition": "OR",
+        "part_1": {
+            "type": "fieldobjects",
+            "handler": "radare2",
+            "matchType": "regex",
+            "matchValue": [
+              "(?i)(.*rootdetection.*)"
+            ]
+        }
       }
 
     ]

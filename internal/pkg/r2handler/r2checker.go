@@ -163,11 +163,9 @@ func HandleRule(r model.Rule) model.RuleResult {
 					}
 				}
 			}
-		} else if strings.ToLower(ruleType) == "objects" {
-			// Search through Classes and functions in binary
-			fmt.Println("[INFO] Searching binary classes and functions..")
-			for f, bundle := range allBinClassAndFunc {
-				fmt.Println("[INFO] Searching file", f)
+		} else if strings.ToLower(ruleType) == "fieldobjects" {
+			for file, bundle := range allBinClassAndFunc {
+				fmt.Println("[INFO] Searching file", file)
 
 				for _, b := range bundle {
 
