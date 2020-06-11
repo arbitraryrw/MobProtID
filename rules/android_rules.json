@@ -74,9 +74,17 @@
             "handler": "radare2",
             "matchType": "regex",
             "matchValue": [
-              "(?i)(.*sensitivelogic.*)"
+              "(?i)(.*rootdetection.*)"
             ]
-        }
+        },
+        "part_2": {
+          "type": "methodObjects",
+          "handler": "radare2",
+          "matchType": "exact",
+          "matchValue": [
+            "SuperSecret"
+          ]
+      }
       }
 
     ]
