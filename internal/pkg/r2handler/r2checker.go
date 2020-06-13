@@ -108,28 +108,8 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 					if classes, ok := b["class"]; ok {
 						for _, c := range classes {
-
-							if strings.ToLower(matchType) == "regex" {
-
-								for _, m := range utils.RegexMatch(c["name"], val.(string)) {
-									evidence := createEvidenceStruct(file, m, c["offset"], ruleName)
-
-									if (model.Evidence{}) != evidence {
-										evidenceInstances = append(evidenceInstances, evidence)
-									}
-								}
-
-							} else if strings.ToLower(matchType) == "exact" {
-
-								for _, m := range utils.ExactMatch(c["name"], val.(string)) {
-									evidence := createEvidenceStruct(file, m, c["offset"], ruleName)
-
-									if (model.Evidence{}) != evidence {
-										evidenceInstances = append(evidenceInstances, evidence)
-									}
-								}
-
-							}
+							evidence := evalMatch(file, r, val.(string), c)
+							evidenceInstances = append(evidenceInstances, evidence...)
 						}
 					} else {
 						panic(fmt.Sprintf("[ERROR] No class object found in %q", b))
@@ -143,29 +123,9 @@ func HandleRule(r model.Rule) model.RuleResult {
 				for _, b := range bundle {
 
 					if methods, ok := b["methods"]; ok {
-						for _, meth := range methods {
-
-							if strings.ToLower(matchType) == "regex" {
-
-								for _, m := range utils.RegexMatch(meth["name"], val.(string)) {
-									evidence := createEvidenceStruct(file, m, meth["offset"], ruleName)
-
-									if (model.Evidence{}) != evidence {
-										evidenceInstances = append(evidenceInstances, evidence)
-									}
-								}
-
-							} else if strings.ToLower(matchType) == "exact" {
-
-								for _, m := range utils.ExactMatch(meth["name"], val.(string)) {
-									evidence := createEvidenceStruct(file, m, meth["offset"], ruleName)
-
-									if (model.Evidence{}) != evidence {
-										evidenceInstances = append(evidenceInstances, evidence)
-									}
-								}
-
-							}
+						for _, m := range methods {
+							evidence := evalMatch(file, r, val.(string), m)
+							evidenceInstances = append(evidenceInstances, evidence...)
 						}
 					}
 				}
@@ -178,27 +138,8 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 					if fields, ok := b["fields"]; ok {
 						for _, f := range fields {
-							if strings.ToLower(matchType) == "regex" {
-
-								for _, m := range utils.RegexMatch(f["name"], val.(string)) {
-									evidence := createEvidenceStruct(file, m, f["offset"], ruleName)
-
-									if (model.Evidence{}) != evidence {
-										evidenceInstances = append(evidenceInstances, evidence)
-									}
-								}
-
-							} else if strings.ToLower(matchType) == "exact" {
-
-								for _, m := range utils.ExactMatch(f["name"], val.(string)) {
-									evidence := createEvidenceStruct(file, m, f["offset"], ruleName)
-
-									if (model.Evidence{}) != evidence {
-										evidenceInstances = append(evidenceInstances, evidence)
-									}
-								}
-
-							}
+							evidence := evalMatch(file, r, val.(string), f)
+							evidenceInstances = append(evidenceInstances, evidence...)
 						}
 					}
 
