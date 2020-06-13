@@ -72,10 +72,28 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 		} else if strings.ToLower(ruleType) == "syscalls" {
 			//syscalls search binary
-		} else if strings.ToLower(ruleType) == "piecompilerflag" {
+		} else if strings.Contains(strings.ToLower(ruleType), "compilerflag") {
+
+			var dataTarget string
+
+			if strings.ToLower(ruleType[:3]) == "pic" {
+				dataTarget = "pic"
+			} else if strings.ToLower(ruleType[:6]) == "canary" {
+				dataTarget = "canary"
+			} else if strings.ToLower(ruleType[:8]) == "stripped" {
+				dataTarget = "stripped"
+			} else if strings.ToLower(ruleType[:8]) == "compiler" {
+				dataTarget = "compiler"
+			} else {
+				panic(fmt.Sprintf(
+					"[ERROR] Unknown rule type %q in %q",
+					ruleType,
+					ruleName))
+			}
 
 			for file, v := range allbinaryInfo {
-				fmt.Println("[------------------------------] File ->", file, v, val)
+
+				// fmt.Println("[INFO] Binary Info -->", file, allbinaryInfo)
 
 				if len(file) < 4 {
 					continue
@@ -86,7 +104,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 				if fileEnding == ".so" || fileEnding == ".dylib" ||
 					fileEnding == ".ipa" || fileEnding == ".dex" {
 
-					if canary, ok := v["canary"]; ok {
+					if canary, ok := v[dataTarget]; ok {
 
 						evidence := evalMatch(file, r, val.(string), canary)
 						evidenceInstances = append(evidenceInstances, evidence...)

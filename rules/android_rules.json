@@ -112,14 +112,30 @@
         "ruleId":"006",
         "ruleName": "Radare2 compiler flags",
         "description" : "TBC",
-        "condition": "OR",
+        "condition": "AND",
         "part_1": {
-            "type": "PIECompilerFlag",
-            "handler": "radare2",
-            "matchType": "exact",
-            "matchValue": [
-              "false"
-            ]
+          "type": "picCompilerFlag",
+          "handler": "radare2",
+          "matchType": "exact",
+          "matchValue": [
+            "false"
+          ]
+        },
+        "part_2": {
+          "type": "canaryCompilerFlag",
+          "handler": "radare2",
+          "matchType": "exact",
+          "matchValue": [
+            "false"
+          ]
+        },
+        "part_3": {
+          "type": "strippedCompilerFlag",
+          "handler": "radare2",
+          "matchType": "exact",
+          "matchValue": [
+            "false"
+          ]
         }
       }
 
