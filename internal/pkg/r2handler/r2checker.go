@@ -62,31 +62,12 @@ func HandleRule(r model.Rule) model.RuleResult {
 		} else if strings.ToLower(ruleType) == "symbols" {
 
 			fmt.Println("[INFO] Searching binary symbols..")
-			for k, v := range allSymbolsInBinary {
+			for file, v := range allSymbolsInBinary {
 				// fmt.Println("[INFO] Symbol File ->", k)
 
 				for _, s := range v {
-					if strings.ToLower(matchType) == "regex" {
-
-						for _, m := range utils.RegexMatch(s["name"], val.(string)) {
-							evidence := createEvidenceStruct(k, m, s["offset"], ruleName)
-
-							if (model.Evidence{}) != evidence {
-								evidenceInstances = append(evidenceInstances, evidence)
-							}
-						}
-
-					} else if strings.ToLower(matchType) == "exact" {
-
-						for _, m := range utils.ExactMatch(s["name"], val.(string)) {
-							evidence := createEvidenceStruct(k, m, s["offset"], ruleName)
-
-							if (model.Evidence{}) != evidence {
-								evidenceInstances = append(evidenceInstances, evidence)
-							}
-						}
-
-					}
+					evidence := evalMatch(file, r, val.(string), s)
+					evidenceInstances = append(evidenceInstances, evidence...)
 				}
 			}
 
@@ -96,6 +77,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 			var pieMatchVal bool
 
+			// Convert the matchValue to a boolean and store it for later usage
 			if strings.ToLower(matchType) == "bool" {
 
 				b, err := strconv.ParseBool(val.(string))
@@ -285,6 +267,38 @@ func createEvidenceStruct(file string, name string, offset string, ruleName stri
 	evidence.RuleName = ruleName
 
 	return evidence
+}
+
+func evalMatch(file string, r model.Rule, matchValue string, data map[string]string) []model.Evidence {
+
+	ruleName := r.Name
+	matchType := r.MatchType
+
+	var evidenceInstances []model.Evidence
+
+	if strings.ToLower(matchType) == "regex" {
+
+		for _, m := range utils.RegexMatch(data["name"], matchValue) {
+			evidence := createEvidenceStruct(file, m, data["offset"], ruleName)
+
+			if (model.Evidence{}) != evidence {
+				evidenceInstances = append(evidenceInstances, evidence)
+			}
+		}
+
+	} else if strings.ToLower(matchType) == "exact" {
+
+		for _, m := range utils.ExactMatch(data["name"], matchValue) {
+			evidence := createEvidenceStruct(file, m, data["offset"], ruleName)
+
+			if (model.Evidence{}) != evidence {
+				evidenceInstances = append(evidenceInstances, evidence)
+			}
+		}
+
+	}
+
+	return evidenceInstances
 }
 
 //Anal - analyses the information gathered by r2
