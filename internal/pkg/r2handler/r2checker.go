@@ -3,7 +3,6 @@ package r2handler
 import (
 	"fmt"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/model"
@@ -89,11 +88,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 					if canary, ok := v["canary"]; ok {
 
-						c := make(map[string]string, 0)
-						c["name"] = canary
-						c["offset"] = "0xtest"
-
-						evidence := evalMatch(file, r, val.(string), c)
+						evidence := evalMatch(file, r, val.(string), canary)
 						evidenceInstances = append(evidenceInstances, evidence...)
 
 					}
@@ -249,66 +244,66 @@ func Anal() map[string]bool {
 	// }
 
 	fmt.Println("[INFO] Analysing binary info..")
-	for k, v := range allbinaryInfo {
-		fmt.Println("[INFO] File ->", k)
+	// for k, v := range allbinaryInfo {
+	// 	fmt.Println("[INFO] File ->", k)
 
-		if len(k) > 4 {
+	// 	if len(k) > 4 {
 
-			fileEnding := filepath.Base(k)[len(filepath.Base(k))-4:]
+	// 		fileEnding := filepath.Base(k)[len(filepath.Base(k))-4:]
 
-			if fileEnding == ".so" || fileEnding == ".dylib" ||
-				fileEnding == ".ipa" || fileEnding == ".dex" {
+	// 		if fileEnding == ".so" || fileEnding == ".dylib" ||
+	// 			fileEnding == ".ipa" || fileEnding == ".dex" {
 
-				if val, ok := v["canary"]; ok {
+	// 			if val, ok := v["canary"]; ok {
 
-					b, err := strconv.ParseBool(val)
+	// 				b, err := strconv.ParseBool(val)
 
-					if err != nil {
-						panic("Unable to parse canary binary info bool")
-					}
+	// 				if err != nil {
+	// 					panic("Unable to parse canary binary info bool")
+	// 				}
 
-					if !b {
-						fmt.Println("[FINDING] File is not compiled with canary flag:", k)
-					}
-				}
+	// 				if !b {
+	// 					fmt.Println("[FINDING] File is not compiled with canary flag:", k)
+	// 				}
+	// 			}
 
-				if val, ok := v["compiler"]; ok {
+	// 			if val, ok := v["compiler"]; ok {
 
-					// Expand this to identify certain compilers like ollvm..
-					if val != "" {
-						fmt.Println("[FINDING] Compiled using :", k)
-					}
-				}
+	// 				// Expand this to identify certain compilers like ollvm..
+	// 				if val != "" {
+	// 					fmt.Println("[FINDING] Compiled using :", k)
+	// 				}
+	// 			}
 
-				if val, ok := v["pic"]; ok {
+	// 			if val, ok := v["pic"]; ok {
 
-					b, err := strconv.ParseBool(val)
+	// 				b, err := strconv.ParseBool(val)
 
-					if err != nil {
-						panic("Unable to parse pic binary info bool")
-					}
+	// 				if err != nil {
+	// 					panic("Unable to parse pic binary info bool")
+	// 				}
 
-					if !b {
-						fmt.Println("[FINDING] File is not compiled with PIC/PIE flag:", k)
-					}
-				}
+	// 				if !b {
+	// 					fmt.Println("[FINDING] File is not compiled with PIC/PIE flag:", k)
+	// 				}
+	// 			}
 
-				if val, ok := v["stripped"]; ok {
+	// 			if val, ok := v["stripped"]; ok {
 
-					b, err := strconv.ParseBool(val)
+	// 				b, err := strconv.ParseBool(val)
 
-					if err != nil {
-						panic("Unable to parse stripped binary info bool")
-					}
+	// 				if err != nil {
+	// 					panic("Unable to parse stripped binary info bool")
+	// 				}
 
-					if !b {
-						fmt.Println("[FINDING] File is not compiled with stripped flag:", k)
-					}
-				}
+	// 				if !b {
+	// 					fmt.Println("[FINDING] File is not compiled with stripped flag:", k)
+	// 				}
+	// 			}
 
-			}
-		}
-	}
+	// 		}
+	// 	}
+	// }
 
 	fmt.Println("[INFO] Analysing syscalls..")
 	for k, v := range allSyscall {

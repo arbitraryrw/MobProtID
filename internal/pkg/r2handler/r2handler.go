@@ -15,7 +15,7 @@ import (
 
 var allStringsInBinary map[string][]map[string]string
 var allSymbolsInBinary map[string][]map[string]string
-var allbinaryInfo map[string]map[string]string
+var allbinaryInfo map[string]map[string]map[string]string
 var allSyscall map[string]map[string]string
 var allBinClassAndFunc map[string][]map[string][]map[string]string
 
@@ -23,7 +23,7 @@ func init() {
 	allStringsInBinary = make(map[string][]map[string]string, 0)
 	allSymbolsInBinary = make(map[string][]map[string]string, 0)
 	allSyscall = make(map[string]map[string]string, 0)
-	allbinaryInfo = make(map[string]map[string]string, 0)
+	allbinaryInfo = make(map[string]map[string]map[string]string, 0)
 	allBinClassAndFunc = make(map[string][]map[string][]map[string]string, 0)
 }
 
@@ -37,7 +37,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 		fmt.Println(index, path)
 
 		strings := make(chan []map[string]string)
-		binaryInfo := make(chan map[string]string)
+		binaryInfo := make(chan map[string]map[string]string)
 		symbols := make(chan []map[string]string)
 		syscalls := make(chan map[string]string)
 		binClassAndFuncs := make(chan []map[string][]map[string]string)
@@ -195,7 +195,7 @@ func getStringEntireBinary(r2session r2pipe.Pipe) []map[string]string {
 	return stringsInBinary
 }
 
-func getBinaryInfo(r2session r2pipe.Pipe) map[string]string {
+func getBinaryInfo(r2session r2pipe.Pipe) map[string]map[string]string {
 
 	var buf interface{}
 
@@ -209,25 +209,45 @@ func getBinaryInfo(r2session r2pipe.Pipe) map[string]string {
 		panic(err)
 	}
 
-	binaryInfo := make(map[string]string)
+	binaryInfo := make(map[string]map[string]string)
 
 	if bi, ok := buf.(map[string]interface{}); ok {
 		// fmt.Println("R2 returned ->", bi)
 
 		if val, ok := bi["compiler"].(string); ok {
-			binaryInfo["compiler"] = val
+
+			compBundle := make(map[string]string)
+			compBundle["name"] = val
+			compBundle["offset"] = "0x0"
+
+			binaryInfo["compiler"] = compBundle
 		}
 
 		if val, ok := bi["canary"].(bool); ok {
-			binaryInfo["canary"] = strconv.FormatBool(val)
+
+			canaryBundle := make(map[string]string)
+			canaryBundle["name"] = strconv.FormatBool(val)
+			canaryBundle["offset"] = "0x0"
+
+			binaryInfo["canary"] = canaryBundle
 		}
 
 		if val, ok := bi["pic"].(bool); ok {
-			binaryInfo["pic"] = strconv.FormatBool(val)
+
+			picBundle := make(map[string]string)
+			picBundle["name"] = strconv.FormatBool(val)
+			picBundle["offset"] = "0x0"
+
+			binaryInfo["pic"] = picBundle
 		}
 
 		if val, ok := bi["stripped"].(bool); ok {
-			binaryInfo["stripped"] = strconv.FormatBool(val)
+
+			strippedBundle := make(map[string]string)
+			strippedBundle["name"] = strconv.FormatBool(val)
+			strippedBundle["offset"] = "0x0"
+
+			binaryInfo["stripped"] = strippedBundle
 		}
 
 	} else {
