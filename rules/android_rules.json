@@ -114,11 +114,11 @@
         "description" : "TBC",
         "condition": "OR",
         "part_1": {
-            "type": "compilerflags",
+            "type": "PIECompilerFlag",
             "handler": "radare2",
-            "matchType": "regex",
+            "matchType": "bool",
             "matchValue": [
-              "PIC"
+              "false"
             ]
         }
       }

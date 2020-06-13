@@ -92,10 +92,30 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 		} else if strings.ToLower(ruleType) == "syscalls" {
 			//syscalls search binary
-		} else if strings.ToLower(ruleType) == "compilerflags" {
+		} else if strings.ToLower(ruleType) == "piecompilerflag" {
+
+			var pieMatchVal bool
+
+			if strings.ToLower(matchType) == "bool" {
+
+				b, err := strconv.ParseBool(val.(string))
+
+				if err != nil {
+					panic("Unable to parse canary binary info bool")
+				}
+
+				pieMatchVal = b
+
+			} else {
+				panic(
+					fmt.Sprintf(
+						"[ERROR] PIECompilerFlag does not support matchType of %q in rule %q",
+						matchType,
+						ruleName))
+			}
 
 			for k, v := range allbinaryInfo {
-				fmt.Println("[------------------------------] File ->", k, v)
+				fmt.Println("[------------------------------] File ->", k, v, val)
 
 				if len(k) < 4 {
 					continue
@@ -114,7 +134,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 							panic("Unable to parse canary binary info bool")
 						}
 
-						if !b {
+						if b == pieMatchVal {
 							evidence := createEvidenceStruct(k, "Canary: False", "0x0", ruleName)
 
 							if (model.Evidence{}) != evidence {
