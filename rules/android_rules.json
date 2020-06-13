@@ -116,7 +116,7 @@
         "part_1": {
             "type": "PIECompilerFlag",
             "handler": "radare2",
-            "matchType": "bool",
+            "matchType": "exact",
             "matchValue": [
               "false"
             ]

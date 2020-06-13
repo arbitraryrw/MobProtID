@@ -75,54 +75,27 @@ func HandleRule(r model.Rule) model.RuleResult {
 			//syscalls search binary
 		} else if strings.ToLower(ruleType) == "piecompilerflag" {
 
-			var pieMatchVal bool
+			for file, v := range allbinaryInfo {
+				fmt.Println("[------------------------------] File ->", file, v, val)
 
-			// Convert the matchValue to a boolean and store it for later usage
-			if strings.ToLower(matchType) == "bool" {
-
-				b, err := strconv.ParseBool(val.(string))
-
-				if err != nil {
-					panic("Unable to parse canary binary info bool")
-				}
-
-				pieMatchVal = b
-
-			} else {
-				panic(
-					fmt.Sprintf(
-						"[ERROR] PIECompilerFlag does not support matchType of %q in rule %q",
-						matchType,
-						ruleName))
-			}
-
-			for k, v := range allbinaryInfo {
-				fmt.Println("[------------------------------] File ->", k, v, val)
-
-				if len(k) < 4 {
+				if len(file) < 4 {
 					continue
 				}
 
-				fileEnding := filepath.Base(k)[len(filepath.Base(k))-4:]
+				fileEnding := filepath.Base(file)[len(filepath.Base(file))-4:]
 
 				if fileEnding == ".so" || fileEnding == ".dylib" ||
 					fileEnding == ".ipa" || fileEnding == ".dex" {
 
-					if val, ok := v["canary"]; ok {
+					if canary, ok := v["canary"]; ok {
 
-						b, err := strconv.ParseBool(val)
+						c := make(map[string]string, 0)
+						c["name"] = canary
+						c["offset"] = "0xtest"
 
-						if err != nil {
-							panic("Unable to parse canary binary info bool")
-						}
+						evidence := evalMatch(file, r, val.(string), c)
+						evidenceInstances = append(evidenceInstances, evidence...)
 
-						if b == pieMatchVal {
-							evidence := createEvidenceStruct(k, "Canary: False", "0x0", ruleName)
-
-							if (model.Evidence{}) != evidence {
-								evidenceInstances = append(evidenceInstances, evidence)
-							}
-						}
 					}
 
 				}
@@ -296,6 +269,12 @@ func evalMatch(file string, r model.Rule, matchValue string, data map[string]str
 			}
 		}
 
+	} else {
+		panic(
+			fmt.Sprintf(
+				"[ERROR] r2handler does not support matchType of %q in rule %q",
+				r.MatchType,
+				r.Name))
 	}
 
 	return evidenceInstances
