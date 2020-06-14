@@ -137,6 +137,20 @@
             "false"
           ]
         }
+      },
+      {
+        "ruleId":"007",
+        "ruleName": "Radare2 Syscall Rule",
+        "description" : "Checking for syscalls",
+        "condition": "OR",
+        "part_1": {
+            "type": "sysCalls",
+            "handler": "radare2",
+            "matchType": "regex",
+            "matchValue": [
+              "(?i)(.*root.*)"
+            ]
+        }
       }
 
     ]

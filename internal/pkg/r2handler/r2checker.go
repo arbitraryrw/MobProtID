@@ -71,7 +71,19 @@ func HandleRule(r model.Rule) model.RuleResult {
 			}
 
 		} else if strings.ToLower(ruleType) == "syscalls" {
-			//syscalls search binary
+
+			for k, v := range allSyscall {
+				fmt.Println("[INFO] File ->", k)
+
+				if len(v) > 1 {
+					fmt.Println("[FINDING] There are some syscalls! A total of", len(v), "were found")
+				}
+
+				for offset, syscall := range v {
+					fmt.Println(syscall, offset)
+				}
+			}
+
 		} else if strings.Contains(strings.ToLower(ruleType), "compilerflag") {
 
 			var dataTarget string
@@ -257,68 +269,6 @@ func Anal() map[string]bool {
 	// 	for _, bf := range f {
 	// 		if val, ok := bf["name"]; ok {
 	// 			CheckAllSigs(val)
-	// 		}
-	// 	}
-	// }
-
-	fmt.Println("[INFO] Analysing binary info..")
-	// for k, v := range allbinaryInfo {
-	// 	fmt.Println("[INFO] File ->", k)
-
-	// 	if len(k) > 4 {
-
-	// 		fileEnding := filepath.Base(k)[len(filepath.Base(k))-4:]
-
-	// 		if fileEnding == ".so" || fileEnding == ".dylib" ||
-	// 			fileEnding == ".ipa" || fileEnding == ".dex" {
-
-	// 			if val, ok := v["canary"]; ok {
-
-	// 				b, err := strconv.ParseBool(val)
-
-	// 				if err != nil {
-	// 					panic("Unable to parse canary binary info bool")
-	// 				}
-
-	// 				if !b {
-	// 					fmt.Println("[FINDING] File is not compiled with canary flag:", k)
-	// 				}
-	// 			}
-
-	// 			if val, ok := v["compiler"]; ok {
-
-	// 				// Expand this to identify certain compilers like ollvm..
-	// 				if val != "" {
-	// 					fmt.Println("[FINDING] Compiled using :", k)
-	// 				}
-	// 			}
-
-	// 			if val, ok := v["pic"]; ok {
-
-	// 				b, err := strconv.ParseBool(val)
-
-	// 				if err != nil {
-	// 					panic("Unable to parse pic binary info bool")
-	// 				}
-
-	// 				if !b {
-	// 					fmt.Println("[FINDING] File is not compiled with PIC/PIE flag:", k)
-	// 				}
-	// 			}
-
-	// 			if val, ok := v["stripped"]; ok {
-
-	// 				b, err := strconv.ParseBool(val)
-
-	// 				if err != nil {
-	// 					panic("Unable to parse stripped binary info bool")
-	// 				}
-
-	// 				if !b {
-	// 					fmt.Println("[FINDING] File is not compiled with stripped flag:", k)
-	// 				}
-	// 			}
-
 	// 		}
 	// 	}
 	// }
