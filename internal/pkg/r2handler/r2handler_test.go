@@ -48,12 +48,14 @@ func TestUgetSysCalls(t *testing.T) {
 	var result = false
 
 	r2s := openR2Pipe("/bin/bash")
-	expect := "read"
+	expectSyscallName := "read"
+	expectSyscallOffset := "0x00008d80"
 	got := getSysCalls(r2s)
 
 	if len(got) > 0 {
 		for _, v := range got {
-			if v == expect {
+			if v["name"] == expectSyscallName &&
+				v["offset"] == expectSyscallOffset {
 				result = true
 				break
 			}
@@ -62,7 +64,9 @@ func TestUgetSysCalls(t *testing.T) {
 
 	if result == false {
 		fmt.Println("Failed comparison!")
-		t.Errorf("getSysCalls = could not find %q in /bin/bash r2 reponse", expect)
+		t.Errorf("getSysCalls = could not find %q at %q in /bin/bash r2 reponse",
+			expectSyscallName,
+			expectSyscallOffset)
 	}
 }
 
