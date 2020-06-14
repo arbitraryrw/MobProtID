@@ -72,16 +72,13 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 		} else if strings.ToLower(ruleType) == "syscalls" {
 
-			for k, v := range allSyscall {
-				fmt.Println("[INFO] File ->", k)
+			for file, v := range allSyscall {
+				fmt.Println("[INFO] Syscall file ->", file, v)
 
 				if len(v) > 1 {
 					fmt.Println("[FINDING] There are some syscalls! A total of", len(v), "were found")
 				}
 
-				for offset, syscall := range v {
-					fmt.Println(syscall, offset)
-				}
 			}
 
 		} else if strings.Contains(strings.ToLower(ruleType), "compilerflag") {

@@ -16,13 +16,13 @@ import (
 var allStringsInBinary map[string][]map[string]string
 var allSymbolsInBinary map[string][]map[string]string
 var allbinaryInfo map[string]map[string]map[string]string
-var allSyscall map[string]map[string]string
+var allSyscall map[string][]map[string]string
 var allBinClassAndFunc map[string][]map[string][]map[string]string
 
 func init() {
 	allStringsInBinary = make(map[string][]map[string]string, 0)
 	allSymbolsInBinary = make(map[string][]map[string]string, 0)
-	allSyscall = make(map[string]map[string]string, 0)
+	allSyscall = make(map[string][]map[string]string, 0)
 	allbinaryInfo = make(map[string]map[string]map[string]string, 0)
 	allBinClassAndFunc = make(map[string][]map[string][]map[string]string, 0)
 }
@@ -39,7 +39,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 		strings := make(chan []map[string]string)
 		binaryInfo := make(chan map[string]map[string]string)
 		symbols := make(chan []map[string]string)
-		syscalls := make(chan map[string]string)
+		syscalls := make(chan []map[string]string)
 		binClassAndFuncs := make(chan []map[string][]map[string]string)
 
 		// fmt.Println(index, path)
@@ -332,7 +332,7 @@ func getSymbols(r2session r2pipe.Pipe) []map[string]string {
 	return symbolsInBinary
 }
 
-func getSysCalls(r2session r2pipe.Pipe) map[string]string {
+func getSysCalls(r2session r2pipe.Pipe) []map[string]string {
 
 	var buf string
 
@@ -347,18 +347,26 @@ func getSysCalls(r2session r2pipe.Pipe) map[string]string {
 		panic(err)
 	}
 
-	syscalls := make(map[string]string, 0)
+	syscallMap := make([]map[string]string, 0)
 
 	if len(buf) > 0 {
 
 		for _, val := range strings.Split(buf, "\n") {
+
+			syscall := make(map[string]string, 0)
+
 			splitVal := strings.Fields(val)
-			syscalls[splitVal[0]] = splitVal[1]
+
+			syscall["name"] = splitVal[1]
+			syscall["offset"] = splitVal[0]
+
+			syscallMap = append(syscallMap, syscall)
+
 		}
 
 	}
 
-	return syscalls
+	return syscallMap
 }
 
 func getStringsDataSections(r2session r2pipe.Pipe) {
