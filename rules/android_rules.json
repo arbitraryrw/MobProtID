@@ -148,8 +148,16 @@
             "handler": "radare2",
             "matchType": "regex",
             "matchValue": [
-              "(?i)(.*root.*)"
+              "(?i)(.*read.*)"
             ]
+        },
+        "part_2": {
+          "type": "sysCalls",
+          "handler": "radare2",
+          "matchType": "exact",
+          "matchValue": [
+            "read"
+          ]
         }
       }
 
