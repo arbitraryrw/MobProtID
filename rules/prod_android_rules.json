@@ -1,0 +1,24 @@
+{
+    "rules": [
+      {
+        "ruleId":"001",
+        "ruleName": "rootdetectionFiles",
+        "description" : "Checks for the presence of the SU binaries statically",
+        "condition": "AND",
+        "part_1": {
+            "type": "static",
+            "handler": "dummyTestHandlerFail",
+            "matchType": "regex",
+            "invert" : true,
+            "matchValue": [
+                "/sbin/su",
+                "/system/bin/su",
+                "/system/bin/failsafe/su",
+                "/system/xbin/su"
+            ]
+        }
+
+      }
+
+    ]
+  }

@@ -269,19 +269,6 @@ func Anal() map[string]bool {
 	// 	}
 	// }
 
-	fmt.Println("[INFO] Analysing syscalls..")
-	for k, v := range allSyscall {
-		fmt.Println("[INFO] File ->", k)
-
-		if len(v) > 1 {
-			fmt.Println("[FINDING] There are some syscalls! A total of", len(v), "were found")
-		}
-
-		// for offset, syscall := range v {
-		// 	fmt.Println(syscall, offset)
-		// }
-	}
-
 	//ToDO: Analysis logic here
 	// faccesstat, open, stat64
 

@@ -16,7 +16,7 @@ func Description() string {
 }
 
 // Start initialises the core analysis orchestration logic
-func Start(bp string) {
+func Start(bp string, testRuleSet bool) {
 	fmt.Println("[INFO] Engine Starting..")
 	fmt.Println("[INFO] Analysis artifacts stored: ", utils.AnalysisDir)
 
@@ -28,12 +28,22 @@ func Start(bp string) {
 	if analFileBaseName[len(analFileBaseName)-4:] == ".apk" {
 		platform = "android"
 		filesOfInterest = append(filesOfInterest, ".so", "2.dex")
-		rules = utils.GetRuleFiles("android_rules.json")
+
+		if testRuleSet {
+			rules = utils.GetRuleFiles("test_android_rules.json")
+		} else {
+			rules = utils.GetRuleFiles("prod_android_rules.json")
+		}
 
 	} else if analFileBaseName[len(analFileBaseName)-4:] == ".ipa" {
 		platform = "ios"
 		filesOfInterest = append(filesOfInterest, ".dylib")
-		rules = utils.GetRuleFiles("ios_rules.json")
+
+		if testRuleSet {
+			rules = utils.GetRuleFiles("test_ios_rules.json")
+		} else {
+			rules = utils.GetRuleFiles("prod_ios_rules.json")
+		}
 	}
 
 	if platform == "unknown" {
