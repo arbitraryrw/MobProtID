@@ -2,20 +2,89 @@
     "rules": [
       {
         "ruleId":"001",
-        "ruleName": "rootdetectionFiles",
-        "description" : "Checks for the presence of the SU binaries statically",
-        "condition": "AND",
+        "ruleName": "rootDetections",
+        "description" : "Checks for the presence of root detection logic in the binary",
+        "condition": "OR",
         "part_1": {
-            "type": "static",
-            "handler": "dummyTestHandlerFail",
+            "type": "strings",
+            "handler": "radare2",
             "matchType": "regex",
-            "invert" : true,
+            "invert" : false,
             "matchValue": [
-                "/sbin/su",
-                "/system/bin/su",
-                "/system/bin/failsafe/su",
-                "/system/xbin/su"
+              "(?i)(.*BusinessLogic.*)",
+              "(?i)(.*rootdetect.*)",
+              "(?i)(.*rooted.*)",
+              "(?i)(.*supersecret.*)",
+              "(?i)(.*/sbin/su.*)",
+              "(?i)(.*/system/bin/su.*)",
+              "(?i)(.*/system/bin/failsafe/su.*)",
+              "(?i)(.*/system/xbin/su.*)",
+              "(?i)(.*/system/xbin/busybox.*)",
+              "(?i)(.*/system/sd/xbin/su.*)",
+              "(?i)(.*/data/local/su.*)",
+              "(?i)(.*/data/local/xbin/su.*)",
+              "(?i)(.*/data/local/bin/su.*)",
+              "(?i)(.*/system/app/Superuser.apk.*)",
+              "(?i)(.*/system/etc/init.d/99SuperSUDaemon.*)",
+              "(?i)(.*/dev/com.koushikdutta.superuser.daemon.*)",
+              "(?i)(.*/system/xbin/daemonsu.*)"
             ]
+        },
+        "part_2": {
+          "type": "symbols",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*BusinessLogic.*)",
+            "(?i)(.*rootdetect.*)",
+            "(?i)(.*rooted.*)",
+            "(?i)(.*supersecret.*)",
+            "(?i)(.*/sbin/su.*)",
+            "(?i)(.*/system/bin/su.*)",
+            "(?i)(.*/system/bin/failsafe/su.*)",
+            "(?i)(.*/system/xbin/su.*)",
+            "(?i)(.*/system/xbin/busybox.*)",
+            "(?i)(.*/system/sd/xbin/su.*)",
+            "(?i)(.*/data/local/su.*)",
+            "(?i)(.*/data/local/xbin/su.*)",
+            "(?i)(.*/data/local/bin/su.*)",
+            "(?i)(.*/system/app/Superuser.apk.*)",
+            "(?i)(.*/system/etc/init.d/99SuperSUDaemon.*)",
+            "(?i)(.*/dev/com.koushikdutta.superuser.daemon.*)",
+            "(?i)(.*/system/xbin/daemonsu.*)"
+          ]
+        },
+        "part_3": {
+          "type": "classobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*rootdetect.*)"
+          ]
+        },
+        "part_4": {
+          "type": "methodobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*rootdetect.*)",
+            "(?i)(.*magisk.*)",
+            "(?i)(.*supersu.*)"
+          ]
+        },
+        "part_5": {
+          "type": "fieldobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*rooted.*)",
+            "(?i)(.*magisk.*)",
+            "(?i)(.*supersu.*)"
+          ]
         }
 
       }
