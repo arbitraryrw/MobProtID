@@ -86,7 +86,80 @@
             "(?i)(.*supersu.*)"
           ]
         }
-
+      },
+      {
+        "ruleId":"002",
+        "ruleName": "dynamicInstDetection",
+        "description" : "Checks for the presence of dynamic instrumentation detection logic in the binary",
+        "condition": "OR",
+        "part_1": {
+            "type": "strings",
+            "handler": "radare2",
+            "matchType": "regex",
+            "invert" : false,
+            "matchValue": [
+              "(?i).*XposedBridge.jar.*",
+              "(?i).*/system/framework/XposedBridge.jar.*",
+              "(?i).*substrate.*",
+              "(?i).*frida-agent.*",
+              "(?i).*frida-gadget.*",
+              "(?i).*/usr/sbin/frida-server.*",
+              "(?i).*/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist.*",
+              "(?i).*/Library/MobileSubstrate/DynamicLibraries/Veency.plist.*",
+              "(?i).*/Library/MobileSubstrate/MobileSubstrate.dylib.*"
+            ]
+        },
+        "part_2": {
+          "type": "symbols",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i).*XposedBridge.jar.*",
+            "(?i).*/system/framework/XposedBridge.jar.*",
+            "(?i).*substrate.*",
+            "(?i).*frida-agent.*",
+            "(?i).*frida-gadget.*",
+            "(?i).*/usr/sbin/frida-server.*",
+            "(?i).*/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist.*",
+            "(?i).*/Library/MobileSubstrate/DynamicLibraries/Veency.plist.*",
+            "(?i).*/Library/MobileSubstrate/MobileSubstrate.dylib.*"
+          ]
+        },
+        "part_3": {
+          "type": "classobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*xposed.*)",
+            "(?i)(.*frida.*detect.*)",
+            "(?i)(.*dynamic.*inst.*)"
+          ]
+        },
+        "part_4": {
+          "type": "methodobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*frida.*)",
+            "(?i)(.*dynamic.*instrument.*)",
+            "(?i)(.*substrate.*)",
+            "(?i)(.*xposed.*)"
+          ]
+        },
+        "part_5": {
+          "type": "fieldobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*frida.*)",
+            "(?i)(.*substrate.*)",
+            "(?i)(.*xposed.*)"
+          ]
+        }
       }
 
     ]
