@@ -1,0 +1,123 @@
+{
+    "rules": [
+      {
+        "ruleId":"001",
+        "ruleName": "jailbreakDetections",
+        "description" : "Checks for the presence of jailbreak detection logic in the binary",
+        "condition": "OR",
+        "part_1": {
+            "type": "strings",
+            "handler": "radare2",
+            "matchType": "regex",
+            "invert" : false,
+            "matchValue": [
+                "(?i)(.*/Applications/Cydia.app.*)",
+                "(?i)(.*/Applications/FakeCarrier.app.*)",
+                "(?i)(.*/Applications/Icy.app.*)",
+                "(?i)(.*/Applications/IntelliScreen.app.*)",
+                "(?i)(.*/Applications/MxTube.app.*)",
+                "(?i)(.*/Applications/RockApp.app.*)",
+                "(?i)(.*/Applications/SBSettings.app.*)",
+                "(?i)(.*/Applications/WinterBoard.app.*)",
+                "(?i)(.*/Applications/blackra1n.app.*)",
+                "(?i)(.*/System/Library/LaunchDaemons/com.ikey.bbot.plist.*)",
+                "(?i)(.*/System/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist.*)",
+                "(?i)(.*/bin/bash.*)",
+                "(?i)(.*/bin/sh.*)",
+                "(?i)(.*/etc/apt.*)",
+                "(?i)(.*/etc/ssh/sshd_config.*)",
+                "(?i)(.*/private/var/lib/apt.*)",
+                "(?i)(.*/private/var/lib/cydia.*)",
+                "(?i)(.*/private/var/mobile/Library/SBSettings/Themes.*)",
+                "(?i)(.*/private/var/stash.*)",
+                "(?i)(.*/private/var/tmp/cydia.log.*)",
+                "(?i)(.*/usr/bin/sshd.*)",
+                "(?i)(.*/usr/libexec/sftp-server.*)",
+                "(?i)(.*/usr/libexec/ssh-keysign.*)",
+                "(?i)(.*/usr/sbin/sshd.*)",
+                "(?i)(.*/var/cache/apt.*)",
+                "(?i)(.*/var/lib/apt.*)",
+                "(?i)(.*/var/lib/cydia.*)",
+                "(?i)(.*/usr/bin/cycript.*)",
+                "(?i)(.*/usr/local/bin/cycript.*)",
+                "(?i)(.*/usr/lib/libcycript.dylib.*)"
+            ]
+        },
+        "part_2": {
+          "type": "symbols",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*/Applications/Cydia.app.*)",
+            "(?i)(.*/Applications/FakeCarrier.app.*)",
+            "(?i)(.*/Applications/Icy.app.*)",
+            "(?i)(.*/Applications/IntelliScreen.app.*)",
+            "(?i)(.*/Applications/MxTube.app.*)",
+            "(?i)(.*/Applications/RockApp.app.*)",
+            "(?i)(.*/Applications/SBSettings.app.*)",
+            "(?i)(.*/Applications/WinterBoard.app.*)",
+            "(?i)(.*/Applications/blackra1n.app.*)",
+            "(?i)(.*/System/Library/LaunchDaemons/com.ikey.bbot.plist.*)",
+            "(?i)(.*/System/Library/LaunchDaemons/com.saurik.Cydia.Startup.plist.*)",
+            "(?i)(.*/bin/bash.*)",
+            "(?i)(.*/bin/sh.*)",
+            "(?i)(.*/etc/apt.*)",
+            "(?i)(.*/etc/ssh/sshd_config.*)",
+            "(?i)(.*/private/var/lib/apt.*)",
+            "(?i)(.*/private/var/lib/cydia.*)",
+            "(?i)(.*/private/var/mobile/Library/SBSettings/Themes.*)",
+            "(?i)(.*/private/var/stash.*)",
+            "(?i)(.*/private/var/tmp/cydia.log.*)",
+            "(?i)(.*/usr/bin/sshd.*)",
+            "(?i)(.*/usr/libexec/sftp-server.*)",
+            "(?i)(.*/usr/libexec/ssh-keysign.*)",
+            "(?i)(.*/usr/sbin/sshd.*)",
+            "(?i)(.*/var/cache/apt.*)",
+            "(?i)(.*/var/lib/apt.*)",
+            "(?i)(.*/var/lib/cydia.*)",
+            "(?i)(.*/usr/bin/cycript.*)",
+            "(?i)(.*/usr/local/bin/cycript.*)",
+            "(?i)(.*/usr/lib/libcycript.dylib.*)"
+          ]
+        },
+        "part_3": {
+          "type": "classobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*jailbreak.*)",
+            "(?i)(.*jb.*detect.*)",
+            "(?i)(.*jb.*verify.*)",
+            "(?i)(.*cydia.*)"
+          ]
+        },
+        "part_4": {
+          "type": "methodobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*jailbreak.*)",
+            "(?i)(.*jb.*detect.*)",
+            "(?i)(.*jb.*verify.*)",
+            "(?i)(.*cydia.*)"
+          ]
+        },
+        "part_5": {
+          "type": "fieldobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*jailbreak.*)",
+            "(?i)(.*jb.*detect.*)",
+            "(?i)(.*jb.*verify.*)",
+            "(?i)(.*cydia.*)"
+          ]
+        }
+      }
+
+    ]
+  }

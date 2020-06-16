@@ -98,15 +98,15 @@
             "matchType": "regex",
             "invert" : false,
             "matchValue": [
-              "(?i).*XposedBridge.jar.*",
-              "(?i).*/system/framework/XposedBridge.jar.*",
-              "(?i).*substrate.*",
-              "(?i).*frida-agent.*",
-              "(?i).*frida-gadget.*",
-              "(?i).*/usr/sbin/frida-server.*",
-              "(?i).*/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist.*",
-              "(?i).*/Library/MobileSubstrate/DynamicLibraries/Veency.plist.*",
-              "(?i).*/Library/MobileSubstrate/MobileSubstrate.dylib.*"
+              "(?i)(.*XposedBridge.jar.*)",
+              "(?i)(.*/system/framework/XposedBridge.jar.*)",
+              "(?i)(.*substrate.*)",
+              "(?i)(.*frida-agent.*)",
+              "(?i)(.*frida-gadget.*)",
+              "(?i)(.*/usr/sbin/frida-server.*)",
+              "(?i)(.*/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist.*)",
+              "(?i)(.*/Library/MobileSubstrate/DynamicLibraries/Veency.plist.*)",
+              "(?i)(.*/Library/MobileSubstrate/MobileSubstrate.dylib.*)"
             ]
         },
         "part_2": {
@@ -115,15 +115,15 @@
           "matchType": "regex",
           "invert" : false,
           "matchValue": [
-            "(?i).*XposedBridge.jar.*",
-            "(?i).*/system/framework/XposedBridge.jar.*",
-            "(?i).*substrate.*",
-            "(?i).*frida-agent.*",
-            "(?i).*frida-gadget.*",
-            "(?i).*/usr/sbin/frida-server.*",
-            "(?i).*/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist.*",
-            "(?i).*/Library/MobileSubstrate/DynamicLibraries/Veency.plist.*",
-            "(?i).*/Library/MobileSubstrate/MobileSubstrate.dylib.*"
+            "(?i)(.*XposedBridge.jar.*)",
+            "(?i)(.*/system/framework/XposedBridge.jar.*)",
+            "(?i)(.*substrate.*)",
+            "(?i)(.*frida-agent.*)",
+            "(?i)(.*frida-gadget.*)",
+            "(?i)(.*/usr/sbin/frida-server.*)",
+            "(?i)(.*/Library/MobileSubstrate/DynamicLibraries/LiveClock.plist.*)",
+            "(?i)(.*/Library/MobileSubstrate/DynamicLibraries/Veency.plist.*)",
+            "(?i)(.*/Library/MobileSubstrate/MobileSubstrate.dylib.*)"
           ]
         },
         "part_3": {
