@@ -2,162 +2,16 @@
     "rules": [
       {
         "ruleId":"001",
-        "ruleName": "rootdetectionFiles",
-        "description" : "Checks for the presence of the SU binaries statically",
-        "condition": "AND",
-        "part_1": {
-            "type": "static",
-            "handler": "dummyTestHandlerFail",
-            "matchType": "regex",
-            "invert" : true,
-            "matchValue": [
-                "/sbin/su",
-                "/system/bin/su",
-                "/system/bin/failsafe/su",
-                "/system/xbin/su"
-            ]
-        }
-
-      },
-      {
-        "ruleId":"002",
-        "ruleName": "Radare2 String Rule",
-        "description" : "Checking for known strings",
-        "condition": "AND",
-        "part_1": {
-            "type": "strings",
-            "handler": "radare2",
-            "matchType": "regex",
-            "matchValue": [
-              "(^.*secret.*$)"
-            ]
-        },
-        "part_2": {
-          "type": "strings",
-          "handler": "radare2",
-          "matchType": "exact",
-          "matchValue": [
-              "root"
-          ]
-        }
-
-      },
-      {
-        "ruleId":"003",
-        "ruleName": "Radare2 Symbol Rule",
-        "description" : "Checking for known symbols",
-        "condition": "AND",
-        "part_1": {
-            "type": "symbols",
-            "handler": "radare2",
-            "matchType": "regex",
-            "matchValue": [
-              "(?i)(.*sensitivelogic.*)"
-            ]
-        },
-        "part_2": {
-          "type": "symbols",
-          "handler": "radare2",
-          "matchType": "exact",
-          "matchValue": [
-            "SecretKey"
-          ]
-        }
-      },
-      {
-        "ruleId":"004",
-        "ruleName": "Radare2 Classes and Function Rule",
-        "description" : "Checking for known classes / ",
+        "ruleName": "yara",
+        "description" : "POC IN PROGRESS",
         "condition": "OR",
         "part_1": {
-            "type": "methodObjects",
-            "handler": "radare2",
+            "type": "unknown",
+            "handler": "yara",
             "matchType": "regex",
             "matchValue": [
-              "(?i)(.*rootdetection.*)"
+              "(?i)(.*)"
             ]
-        },
-        "part_2": {
-          "type": "methodObjects",
-          "handler": "radare2",
-          "matchType": "exact",
-          "matchValue": [
-            "SuperSecret"
-          ]
-        }
-      },
-      {
-        "ruleId":"005",
-        "ruleName": "Radare2 field objects Rule",
-        "description" : "Checking for known classes / ",
-        "condition": "OR",
-        "part_1": {
-            "type": "fieldobjects",
-            "handler": "radare2",
-            "matchType": "regex",
-            "matchValue": [
-              "(?i)(.*root.*)"
-            ]
-        },
-        "part_2": {
-          "type": "fieldobjects",
-          "handler": "radare2",
-          "matchType": "exact",
-          "matchValue": [
-            "Secret"
-          ]
-        }
-      },
-      {
-        "ruleId":"006",
-        "ruleName": "Radare2 compiler flags",
-        "description" : "TBC",
-        "condition": "AND",
-        "part_1": {
-          "type": "picCompilerFlag",
-          "handler": "radare2",
-          "matchType": "exact",
-          "matchValue": [
-            "false"
-          ]
-        },
-        "part_2": {
-          "type": "canaryCompilerFlag",
-          "handler": "radare2",
-          "matchType": "exact",
-          "matchValue": [
-            "false"
-          ]
-        },
-        "part_3": {
-          "type": "strippedCompilerFlag",
-          "handler": "radare2",
-          "matchType": "exact",
-          "matchValue": [
-            "false"
-          ]
-        }
-      },
-      {
-        "ruleId":"007",
-        "ruleName": "Radare2 Syscall Rule",
-        "description" : "Checking for syscalls",
-        "condition": "OR",
-        "part_1": {
-            "type": "sysCalls",
-            "handler": "radare2",
-            "matchType": "regex",
-            "matchValue": [
-              "(?i)(.*read.*)"
-            ]
-        },
-        "part_2": {
-          "type": "sysCalls",
-          "handler": "radare2",
-          "matchType": "exact",
-          "matchValue": [
-            "read"
-          ]
         }
       }
 
