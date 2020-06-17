@@ -160,6 +160,116 @@
             "(?i)(.*xposed.*)"
           ]
         }
+      },
+      {
+        "ruleId":"003",
+        "ruleName": "debuggerDetection",
+        "description" : "Checks for the presence of debugger detection logic in the binary",
+        "condition": "OR",
+        "part_1": {
+            "type": "strings",
+            "handler": "radare2",
+            "matchType": "regex",
+            "invert" : false,
+            "matchValue": [
+              "(?i)(.*isDebuggerConnected.*)",
+              "(?i)(.*waitingForDebugger .*)",
+              "(?i)(.*lldb.*)"
+            ]
+        },
+        "part_2": {
+          "type": "symbols",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*isDebuggerConnected.*)",
+            "(?i)(.*waitingForDebugger .*)",
+            "(?i)(.*lldb.*)"
+          ]
+        },
+        "part_3": {
+          "type": "classobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*debugger.*detect.*)"
+          ]
+        },
+        "part_4": {
+          "type": "methodobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*debugger.*attached.*)",
+            "(?i)(.*debugger.*detected.*)",
+            "(?i)(.*lldb.*)"
+          ]
+        },
+        "part_5": {
+          "type": "fieldobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*debugger.*attached.*)",
+            "(?i)(.*debugger.*detected.*)",
+            "(?i)(.*lldb.*)"
+          ]
+        }
+      },
+      {
+        "ruleId":"004",
+        "ruleName": "emulatorDetection",
+        "description" : "Checks for the presence of emulator detection logic in the binary",
+        "condition": "OR",
+        "part_1": {
+            "type": "strings",
+            "handler": "radare2",
+            "matchType": "regex",
+            "invert" : false,
+            "matchValue": [
+              "(?i)(.*emulator.*)"
+            ]
+        },
+        "part_2": {
+          "type": "symbols",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*emulator.*)"
+          ]
+        },
+        "part_3": {
+          "type": "classobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*emulator.*)"
+          ]
+        },
+        "part_4": {
+          "type": "methodobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*emulator.*)"
+          ]
+        },
+        "part_5": {
+          "type": "fieldobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*emulator.*)"
+          ]
+        }
       }
 
     ]
