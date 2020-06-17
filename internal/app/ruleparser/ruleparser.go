@@ -202,13 +202,13 @@ func parseJSONRule(jsonRule map[string]interface{}, ruleName string) model.RuleR
 func evalRule(r model.Rule) model.RuleResult {
 	fmt.Println("[INFO] Evaluating rule:", r)
 
-	var evidence []model.Evidence
 	var ruleResult model.RuleResult
 
 	if r.Handler == "yara" {
 
+		var placeHolderEvidence []model.Evidence
 		ruleResult.Match = yarahandler.HandleRule(r)
-		ruleResult.Evidence = evidence
+		ruleResult.Evidence = placeHolderEvidence
 
 		return ruleResult
 
@@ -217,6 +217,9 @@ func evalRule(r model.Rule) model.RuleResult {
 		return r2handler.HandleRule(r)
 
 	} else if r.Handler == "dummyTestHandlerPass" {
+
+		var evidence []model.Evidence
+
 		ruleResult.Match = true
 
 		var e model.Evidence
@@ -231,10 +234,18 @@ func evalRule(r model.Rule) model.RuleResult {
 		ruleResult.Evidence = evidence
 
 		return ruleResult
+	} else if r.Handler == "dummyTestHandlerFail" {
+		var evidence []model.Evidence
+
+		ruleResult.Match = false
+		ruleResult.Evidence = evidence
+
+		return ruleResult
+	} else {
+		panic(fmt.Sprintf(
+			"[ERROR] Unknown rule handler %q in rule: %+v.",
+			r.Handler,
+			r))
 	}
 
-	ruleResult.Match = false
-	ruleResult.Evidence = evidence
-
-	return ruleResult
 }
