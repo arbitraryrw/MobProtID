@@ -30,7 +30,6 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 		if strings.ToLower(ruleType) == "strings" {
 
-			fmt.Println("[INFO] Searching binary strings..")
 			for k, v := range allStringsInBinary {
 				// fmt.Println("[INFO] File ->", k)
 
@@ -61,9 +60,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 		} else if strings.ToLower(ruleType) == "symbols" {
 
-			fmt.Println("[INFO] Searching binary symbols..")
 			for file, v := range allSymbolsInBinary {
-				// fmt.Println("[INFO] Symbol File ->", k)
 
 				for _, s := range v {
 					evidence := evalMatch(file, r, val.(string), s)

@@ -270,6 +270,61 @@
             "(?i)(.*emulator.*)"
           ]
         }
+      },
+      {
+        "ruleId":"005",
+        "ruleName": "compilerFlags",
+        "description" : "Missing compiler flags",
+        "condition": "OR",
+        "part_1": {
+          "type": "picCompilerFlag",
+          "handler": "radare2",
+          "matchType": "exact",
+          "invert": false,
+          "matchValue": [
+            "false"
+          ]
+        },
+        "part_2": {
+          "type": "canaryCompilerFlag",
+          "handler": "radare2",
+          "matchType": "exact",
+          "invert": false,
+          "matchValue": [
+            "false"
+          ]
+        },
+        "part_3": {
+          "type": "strippedCompilerFlag",
+          "handler": "radare2",
+          "matchType": "exact",
+          "invert": false,
+          "matchValue": [
+            "false"
+          ]
+        }
+      },
+      {
+        "ruleId":"006",
+        "ruleName": "Radare2 Syscall Rule",
+        "description" : "IN PROGRESS",
+        "condition": "OR",
+        "part_1": {
+            "type": "sysCalls",
+            "handler": "radare2",
+            "matchType": "regex",
+            "matchValue": [
+              "(?i)(.*read.*)"
+            ]
+        },
+        "part_2": {
+          "type": "sysCalls",
+          "handler": "radare2",
+          "matchType": "exact",
+          "matchValue": [
+            "read"
+          ]
+        }
       }
 
     ]
