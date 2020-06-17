@@ -206,11 +206,7 @@ func evalRule(r model.Rule) model.RuleResult {
 
 	if r.Handler == "yara" {
 
-		var placeHolderEvidence []model.Evidence
-		ruleResult.Match = yarahandler.HandleRule(r)
-		ruleResult.Evidence = placeHolderEvidence
-
-		return ruleResult
+		return yarahandler.HandleRule(r)
 
 	} else if r.Handler == "radare2" {
 

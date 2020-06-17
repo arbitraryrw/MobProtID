@@ -74,9 +74,6 @@ func Start(bp string, testRuleSet bool) {
 	wg.Add(1)
 	go r2handler.PrepareAnal(parsedBinaryFilePaths, &wg)
 
-	// fmt.Println("[INFO] Yara Running...")
-	// yarahandler.Main()
-
 	wg.Wait()
 
 	fmt.Println("RULE FILES ->", rules)
