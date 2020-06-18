@@ -1,43 +1,48 @@
 package yarahandler
 
 import (
+	"fmt"
 	"log"
 	"os"
-	"path"
 
 	"github.com/hillu/go-yara"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
 
-func Main() {
+func runYaraRule(ruleFileName string) {
 
-	rulePath := path.Join(utils.GetProjectRootDir(), "rules/example.yara")
+	rules := utils.GetRuleFiles(ruleFileName)
 
-	c, err := yara.NewCompiler()
-	if err != nil {
-		panic(err)
+	for _, rulePath := range rules {
+
+		fmt.Println("[INFO] Running yara rule", rulePath)
+
+		c, err := yara.NewCompiler()
+		if err != nil {
+			panic(err)
+		}
+
+		f, err := os.Open(rulePath)
+		if err != nil {
+			panic(err)
+		}
+
+		err = c.AddFile(f, "poc-tests")
+		f.Close()
+
+		if err != nil {
+			panic(err)
+		}
+
+		r, err := c.GetRules()
+		if err != nil {
+			panic(err)
+		}
+
+		m, err := r.ScanFile("/bin/ls", 0, 0)
+		printMatches(m, err)
 	}
-
-	f, err := os.Open(rulePath)
-	if err != nil {
-		panic(err)
-	}
-
-	err = c.AddFile(f, "poc-tests")
-	f.Close()
-
-	if err != nil {
-		panic(err)
-	}
-
-	r, err := c.GetRules()
-	if err != nil {
-		panic(err)
-	}
-
-	m, err := r.ScanFile("/bin/ls", 0, 0)
-	printMatches(m, err)
 }
 
 func printMatches(m []yara.MatchRule, err error) {
