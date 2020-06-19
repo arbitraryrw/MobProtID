@@ -8,6 +8,7 @@ import (
 	"github.com/arbitraryrw/MobProtID/internal/app/ruleparser"
 	"github.com/arbitraryrw/MobProtID/internal/pkg/r2handler"
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
+	"github.com/arbitraryrw/MobProtID/internal/pkg/yarahandler"
 )
 
 //Description Dummy function to check scope
@@ -74,6 +75,8 @@ func Start(bp string, testRuleSet bool) {
 	wg.Add(1)
 	go r2handler.PrepareAnal(parsedBinaryFilePaths, &wg)
 
+	wg.Add(1)
+	go yarahandler.PrepareAnal(parsedBinaryFilePaths, &wg)
 	wg.Wait()
 
 	fmt.Println("RULE FILES ->", rules)

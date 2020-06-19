@@ -4,11 +4,55 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/hillu/go-yara"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
+
+var yaraRuleMatches map[string][]map[string]string
+
+func init() {
+	yaraRuleMatches = make(map[string][]map[string]string, 0)
+}
+
+// PrepareAnal - gathers all the relevant data required for analysis
+func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	fmt.Println("*** Yara handler pre-analysis starting ***")
+
+	yaraRuleResults := make(chan []map[string]string)
+
+	for index, path := range binaryPath {
+
+		fmt.Println("\tanalysing file ->", index, path)
+
+		go func(p string) {
+			yaraRuleResults <- testYara(path)
+		}(path)
+
+		yaraRuleMatches[path] = <-yaraRuleResults
+
+		close(yaraRuleResults)
+	}
+
+	fmt.Println("*** Yara handler pre-analysis complete ***")
+}
+
+func testYara(p string) []map[string]string {
+	tParent := make([]map[string]string, 0)
+
+	tChild := make(map[string]string, 0)
+
+	tChild["name"] = "test name"
+	tChild["offset"] = "0xffff"
+
+	tParent = append(tParent, tChild)
+
+	return tParent
+}
 
 func runYaraRule(ruleFileName string) {
 
@@ -65,6 +109,7 @@ func printMatches(m []yara.MatchRule, err error) {
 					log.Printf("\t\t\tRule Name: %q", m.Name)
 					log.Printf("\t\t\tBinary Offset: %d", m.Offset)
 					log.Printf("\t\t\tString Match: %q", m.Data)
+					log.Printf("---")
 				}
 			}
 		} else {

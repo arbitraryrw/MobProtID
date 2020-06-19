@@ -34,7 +34,7 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 	fmt.Println("*** R2 handler Starting ***")
 
 	for index, path := range binaryPath {
-		fmt.Println(index, path)
+		fmt.Println("\tanalysing file ->", index, path)
 
 		strings := make(chan []map[string]string)
 		binaryInfo := make(chan map[string]map[string]string)
