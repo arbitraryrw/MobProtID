@@ -19,7 +19,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 	var evidenceInstances []model.Evidence
 
-	runYaraRule(".yara")
+	runYaraRule("example.yara")
 
 	fmt.Println("Rule Name", ruleName, "")
 

@@ -11,39 +11,48 @@ import (
 	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
 
-var yaraRuleMatches map[string][]map[string]string
+var yaraAnalysisBundle map[string]map[string][]map[string]string
 
 func init() {
-	yaraRuleMatches = make(map[string][]map[string]string, 0)
+	yaraAnalysisBundle = make(map[string]map[string][]map[string]string, 0)
 }
 
 // PrepareAnal - gathers all the relevant data required for analysis
-func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
+func PrepareAnal(binaryPaths []string, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	fmt.Println("*** Yara handler pre-analysis starting ***")
 
-	yaraRuleResults := make(chan []map[string]string)
+	yaraRuleResults := make(map[string][]map[string]string, 0)
 
-	for index, path := range binaryPath {
-
+	for index, path := range binaryPaths {
 		fmt.Println("\tanalysing file ->", index, path)
 
-		go func(p string) {
-			yaraRuleResults <- testYara(path)
-		}(path)
+		yaraRuleFilePaths := utils.GetRuleFiles(".yara")
 
-		yaraRuleMatches[path] = <-yaraRuleResults
+		for _, yaraRulePath := range yaraRuleFilePaths {
+			fmt.Println("\t\t-> Yara file:", yaraRulePath)
 
-		close(yaraRuleResults)
+			yaraRuleMatches := make(chan []map[string]string)
+
+			go func(p string, rp string) {
+				yaraRuleMatches <- testYara(p, rp)
+			}(path, yaraRulePath)
+
+			yaraRuleResults[yaraRulePath] = <-yaraRuleMatches
+			close(yaraRuleMatches)
+		}
+
+		yaraAnalysisBundle[path] = yaraRuleResults
 	}
 
 	fmt.Println("*** Yara handler pre-analysis complete ***")
 }
 
-func testYara(p string) []map[string]string {
-	tParent := make([]map[string]string, 0)
+func testYara(binaryPath string, rulePath string) []map[string]string {
 
+	fmt.Println("------------------------:", binaryPath, rulePath)
+	tParent := make([]map[string]string, 0)
 	tChild := make(map[string]string, 0)
 
 	tChild["name"] = "test name"
@@ -72,7 +81,7 @@ func runYaraRule(ruleFileName string) {
 			panic(err)
 		}
 
-		err = c.AddFile(f, "poc-tests")
+		err = c.AddFile(f, "mobprotid")
 		f.Close()
 
 		if err != nil {
@@ -86,6 +95,16 @@ func runYaraRule(ruleFileName string) {
 
 		m, err := r.ScanFile("/bin/ls", 0, 0)
 		printMatches(m, err)
+
+	}
+
+	for file, yaraRuleFile := range yaraAnalysisBundle {
+
+		fmt.Println("File", file)
+
+		for yaraFile, yaraMatches := range yaraRuleFile {
+			fmt.Println("\tyara rule file", yaraFile, yaraMatches)
+		}
 	}
 }
 
