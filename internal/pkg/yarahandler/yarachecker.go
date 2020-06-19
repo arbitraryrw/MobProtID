@@ -19,8 +19,6 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 	var evidenceInstances []model.Evidence
 
-	runYaraRule("example.yara")
-
 	fmt.Println("Rule Name", ruleName, "")
 
 	if strings.ToLower(ruleType) == "rule" {
@@ -30,6 +28,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 			if strings.ToLower(matchType) == "regex" {
 				// ToDo: Regex match..
+
 			}
 		}
 

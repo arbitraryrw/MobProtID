@@ -2,8 +2,8 @@ package yarahandler
 
 import (
 	"fmt"
-	"log"
 	"os"
+	"strconv"
 	"sync"
 
 	"github.com/hillu/go-yara"
@@ -36,7 +36,7 @@ func PrepareAnal(binaryPaths []string, wg *sync.WaitGroup) {
 			yaraRuleMatches := make(chan []map[string]string)
 
 			go func(p string, rp string) {
-				yaraRuleMatches <- testYara(p, rp)
+				yaraRuleMatches <- runYaraRule(p, rp)
 			}(path, yaraRulePath)
 
 			yaraRuleResults[yaraRulePath] = <-yaraRuleMatches
@@ -49,92 +49,68 @@ func PrepareAnal(binaryPaths []string, wg *sync.WaitGroup) {
 	fmt.Println("*** Yara handler pre-analysis complete ***")
 }
 
-func testYara(binaryPath string, rulePath string) []map[string]string {
+func runYaraRule(binaryPath string, rulePath string) []map[string]string {
 
-	fmt.Println("------------------------:", binaryPath, rulePath)
-	tParent := make([]map[string]string, 0)
-	tChild := make(map[string]string, 0)
+	fmt.Println("[INFO] Running yara rule", rulePath)
 
-	tChild["name"] = "test name"
-	tChild["offset"] = "0xffff"
+	c, err := yara.NewCompiler()
+	if err != nil {
+		panic(err)
+	}
 
-	tParent = append(tParent, tChild)
+	f, err := os.Open(rulePath)
+	if err != nil {
+		panic(err)
+	}
 
-	return tParent
+	err = c.AddFile(f, "mobprotid")
+	f.Close()
+
+	if err != nil {
+		panic(err)
+	}
+
+	r, err := c.GetRules()
+	if err != nil {
+		panic(err)
+	}
+
+	yaraMatches, err := r.ScanFile("/bin/ls", 0, 0)
+	if err != nil {
+		panic(err)
+	}
+
+	return parseYaraMatches(yaraMatches)
 }
 
-func runYaraRule(ruleFileName string) {
+func parseYaraMatches(yaraMatchRuleObject []yara.MatchRule) []map[string]string {
 
-	rules := utils.GetRuleFiles(ruleFileName)
+	parentMatches := make([]map[string]string, 0)
 
-	for _, rulePath := range rules {
+	for _, yaraMatch := range yaraMatchRuleObject {
 
-		fmt.Println("[INFO] Running yara rule", rulePath)
+		// log.Printf("-[%s] %s", yaraMatch.Namespace, yaraMatch.Rule)
+		// log.Printf("\t\ttags: %s", yaraMatch.Tags)
 
-		c, err := yara.NewCompiler()
-		if err != nil {
-			panic(err)
-		}
+		// if _, ok := yaraMatch.Meta["author"]; ok {
+		// 	log.Printf("\t\tauthor: %s", yaraMatch.Meta["author"])
+		// }
+		// if _, ok := yaraMatch.Meta["description"]; ok {
+		// 	log.Printf("\t\tdescription: %s", yaraMatch.Meta["description"])
+		// }
 
-		f, err := os.Open(rulePath)
-		if err != nil {
-			panic(err)
-		}
+		for _, m := range yaraMatch.Strings {
 
-		err = c.AddFile(f, "mobprotid")
-		f.Close()
+			childMatch := make(map[string]string, 0)
 
-		if err != nil {
-			panic(err)
-		}
+			// log.Printf("\t\t\tRule part name: %q", m.Name)
 
-		r, err := c.GetRules()
-		if err != nil {
-			panic(err)
-		}
+			childMatch["name"] = string(m.Data[:])
+			childMatch["offset"] = strconv.FormatUint(m.Offset, 10)
 
-		m, err := r.ScanFile("/bin/ls", 0, 0)
-		printMatches(m, err)
-
-	}
-
-	for file, yaraRuleFile := range yaraAnalysisBundle {
-
-		fmt.Println("File", file)
-
-		for yaraFile, yaraMatches := range yaraRuleFile {
-			fmt.Println("\tyara rule file", yaraFile, yaraMatches)
+			parentMatches = append(parentMatches, childMatch)
 		}
 	}
-}
 
-func printMatches(m []yara.MatchRule, err error) {
-	if err == nil {
-		if len(m) > 0 {
-			for _, match := range m {
-				log.Printf("-[%s] %s", match.Namespace, match.Rule)
-
-				if _, ok := match.Meta["author"]; ok {
-					log.Printf("\t\tauthor: %s", match.Meta["author"])
-				}
-				if _, ok := match.Meta["description"]; ok {
-					log.Printf("\t\tdescription: %s", match.Meta["description"])
-				}
-
-				log.Printf("\t\ttags: %s", match.Tags)
-				log.Println("\t\tMatches:")
-
-				for _, m := range match.Strings {
-					log.Printf("\t\t\tRule Name: %q", m.Name)
-					log.Printf("\t\t\tBinary Offset: %d", m.Offset)
-					log.Printf("\t\t\tString Match: %q", m.Data)
-					log.Printf("---")
-				}
-			}
-		} else {
-			log.Print("no matches.")
-		}
-	} else {
-		log.Printf("error: %s.", err)
-	}
+	return parentMatches
 }
