@@ -107,6 +107,7 @@ func parseYaraMatches(yaraMatchRuleObject []yara.MatchRule) []map[string]string 
 
 			childMatch["name"] = string(m.Data[:])
 			childMatch["offset"] = strconv.FormatUint(m.Offset, 10)
+			childMatch["rule"] = yaraMatch.Rule
 
 			parentMatches = append(parentMatches, childMatch)
 		}
