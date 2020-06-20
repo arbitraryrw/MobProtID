@@ -51,7 +51,7 @@ func PrepareAnal(binaryPaths []string, wg *sync.WaitGroup) {
 
 func runYaraRule(binaryPath string, rulePath string) []map[string]string {
 
-	fmt.Println("[INFO] Running yara rule", rulePath)
+	fmt.Println("[INFO] Running yara rule", rulePath, "on", binaryPath)
 
 	c, err := yara.NewCompiler()
 	if err != nil {
@@ -75,7 +75,7 @@ func runYaraRule(binaryPath string, rulePath string) []map[string]string {
 		panic(err)
 	}
 
-	yaraMatches, err := r.ScanFile("/bin/ls", 0, 0)
+	yaraMatches, err := r.ScanFile(binaryPath, 0, 0)
 	if err != nil {
 		panic(err)
 	}
