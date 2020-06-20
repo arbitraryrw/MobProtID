@@ -34,27 +34,8 @@ func HandleRule(r model.Rule) model.RuleResult {
 				// fmt.Println("[INFO] File ->", k)
 
 				for _, s := range v {
-					if strings.ToLower(matchType) == "regex" {
-
-						for _, m := range utils.RegexMatch(s["name"], val.(string)) {
-							evidence := createEvidenceStruct(k, m, s["offset"], ruleName)
-
-							if (model.Evidence{}) != evidence {
-								evidenceInstances = append(evidenceInstances, evidence)
-							}
-						}
-
-					} else if strings.ToLower(matchType) == "exact" {
-
-						for _, m := range utils.ExactMatch(s["name"], val.(string)) {
-							evidence := createEvidenceStruct(k, m, s["offset"], ruleName)
-
-							if (model.Evidence{}) != evidence {
-								evidenceInstances = append(evidenceInstances, evidence)
-							}
-						}
-
-					}
+					evidence := evalMatch(k, r, val.(string), s)
+					evidenceInstances = append(evidenceInstances, evidence...)
 				}
 			}
 
