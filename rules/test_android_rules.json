@@ -10,10 +10,17 @@
             "handler": "yara",
             "matchType": "regex",
             "matchValue": [
-              "(?i)(.*)"
+              "(?i)(.*_example.*)"
             ]
+        },
+        "part_2": {
+          "type": "rule",
+          "handler": "yara",
+          "matchType": "exact",
+          "matchValue": [
+            "first_example"
+          ]
         }
       }
-
     ]
   }

@@ -46,9 +46,19 @@ func HandleRule(r model.Rule) model.RuleResult {
 							}
 						}
 
-					}
+					} else if strings.ToLower(matchType) == "exact" {
 
-					// ToDo: Exact matches
+						for _, m := range utils.ExactMatch(yMatch["rule"], val.(string)) {
+							fmt.Println("[DEBUG] Exact rule name match ->", m)
+
+							evidence := createEvidenceStruct(file, yMatch["name"], yMatch["offset"], ruleName)
+
+							if (model.Evidence{}) != evidence {
+								evidenceInstances = append(evidenceInstances, evidence)
+							}
+						}
+
+					}
 				}
 			}
 		}
