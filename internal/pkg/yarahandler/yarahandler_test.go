@@ -30,7 +30,7 @@ func TestPrepareAnal(t *testing.T) {
 				file)
 		}
 
-		for rule := range yaraBundle {
+		for rule, matches := range yaraBundle {
 
 			if !strings.Contains(rule, ".yara") {
 				t.Errorf(
@@ -39,6 +39,30 @@ func TestPrepareAnal(t *testing.T) {
 					".yara")
 			}
 
+			for _, m := range matches {
+
+				if _, ok := m["name"]; !ok {
+					t.Errorf(
+						"PrepareAnal = yara analysis bundle malformed, missing %q attribute in %q",
+						"name",
+						m)
+				}
+
+				if _, ok := m["offset"]; !ok {
+					t.Errorf(
+						"PrepareAnal = yara analysis bundle malformed, missing %q attribute in %q",
+						"offset",
+						m)
+				}
+
+				if _, ok := m["rule"]; !ok {
+					t.Errorf(
+						"PrepareAnal = yara analysis bundle malformed, missing %q attribute in %q",
+						"rule",
+						m)
+				}
+
+			}
 		}
 
 	}
