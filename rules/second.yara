@@ -5,8 +5,8 @@ rule second_example : examples
         author = "blah"
 
     strings:
-        $a = "calloc"
-        $b = "memset"
+        $a = "secret"
+        $b = "Secret"
 
     condition:
         $a or $b

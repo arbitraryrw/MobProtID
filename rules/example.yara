@@ -5,9 +5,8 @@ rule first_example : examples
         author = "blah"
 
     strings:
-        $a = "secret"
-        $b = "Secret"
+        $a = "It's MobProtID here!"
 
     condition:
-        $a or $b
+        $a
 }
