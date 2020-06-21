@@ -25,10 +25,10 @@ func PrepareAnal(binaryPaths []string, wg *sync.WaitGroup) {
 
 	yaraRuleResults := make(map[string][]map[string]string, 0)
 
+	yaraRuleFilePaths := utils.GetRuleFiles(".yara")
+
 	for index, path := range binaryPaths {
 		fmt.Println("\tanalysing file ->", index, path)
-
-		yaraRuleFilePaths := utils.GetRuleFiles(".yara")
 
 		for _, yaraRulePath := range yaraRuleFilePaths {
 			fmt.Println("\t\t-> Yara file:", yaraRulePath)

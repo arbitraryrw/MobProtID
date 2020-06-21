@@ -1,6 +1,8 @@
 package yarahandler
 
 import (
+	"path/filepath"
+	"sync"
 	"testing"
 
 	"github.com/arbitraryrw/MobProtID/internal/pkg/model"
@@ -10,6 +12,41 @@ func init() {}
 
 func TestHandleRule(t *testing.T) {
 
+	sampleBinaryRelPath := "../../../test/sample_binary"
+	sampleBinAbsPath, err := filepath.Abs(sampleBinaryRelPath)
+
+	if err != nil {
+		panic(err)
+	}
+
+	parsedBinaryFilePaths := make([]string, 0)
+	parsedBinaryFilePaths = append(parsedBinaryFilePaths, sampleBinAbsPath)
+
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+	go PrepareAnal(parsedBinaryFilePaths, &wg)
+	wg.Wait()
+
+	// Test Positive Rule
+	var r model.Rule
+	var sigs []interface{}
+
+	sigs = append(sigs, "(?i)(.*yaraCheckerBasic.*)")
+
+	r.Handler = "yara"
+	r.MatchType = "regex"
+	r.MatchValue = sigs
+	r.Type = "ruleName"
+
+	result := HandleRule(r)
+
+	if result.Match != true {
+		t.Errorf(
+			"HandleRule = yara result mismatch, expected %t, got %t",
+			true,
+			result.Match)
+	}
 }
 
 func TestUcreateEvidenceStruct(t *testing.T) {

@@ -1,0 +1,26 @@
+{
+    "rules": [
+      {
+        "ruleId":"001",
+        "ruleName": "yara",
+        "description" : "Basic Yara rule name match for simpleYaraRule.yara",
+        "condition": "OR",
+        "part_1": {
+            "type": "ruleName",
+            "handler": "yara",
+            "matchType": "regex",
+            "matchValue": [
+              "(?i)(.*yaraCheckerBasic.*)"
+            ]
+        },
+        "part_2": {
+          "type": "ruleName",
+          "handler": "yara",
+          "matchType": "exact",
+          "matchValue": [
+            "yaraCheckerBasic"
+          ]
+        }
+      }
+    ]
+  }
