@@ -15,12 +15,14 @@ func HandleRule(r model.Rule) model.RuleResult {
 	ruleName := r.Name
 	matchType := r.MatchType
 	matchValue := r.MatchValue
-	// ruleType := r.Type
+	ruleType := r.Type
 	invert := r.Invert
 
 	var evidenceInstances []model.Evidence
 
-	fmt.Println("Rule Name", ruleName, "")
+	if strings.ToLower(ruleType) != "rulename" {
+		panic(fmt.Sprintf("[ERROR] Unknown yara rule type %q", ruleType))
+	}
 
 	for _, val := range matchValue {
 		fmt.Println("Match value:", val)

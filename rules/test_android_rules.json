@@ -6,7 +6,7 @@
         "description" : "POC IN PROGRESS",
         "condition": "OR",
         "part_1": {
-            "type": "rule",
+            "type": "ruleName",
             "handler": "yara",
             "matchType": "regex",
             "matchValue": [
@@ -14,7 +14,7 @@
             ]
         },
         "part_2": {
-          "type": "rule",
+          "type": "ruleName",
           "handler": "yara",
           "matchType": "exact",
           "matchValue": [
