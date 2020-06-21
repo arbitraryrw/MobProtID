@@ -123,6 +123,48 @@ func TestUrunYaraRule(t *testing.T) {
 				res)
 		}
 
+		if _, ok := res[0]["name"]; !ok {
+			t.Errorf(
+				"PrepareAnal = yara analysis bundle malformed, missing %q attribute in %q",
+				"name",
+				res[0])
+		}
+
+		if _, ok := res[0]["offset"]; !ok {
+			t.Errorf(
+				"PrepareAnal = yara analysis bundle malformed, missing %q attribute in %q",
+				"offset",
+				res[0])
+		}
+
+		if _, ok := res[0]["rule"]; !ok {
+			t.Errorf(
+				"PrepareAnal = yara analysis bundle malformed, missing %q attribute in %q",
+				"rule",
+				res[0])
+		}
+
+		if res[0]["name"] != "It's MobProtID here!" {
+			t.Errorf(
+				"PrepareAnal = yara analysis bundle malformed, expected %q, got %q",
+				"It's MobProtID here!",
+				res[0]["name"])
+		}
+
+		if res[0]["offset"] != "1918" {
+			t.Errorf(
+				"PrepareAnal = yara analysis bundle malformed, expected %q, got %q",
+				"1918",
+				res[0]["offset"])
+		}
+
+		if res[0]["rule"] != "first_example" {
+			t.Errorf(
+				"PrepareAnal = yara analysis bundle malformed, expected %q, got %q",
+				"first_example",
+				res[0]["rule"])
+		}
+
 	}
 
 }
