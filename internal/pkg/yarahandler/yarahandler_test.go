@@ -47,6 +47,10 @@ func TestPrepareAnal(t *testing.T) {
 					".yara")
 			}
 
+			if !strings.Contains(rule, "simpleYaraRule.yara") {
+				continue
+			}
+
 			for _, m := range matches {
 
 				if _, ok := m["name"]; !ok {
@@ -84,10 +88,10 @@ func TestPrepareAnal(t *testing.T) {
 						m["offset"])
 				}
 
-				if m["rule"] != "first_example" {
+				if m["rule"] != "yaraCheckerBasic" {
 					t.Errorf(
 						"PrepareAnal = yara analysis bundle malformed, expected %q, got %q",
-						"first_example",
+						"yaraCheckerBasic",
 						m["rule"])
 				}
 
