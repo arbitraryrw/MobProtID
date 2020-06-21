@@ -5,6 +5,8 @@ import (
 	"strings"
 	"sync"
 	"testing"
+
+	"github.com/arbitraryrw/MobProtID/internal/pkg/utils"
 )
 
 func init() {}
@@ -90,6 +92,35 @@ func TestPrepareAnal(t *testing.T) {
 				}
 
 			}
+		}
+
+	}
+
+}
+
+func TestUrunYaraRule(t *testing.T) {
+
+	sampleBinaryRelPath := "../../../test/sample_binary"
+	sampleBinAbsPath, err := filepath.Abs(sampleBinaryRelPath)
+
+	if err != nil {
+		panic(err)
+	}
+
+	parsedBinaryFilePaths := make([]string, 0)
+	parsedBinaryFilePaths = append(parsedBinaryFilePaths, sampleBinAbsPath)
+
+	yaraRuleFilePath := utils.GetRuleFiles("example.yara")
+
+	for _, bp := range parsedBinaryFilePaths {
+
+		res := runYaraRule(bp, yaraRuleFilePath[0])
+
+		if len(res) != 1 {
+			t.Errorf(
+				"runYaraRule() = yara response error, expected 1 match, got %q: %q",
+				len(res),
+				res)
 		}
 
 	}
