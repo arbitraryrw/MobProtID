@@ -89,6 +89,57 @@ func TestHandleRule(t *testing.T) {
 		}
 	}
 
+	// Invert rule logic check
+	r.Invert = true
+	result = HandleRule(r)
+
+	if result.Match != false {
+		t.Errorf(
+			"HandleRule = yara invert result mismatch, expected %t, got %t",
+			false,
+			result.Match)
+	}
+
+	if len(result.Evidence) != 1 {
+		t.Errorf(
+			"HandleRule = yara rule result evidence missmatch"+
+				", expected %q match, got: %q match",
+			1,
+			len(result.Evidence))
+	}
+
+	for _, e := range result.Evidence {
+		if e.File != sampleBinAbsPath {
+			t.Errorf(
+				"HandleRule = yara rule result evidence file missmatch"+
+					", expected %q, got: %q",
+				sampleBinAbsPath,
+				e.File)
+		}
+
+		if e.RuleName != r.Name {
+			t.Errorf(
+				"HandleRule = yara rule result evidence rule name missmatch"+
+					", expected %q, got: %q",
+				r.Name,
+				e.RuleName)
+		}
+		if e.Name != "It's MobProtID here!" {
+			t.Errorf(
+				"HandleRule = yara rule result evidence name missmatch"+
+					", expected %q, got: %q",
+				"It's MobProtID here!",
+				e.Name)
+		}
+		if e.Offset != "1918" {
+			t.Errorf(
+				"HandleRule = yara rule result evidence offset"+
+					"missmatch, expected %q, got: %q",
+				"1918",
+				e.Offset)
+		}
+	}
+
 }
 
 func TestUcreateEvidenceStruct(t *testing.T) {
