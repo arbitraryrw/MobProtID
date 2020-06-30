@@ -200,4 +200,22 @@ func TestUevalMatchRegex(t *testing.T) {
 			r.Name,
 			res[0].RuleName)
 	}
+
+	negativeMatchRegex := "(?i)(.*thisShouldNotmatch.*)"
+	negativeRes := evalMatch(
+		expectFilePath,
+		r,
+		negativeMatchRegex,
+		testMatchData)
+
+	if len(negativeRes) != 0 {
+		t.Errorf(
+			"evalMatch = radare2 rule result evidence missmatch"+
+				", expected %q match, got: %q match",
+			1,
+			len(res))
+
+		// Don't run the deeper tests as there is nothing to test
+		return
+	}
 }
