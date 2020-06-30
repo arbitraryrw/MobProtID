@@ -10,7 +10,14 @@ import (
 
 func init() {}
 
-func TestHandleRule(t *testing.T) {
+func TestHandleRuleStrings(t *testing.T) {
+	// ToDo: test for:
+	// 1. symbols
+	// 2. syscalls
+	// 3. compilerflag
+	// 4. classobjects
+	// 5. methodobjects
+	// 6. fieldobjects
 
 	sampleBinaryRelPath := "../../../test/sample_binary"
 	sampleBinAbsPath, err := filepath.Abs(sampleBinaryRelPath)
@@ -214,8 +221,83 @@ func TestUevalMatchRegex(t *testing.T) {
 				", expected %q match, got: %q match",
 			1,
 			len(res))
+	}
+}
+
+func TestUevalMatchExact(t *testing.T) {
+	var r model.Rule
+	var sigs []interface{}
+
+	sigs = append(sigs, "Secret")
+
+	r.Handler = "radare2"
+	r.MatchType = "exact"
+	r.MatchValue = sigs
+	r.Type = "strings"
+	r.Name = "part_1"
+	r.Invert = false
+
+	expectFilePath := "test/file/path"
+	expectName := "superSecretValueTest"
+	expectOffset := "0x1337"
+
+	testMatchData := make(map[string]string, 0)
+	testMatchData["name"] = expectName
+	testMatchData["offset"] = expectOffset
+
+	res := evalMatch(expectFilePath, r, r.MatchValue[0].(string), testMatchData)
+
+	if len(res) != 1 {
+		t.Errorf(
+			"evalMatch = radare2 rule result evidence missmatch"+
+				", expected %q match, got: %q match",
+			1,
+			len(res))
 
 		// Don't run the deeper tests as there is nothing to test
 		return
+	}
+
+	if res[0].File != expectFilePath {
+		t.Errorf(
+			"evalMatch = radare2 evidence file mismatch, expected %q, got %q",
+			expectFilePath,
+			res[0].File)
+	}
+
+	if res[0].Name != expectName {
+		t.Errorf(
+			"evalMatch = radare2 evidence name mismatch, expected %q, got %q",
+			expectName,
+			res[0].Name)
+	}
+
+	if res[0].Offset != expectOffset {
+		t.Errorf(
+			"evalMatch = radare2 evidence offset mismatch, expected %q, got %q",
+			expectOffset,
+			res[0].Offset)
+	}
+
+	if res[0].RuleName != r.Name {
+		t.Errorf(
+			"evalMatch = radare2 evidence rule name mismatch, expected %q, got %q",
+			r.Name,
+			res[0].RuleName)
+	}
+
+	negativeMatchRegex := "sEcReT"
+	negativeRes := evalMatch(
+		expectFilePath,
+		r,
+		negativeMatchRegex,
+		testMatchData)
+
+	if len(negativeRes) != 0 {
+		t.Errorf(
+			"evalMatch = radare2 rule result evidence missmatch"+
+				", expected %q match, got: %q match",
+			1,
+			len(res))
 	}
 }
