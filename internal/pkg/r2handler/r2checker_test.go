@@ -91,3 +91,50 @@ func TestHandleRule(t *testing.T) {
 
 	}
 }
+
+func TestUcreateEvidenceStruct(t *testing.T) {
+	expectPath := "test/file/path"
+	expectName := "stringNameMatch"
+	expectOffset := "0xffff"
+	expectRuleName := "part_1"
+
+	evidence := createEvidenceStruct(
+		expectPath,
+		expectName,
+		expectOffset,
+		expectRuleName)
+
+	if (model.Evidence{}) == evidence {
+		t.Errorf(
+			"createEvidenceStruct = radare2 evidence struct empty, got: %q",
+			evidence)
+	}
+
+	if evidence.File != expectPath {
+		t.Errorf(
+			"createEvidenceStruct = radare2 evidence file mismatch, expected %q, got %q",
+			expectPath,
+			evidence.File)
+	}
+
+	if evidence.Name != expectName {
+		t.Errorf(
+			"createEvidenceStruct = radare2 evidence name mismatch, expected %q, got %q",
+			expectName,
+			evidence.Name)
+	}
+
+	if evidence.Offset != expectOffset {
+		t.Errorf(
+			"createEvidenceStruct = radare2 evidence offset mismatch, expected %q, got %q",
+			expectOffset,
+			evidence.Offset)
+	}
+
+	if evidence.RuleName != expectRuleName {
+		t.Errorf(
+			"createEvidenceStruct = radare2 evidence rule name mismatch, expected %q, got %q",
+			expectRuleName,
+			evidence.RuleName)
+	}
+}
