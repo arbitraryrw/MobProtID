@@ -1,6 +1,7 @@
 package r2handler
 
 import (
+	"fmt"
 	"path/filepath"
 	"sync"
 	"testing"
@@ -8,23 +9,20 @@ import (
 	"github.com/arbitraryrw/MobProtID/internal/pkg/model"
 )
 
-func init() {}
+var testBinPath string
 
-func TestHandleRuleStrings(t *testing.T) {
-	// ToDo: test for:
-	// 1. symbols
-	// 2. syscalls
-	// 3. compilerflag
-	// 4. classobjects
-	// 5. methodobjects
-	// 6. fieldobjects
-
+func init() {
 	sampleBinaryRelPath := "../../../test/sample_binary"
 	sampleBinAbsPath, err := filepath.Abs(sampleBinaryRelPath)
 
 	if err != nil {
-		panic(err)
+		panic(
+			fmt.Sprintf(
+				"[ERROR] r2checker unit test setup failed: %q",
+				"err"))
 	}
+
+	testBinPath = sampleBinAbsPath
 
 	parsedBinaryFilePaths := make([]string, 0)
 	parsedBinaryFilePaths = append(parsedBinaryFilePaths, sampleBinAbsPath)
@@ -34,6 +32,16 @@ func TestHandleRuleStrings(t *testing.T) {
 	wg.Add(1)
 	go PrepareAnal(parsedBinaryFilePaths, &wg)
 	wg.Wait()
+}
+
+func TestHandleRuleStrings(t *testing.T) {
+	// ToDo: test for:
+	// 1. symbols
+	// 2. syscalls
+	// 3. compilerflag
+	// 4. classobjects
+	// 5. methodobjects
+	// 6. fieldobjects
 
 	// Test Positive Rule
 	var r model.Rule
@@ -66,11 +74,11 @@ func TestHandleRuleStrings(t *testing.T) {
 	}
 
 	for _, e := range result.Evidence {
-		if e.File != sampleBinAbsPath {
+		if e.File != testBinPath {
 			t.Errorf(
 				"HandleRule = yara rule result evidence file missmatch"+
 					", expected %q, got: %q",
-				sampleBinAbsPath,
+				testBinPath,
 				e.File)
 		}
 
