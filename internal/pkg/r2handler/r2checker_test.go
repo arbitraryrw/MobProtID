@@ -34,9 +34,74 @@ func init() {
 	wg.Wait()
 }
 
+func TestHandleRuleSymbols(t *testing.T) {
+	// Test Positive Rule
+	var r model.Rule
+	var sigs []interface{}
+
+	sigs = append(sigs, "(?i)(^_init$)")
+
+	r.Handler = "radare2"
+	r.MatchType = "regex"
+	r.MatchValue = sigs
+	r.Type = "symbols"
+	r.Name = "part_1"
+	r.Invert = false
+
+	result := HandleRule(r)
+
+	if result.Match != true {
+		t.Errorf(
+			"HandleRule = radare2 symbol rule result mismatch,"+
+				"expected %t, got %t",
+			true,
+			result.Match)
+	}
+
+	if len(result.Evidence) != 1 {
+		t.Errorf(
+			"HandleRule = radare2 symbol rule result evidence"+
+				"mismatch, expected %q, got %q",
+			1,
+			len(result.Evidence))
+
+		return
+	}
+
+	if result.Evidence[0].File != testBinPath {
+		t.Errorf(
+			"HandleRule = radare2 symbol rule result path mismatch,"+
+				"expected %q, got %q",
+			testBinPath,
+			result.Evidence[0].File)
+	}
+
+	if result.Evidence[0].RuleName != r.Name {
+		t.Errorf(
+			"HandleRule = radare2 symbol rule result rule mismatch,"+
+				"expected %q, got %q",
+			r.Name,
+			result.Evidence[0].RuleName)
+	}
+	if result.Evidence[0].Name != "_init" {
+		t.Errorf(
+			"HandleRule = radare2 symbol rule result name mismatch,"+
+				"expected %q, got %q",
+			"_init",
+			result.Evidence[0].Name)
+	}
+	if result.Evidence[0].Offset != "1344" {
+		t.Errorf(
+			"HandleRule = radare2 symbol rule result offset mismatch,"+
+				"expected %q, got %q",
+			"1344",
+			result.Evidence[0].Offset)
+	}
+
+}
+
 func TestHandleRuleStrings(t *testing.T) {
 	// ToDo: test for:
-	// 1. symbols
 	// 2. syscalls
 	// 3. compilerflag
 	// 4. classobjects
@@ -112,6 +177,21 @@ func TestHandleRuleStrings(t *testing.T) {
 				"HandleRule = radare2 result mismatch, expected"+
 					" inverted result of %t, got %t",
 				false,
+				result.Match)
+		}
+
+		r.Invert = false
+
+		var negativeSigs []interface{}
+		negativeSigs = append(negativeSigs, "(?i)(.*thisShouldNotMatchAtAll.*)")
+		r.MatchValue = negativeSigs
+
+		negativeResults := HandleRule(r)
+
+		if negativeResults.Match != false {
+			t.Errorf(
+				"HandleRule = radare2 result mismatch, expected %t, got %t",
+				true,
 				result.Match)
 		}
 
