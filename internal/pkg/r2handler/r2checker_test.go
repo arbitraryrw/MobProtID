@@ -98,6 +98,32 @@ func TestHandleRuleSymbols(t *testing.T) {
 			result.Evidence[0].Offset)
 	}
 
+	r.Invert = true
+	result = HandleRule(r)
+
+	if result.Match != false {
+		t.Errorf(
+			"HandleRule = radare2 result mismatch, expected"+
+				" inverted result of %t, got %t",
+			false,
+			result.Match)
+	}
+
+	r.Invert = false
+
+	var negativeSigs []interface{}
+	negativeSigs = append(negativeSigs, "(?i)(.*thisShouldNotMatchAtAll.*)")
+	r.MatchValue = negativeSigs
+
+	negativeResults := HandleRule(r)
+
+	if negativeResults.Match != false {
+		t.Errorf(
+			"HandleRule = radare2 result mismatch, expected %t, got %t",
+			true,
+			result.Match)
+	}
+
 }
 
 func TestHandleRuleStrings(t *testing.T) {
