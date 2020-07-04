@@ -50,53 +50,7 @@ func TestHandleRuleSymbols(t *testing.T) {
 
 	result := HandleRule(r)
 
-	if result.Match != true {
-		t.Errorf(
-			"HandleRule = radare2 symbol rule result mismatch,"+
-				"expected %t, got %t",
-			true,
-			result.Match)
-	}
-
-	if len(result.Evidence) != 1 {
-		t.Errorf(
-			"HandleRule = radare2 symbol rule result evidence"+
-				"mismatch, expected %q, got %q",
-			1,
-			len(result.Evidence))
-
-		return
-	}
-
-	if result.Evidence[0].File != testBinPath {
-		t.Errorf(
-			"HandleRule = radare2 symbol rule result path mismatch,"+
-				"expected %q, got %q",
-			testBinPath,
-			result.Evidence[0].File)
-	}
-
-	if result.Evidence[0].RuleName != r.Name {
-		t.Errorf(
-			"HandleRule = radare2 symbol rule result rule mismatch,"+
-				"expected %q, got %q",
-			r.Name,
-			result.Evidence[0].RuleName)
-	}
-	if result.Evidence[0].Name != "_init" {
-		t.Errorf(
-			"HandleRule = radare2 symbol rule result name mismatch,"+
-				"expected %q, got %q",
-			"_init",
-			result.Evidence[0].Name)
-	}
-	if result.Evidence[0].Offset != "1344" {
-		t.Errorf(
-			"HandleRule = radare2 symbol rule result offset mismatch,"+
-				"expected %q, got %q",
-			"1344",
-			result.Evidence[0].Offset)
-	}
+	validateRuleResult(r, "_init", "1344", result, t)
 
 	r.Invert = true
 	result = HandleRule(r)
@@ -124,6 +78,62 @@ func TestHandleRuleSymbols(t *testing.T) {
 			result.Match)
 	}
 
+}
+
+func validateRuleResult(
+	rule model.Rule,
+	name string,
+	offset string,
+	result model.RuleResult,
+	t *testing.T) {
+
+	if result.Match != true {
+		t.Errorf(
+			"HandleRule = radare2 rule match result mismatch,"+
+				"expected %t, got %t",
+			true,
+			result.Match)
+	}
+
+	if len(result.Evidence) != 1 {
+		t.Errorf(
+			"HandleRule = radare2 rule result evidence"+
+				"mismatch, expected %q match, got %q",
+			1,
+			len(result.Evidence))
+
+		return
+	}
+
+	if result.Evidence[0].File != testBinPath {
+		t.Errorf(
+			"HandleRule = radare2 rule result path mismatch,"+
+				"expected %q, got %q",
+			testBinPath,
+			result.Evidence[0].File)
+	}
+
+	if result.Evidence[0].RuleName != rule.Name {
+		t.Errorf(
+			"HandleRule = radare2 rule result mismatch,"+
+				"expected %q, got %q",
+			rule.Name,
+			result.Evidence[0].RuleName)
+	}
+	if result.Evidence[0].Name != name {
+		t.Errorf(
+			"HandleRule = radare2 rule result name mismatch,"+
+				"expected %q, got %q",
+			name,
+			result.Evidence[0].Name)
+	}
+	if result.Evidence[0].Offset != offset {
+		t.Errorf(
+			"HandleRule = radare2 rule result offset mismatch,"+
+				"expected %q, got %q",
+			offset,
+			result.Evidence[0].Offset)
+	}
 }
 
 func TestHandleRuleStrings(t *testing.T) {
