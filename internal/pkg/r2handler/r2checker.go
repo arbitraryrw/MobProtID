@@ -82,11 +82,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 				// fmt.Println("[INFO] Binary Info -->", file, allbinaryInfo)
 
-				if len(file) < 4 {
-					continue
-				}
-
-				fileEnding := filepath.Base(file)[len(filepath.Base(file))-4:]
+				fileEnding := filepath.Ext(filepath.Base(file))
 
 				if fileEnding == ".so" || fileEnding == ".dylib" ||
 					fileEnding == ".ipa" || fileEnding == ".dex" {
