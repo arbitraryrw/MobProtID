@@ -97,6 +97,24 @@ func TestHandleRuleSysCalls(t *testing.T) {
 	fmt.Println(result)
 }
 
+func TestHandleRulePicCompilerFlags(t *testing.T) {
+	var r model.Rule
+	var sigs []interface{}
+
+	sigs = append(sigs, false)
+
+	r.Handler = "radare2"
+	r.MatchType = "picCompilerFlag"
+	r.MatchValue = sigs
+	r.Type = "sysCalls"
+	r.Name = "part_1"
+	r.Invert = false
+
+	result := HandleRule(r)
+
+	fmt.Println(result)
+}
+
 func TestHandleRuleStrings(t *testing.T) {
 	// ToDo: test for:
 	// 2. syscalls
