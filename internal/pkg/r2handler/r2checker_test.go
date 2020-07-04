@@ -101,10 +101,10 @@ func TestHandleRulePicCompilerFlags(t *testing.T) {
 	var r model.Rule
 	var sigs []interface{}
 
-	sigs = append(sigs, "true")
+	sigs = append(sigs, "(?i)(^true$)")
 
 	r.Handler = "radare2"
-	r.MatchType = "exact"
+	r.MatchType = "regex"
 	r.MatchValue = sigs
 	r.Type = "picCompilerFlag"
 	r.Name = "part_1"
@@ -113,6 +113,38 @@ func TestHandleRulePicCompilerFlags(t *testing.T) {
 	result := HandleRule(r)
 
 	fmt.Println(result)
+
+	validateRuleResult(r,
+		"true",
+		"0x0",
+		result,
+		t)
+
+	r.Invert = true
+	result = HandleRule(r)
+
+	if result.Match != false {
+		t.Errorf(
+			"HandleRule = radare2 result mismatch, expected"+
+				" inverted result of %t, got %t",
+			false,
+			result.Match)
+	}
+
+	r.Invert = false
+
+	var negativeSigs []interface{}
+	negativeSigs = append(negativeSigs, "(?i)(^false$)")
+	r.MatchValue = negativeSigs
+
+	negativeResults := HandleRule(r)
+
+	if negativeResults.Match != false {
+		t.Errorf(
+			"HandleRule = radare2 result mismatch, expected %t, got %t",
+			true,
+			result.Match)
+	}
 }
 
 func TestHandleRuleCanaryCompilerFlags(t *testing.T) {
@@ -153,8 +185,6 @@ func TestHandleRuleStrippedCompilerFlags(t *testing.T) {
 
 func TestHandleRuleStrings(t *testing.T) {
 	// ToDo: test for:
-	// 2. syscalls
-	// 3. compilerflag
 	// 4. classobjects
 	// 5. methodobjects
 	// 6. fieldobjects
