@@ -79,6 +79,24 @@ func TestHandleRuleSymbols(t *testing.T) {
 
 }
 
+func TestHandleRuleSysCalls(t *testing.T) {
+	var r model.Rule
+	var sigs []interface{}
+
+	sigs = append(sigs, "(?i)(.*)")
+
+	r.Handler = "radare2"
+	r.MatchType = "regex"
+	r.MatchValue = sigs
+	r.Type = "sysCalls"
+	r.Name = "part_1"
+	r.Invert = false
+
+	result := HandleRule(r)
+
+	fmt.Println(result)
+}
+
 func TestHandleRuleStrings(t *testing.T) {
 	// ToDo: test for:
 	// 2. syscalls
