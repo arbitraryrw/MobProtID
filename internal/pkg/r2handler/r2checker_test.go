@@ -104,9 +104,9 @@ func TestHandleRulePicCompilerFlags(t *testing.T) {
 	sigs = append(sigs, false)
 
 	r.Handler = "radare2"
-	r.MatchType = "picCompilerFlag"
+	r.MatchType = "exact"
 	r.MatchValue = sigs
-	r.Type = "sysCalls"
+	r.Type = "picCompilerFlag"
 	r.Name = "part_1"
 	r.Invert = false
 
@@ -122,9 +122,27 @@ func TestHandleRuleCanaryCompilerFlags(t *testing.T) {
 	sigs = append(sigs, false)
 
 	r.Handler = "radare2"
-	r.MatchType = "canaryCompilerFlag"
+	r.MatchType = "exact"
 	r.MatchValue = sigs
-	r.Type = "sysCalls"
+	r.Type = "canaryCompilerFlag"
+	r.Name = "part_1"
+	r.Invert = false
+
+	result := HandleRule(r)
+
+	fmt.Println(result)
+}
+
+func TestHandleRuleStrippedCompilerFlags(t *testing.T) {
+	var r model.Rule
+	var sigs []interface{}
+
+	sigs = append(sigs, false)
+
+	r.Handler = "radare2"
+	r.MatchType = "exact"
+	r.MatchValue = sigs
+	r.Type = "strippedCompilerFlag"
 	r.Name = "part_1"
 	r.Invert = false
 
