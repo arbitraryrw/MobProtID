@@ -159,79 +159,38 @@ func TestHandleRuleStrings(t *testing.T) {
 
 	result := HandleRule(r)
 
-	if result.Match != true {
+	validateRuleResult(r,
+		"It's MobProtID here!",
+		"1918",
+		result,
+		t)
+
+	r.Invert = true
+	result = HandleRule(r)
+
+	if result.Match != false {
+		t.Errorf(
+			"HandleRule = radare2 result mismatch, expected"+
+				" inverted result of %t, got %t",
+			false,
+			result.Match)
+	}
+
+	r.Invert = false
+
+	var negativeSigs []interface{}
+	negativeSigs = append(negativeSigs, "(?i)(.*thisShouldNotMatchAtAll.*)")
+	r.MatchValue = negativeSigs
+
+	negativeResults := HandleRule(r)
+
+	if negativeResults.Match != false {
 		t.Errorf(
 			"HandleRule = radare2 result mismatch, expected %t, got %t",
 			true,
 			result.Match)
 	}
 
-	if len(result.Evidence) != 1 {
-		t.Errorf(
-			"HandleRule = radare2 rule result evidence missmatch"+
-				", expected %q match, got: %q match",
-			1,
-			len(result.Evidence))
-	}
-
-	for _, e := range result.Evidence {
-		if e.File != testBinPath {
-			t.Errorf(
-				"HandleRule = radare2 rule result evidence file missmatch"+
-					", expected %q, got: %q",
-				testBinPath,
-				e.File)
-		}
-
-		if e.RuleName != r.Name {
-			t.Errorf(
-				"HandleRule = radare2 rule result evidence rule name missmatch"+
-					", expected %q, got: %q",
-				r.Name,
-				e.RuleName)
-		}
-		if e.Name != "It's MobProtID here!" {
-			t.Errorf(
-				"HandleRule = radare2 rule result evidence name missmatch"+
-					", expected %q, got: %q",
-				"It's MobProtID here!",
-				e.Name)
-		}
-		if e.Offset != "1918" {
-			t.Errorf(
-				"HandleRule = radare2 rule result evidence offset"+
-					"missmatch, expected %q, got: %q",
-				"1918",
-				e.Offset)
-		}
-
-		r.Invert = true
-		result = HandleRule(r)
-
-		if result.Match != false {
-			t.Errorf(
-				"HandleRule = radare2 result mismatch, expected"+
-					" inverted result of %t, got %t",
-				false,
-				result.Match)
-		}
-
-		r.Invert = false
-
-		var negativeSigs []interface{}
-		negativeSigs = append(negativeSigs, "(?i)(.*thisShouldNotMatchAtAll.*)")
-		r.MatchValue = negativeSigs
-
-		negativeResults := HandleRule(r)
-
-		if negativeResults.Match != false {
-			t.Errorf(
-				"HandleRule = radare2 result mismatch, expected %t, got %t",
-				true,
-				result.Match)
-		}
-
-	}
 }
 
 func TestUcreateEvidenceStruct(t *testing.T) {
