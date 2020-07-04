@@ -35,7 +35,6 @@ func init() {
 }
 
 func TestHandleRuleSymbols(t *testing.T) {
-	// Test Positive Rule
 	var r model.Rule
 	var sigs []interface{}
 
@@ -51,6 +50,63 @@ func TestHandleRuleSymbols(t *testing.T) {
 	result := HandleRule(r)
 
 	validateRuleResult(r, "_init", "1344", result, t)
+
+	r.Invert = true
+	result = HandleRule(r)
+
+	if result.Match != false {
+		t.Errorf(
+			"HandleRule = radare2 result mismatch, expected"+
+				" inverted result of %t, got %t",
+			false,
+			result.Match)
+	}
+
+	r.Invert = false
+
+	var negativeSigs []interface{}
+	negativeSigs = append(negativeSigs, "(?i)(.*thisShouldNotMatchAtAll.*)")
+	r.MatchValue = negativeSigs
+
+	negativeResults := HandleRule(r)
+
+	if negativeResults.Match != false {
+		t.Errorf(
+			"HandleRule = radare2 result mismatch, expected %t, got %t",
+			true,
+			result.Match)
+	}
+
+}
+
+func TestHandleRuleStrings(t *testing.T) {
+	// ToDo: test for:
+	// 2. syscalls
+	// 3. compilerflag
+	// 4. classobjects
+	// 5. methodobjects
+	// 6. fieldobjects
+
+	// Test Positive Rule
+	var r model.Rule
+	var sigs []interface{}
+
+	sigs = append(sigs, "(?i)(.*mobprotid.*)")
+
+	r.Handler = "radare2"
+	r.MatchType = "regex"
+	r.MatchValue = sigs
+	r.Type = "strings"
+	r.Name = "part_1"
+	r.Invert = false
+
+	result := HandleRule(r)
+
+	validateRuleResult(r,
+		"It's MobProtID here!",
+		"1918",
+		result,
+		t)
 
 	r.Invert = true
 	result = HandleRule(r)
@@ -134,63 +190,6 @@ func validateRuleResult(
 			offset,
 			result.Evidence[0].Offset)
 	}
-}
-
-func TestHandleRuleStrings(t *testing.T) {
-	// ToDo: test for:
-	// 2. syscalls
-	// 3. compilerflag
-	// 4. classobjects
-	// 5. methodobjects
-	// 6. fieldobjects
-
-	// Test Positive Rule
-	var r model.Rule
-	var sigs []interface{}
-
-	sigs = append(sigs, "(?i)(.*mobprotid.*)")
-
-	r.Handler = "radare2"
-	r.MatchType = "regex"
-	r.MatchValue = sigs
-	r.Type = "strings"
-	r.Name = "part_1"
-	r.Invert = false
-
-	result := HandleRule(r)
-
-	validateRuleResult(r,
-		"It's MobProtID here!",
-		"1918",
-		result,
-		t)
-
-	r.Invert = true
-	result = HandleRule(r)
-
-	if result.Match != false {
-		t.Errorf(
-			"HandleRule = radare2 result mismatch, expected"+
-				" inverted result of %t, got %t",
-			false,
-			result.Match)
-	}
-
-	r.Invert = false
-
-	var negativeSigs []interface{}
-	negativeSigs = append(negativeSigs, "(?i)(.*thisShouldNotMatchAtAll.*)")
-	r.MatchValue = negativeSigs
-
-	negativeResults := HandleRule(r)
-
-	if negativeResults.Match != false {
-		t.Errorf(
-			"HandleRule = radare2 result mismatch, expected %t, got %t",
-			true,
-			result.Match)
-	}
-
 }
 
 func TestUcreateEvidenceStruct(t *testing.T) {
