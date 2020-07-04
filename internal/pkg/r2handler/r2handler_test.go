@@ -22,7 +22,7 @@ func init() {
 
 func TestUgetStringEntireBinary(t *testing.T) {
 
-	r2s := openR2Pipe("../../../test/sample_binary")
+	r2s := openR2Pipe("../../../test/sample_binary.so")
 
 	var expectString = "It's MobProtID here!"
 	var expectOffset = "1918"

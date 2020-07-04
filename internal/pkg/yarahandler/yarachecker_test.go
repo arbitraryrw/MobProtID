@@ -11,7 +11,7 @@ import (
 func init() {}
 
 func TestHandleRule(t *testing.T) {
-	sampleBinaryRelPath := "../../../test/sample_binary"
+	sampleBinaryRelPath := "../../../test/sample_binary.so"
 	sampleBinAbsPath, err := filepath.Abs(sampleBinaryRelPath)
 
 	if err != nil {

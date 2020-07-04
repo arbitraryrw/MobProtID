@@ -13,7 +13,7 @@ func init() {}
 
 func TestPrepareAnal(t *testing.T) {
 
-	sampleBinaryRelPath := "../../../test/sample_binary"
+	sampleBinaryRelPath := "../../../test/sample_binary.so"
 	sampleBinAbsPath, err := filepath.Abs(sampleBinaryRelPath)
 
 	if err != nil {
@@ -104,7 +104,7 @@ func TestPrepareAnal(t *testing.T) {
 
 func TestUrunYaraRule(t *testing.T) {
 
-	sampleBinaryRelPath := "../../../test/sample_binary"
+	sampleBinaryRelPath := "../../../test/sample_binary.so"
 	sampleBinAbsPath, err := filepath.Abs(sampleBinaryRelPath)
 
 	if err != nil {

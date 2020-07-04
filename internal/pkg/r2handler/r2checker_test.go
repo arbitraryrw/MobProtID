@@ -12,7 +12,7 @@ import (
 var testBinPath string
 
 func init() {
-	sampleBinaryRelPath := "../../../test/sample_binary"
+	sampleBinaryRelPath := "../../../test/sample_binary.so"
 	sampleBinAbsPath, err := filepath.Abs(sampleBinaryRelPath)
 
 	if err != nil {
@@ -101,7 +101,7 @@ func TestHandleRulePicCompilerFlags(t *testing.T) {
 	var r model.Rule
 	var sigs []interface{}
 
-	sigs = append(sigs, false)
+	sigs = append(sigs, "true")
 
 	r.Handler = "radare2"
 	r.MatchType = "exact"
@@ -119,7 +119,7 @@ func TestHandleRuleCanaryCompilerFlags(t *testing.T) {
 	var r model.Rule
 	var sigs []interface{}
 
-	sigs = append(sigs, false)
+	sigs = append(sigs, "false")
 
 	r.Handler = "radare2"
 	r.MatchType = "exact"
@@ -137,7 +137,7 @@ func TestHandleRuleStrippedCompilerFlags(t *testing.T) {
 	var r model.Rule
 	var sigs []interface{}
 
-	sigs = append(sigs, false)
+	sigs = append(sigs, "false")
 
 	r.Handler = "radare2"
 	r.MatchType = "exact"
