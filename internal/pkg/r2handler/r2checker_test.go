@@ -34,6 +34,32 @@ func init() {
 	wg.Wait()
 }
 
+func TestHandleRuleStrings(t *testing.T) {
+	// ToDo: test for:
+	// 4. classobjects
+	// 5. methodobjects
+	// 6. fieldobjects
+
+	// Test Positive Rule
+	var r model.Rule
+	var sigs []interface{}
+
+	sigs = append(sigs, "(?i)(.*mobprotid.*)")
+
+	r.Handler = "radare2"
+	r.MatchType = "regex"
+	r.MatchValue = sigs
+	r.Type = "strings"
+	r.Name = "part_1"
+	r.Invert = false
+
+	validateRuleResult(r,
+		"It's MobProtID here!",
+		"1918",
+		t)
+
+}
+
 func TestHandleRuleSymbols(t *testing.T) {
 	var r model.Rule
 	var sigs []interface{}
@@ -94,62 +120,38 @@ func TestHandleRuleCanaryCompilerFlags(t *testing.T) {
 	var r model.Rule
 	var sigs []interface{}
 
-	sigs = append(sigs, "false")
+	sigs = append(sigs, "(?i)(^false$)")
 
 	r.Handler = "radare2"
-	r.MatchType = "exact"
+	r.MatchType = "regex"
 	r.MatchValue = sigs
 	r.Type = "canaryCompilerFlag"
 	r.Name = "part_1"
 	r.Invert = false
 
-	result := HandleRule(r)
-
-	fmt.Println(result)
+	validateRuleResult(r,
+		"false",
+		"0x0",
+		t)
 }
 
 func TestHandleRuleStrippedCompilerFlags(t *testing.T) {
 	var r model.Rule
 	var sigs []interface{}
 
-	sigs = append(sigs, "false")
+	sigs = append(sigs, "(?i)(^false$)")
 
 	r.Handler = "radare2"
-	r.MatchType = "exact"
+	r.MatchType = "regex"
 	r.MatchValue = sigs
 	r.Type = "strippedCompilerFlag"
 	r.Name = "part_1"
 	r.Invert = false
 
-	result := HandleRule(r)
-
-	fmt.Println(result)
-}
-
-func TestHandleRuleStrings(t *testing.T) {
-	// ToDo: test for:
-	// 4. classobjects
-	// 5. methodobjects
-	// 6. fieldobjects
-
-	// Test Positive Rule
-	var r model.Rule
-	var sigs []interface{}
-
-	sigs = append(sigs, "(?i)(.*mobprotid.*)")
-
-	r.Handler = "radare2"
-	r.MatchType = "regex"
-	r.MatchValue = sigs
-	r.Type = "strings"
-	r.Name = "part_1"
-	r.Invert = false
-
 	validateRuleResult(r,
-		"It's MobProtID here!",
-		"1918",
+		"false",
+		"0x0",
 		t)
-
 }
 
 func validateRuleResult(
