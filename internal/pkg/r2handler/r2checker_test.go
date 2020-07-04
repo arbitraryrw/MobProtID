@@ -47,36 +47,10 @@ func TestHandleRuleSymbols(t *testing.T) {
 	r.Name = "part_1"
 	r.Invert = false
 
-	result := HandleRule(r)
-
-	validateRuleResult(r, "_init", "1344", result, t)
-
-	r.Invert = true
-	result = HandleRule(r)
-
-	if result.Match != false {
-		t.Errorf(
-			"HandleRule = radare2 result mismatch, expected"+
-				" inverted result of %t, got %t",
-			false,
-			result.Match)
-	}
-
-	r.Invert = false
-
-	var negativeSigs []interface{}
-	negativeSigs = append(negativeSigs, "(?i)(.*thisShouldNotMatchAtAll.*)")
-	r.MatchValue = negativeSigs
-
-	negativeResults := HandleRule(r)
-
-	if negativeResults.Match != false {
-		t.Errorf(
-			"HandleRule = radare2 result mismatch, expected %t, got %t",
-			true,
-			result.Match)
-	}
-
+	validateRuleResult(r,
+		"_init",
+		"1344",
+		t)
 }
 
 func TestHandleRuleSysCalls(t *testing.T) {
@@ -110,41 +84,10 @@ func TestHandleRulePicCompilerFlags(t *testing.T) {
 	r.Name = "part_1"
 	r.Invert = false
 
-	result := HandleRule(r)
-
-	fmt.Println(result)
-
 	validateRuleResult(r,
 		"true",
 		"0x0",
-		result,
 		t)
-
-	r.Invert = true
-	result = HandleRule(r)
-
-	if result.Match != false {
-		t.Errorf(
-			"HandleRule = radare2 result mismatch, expected"+
-				" inverted result of %t, got %t",
-			false,
-			result.Match)
-	}
-
-	r.Invert = false
-
-	var negativeSigs []interface{}
-	negativeSigs = append(negativeSigs, "(?i)(^false$)")
-	r.MatchValue = negativeSigs
-
-	negativeResults := HandleRule(r)
-
-	if negativeResults.Match != false {
-		t.Errorf(
-			"HandleRule = radare2 result mismatch, expected %t, got %t",
-			true,
-			result.Match)
-	}
 }
 
 func TestHandleRuleCanaryCompilerFlags(t *testing.T) {
@@ -202,48 +145,20 @@ func TestHandleRuleStrings(t *testing.T) {
 	r.Name = "part_1"
 	r.Invert = false
 
-	result := HandleRule(r)
-
 	validateRuleResult(r,
 		"It's MobProtID here!",
 		"1918",
-		result,
 		t)
-
-	r.Invert = true
-	result = HandleRule(r)
-
-	if result.Match != false {
-		t.Errorf(
-			"HandleRule = radare2 result mismatch, expected"+
-				" inverted result of %t, got %t",
-			false,
-			result.Match)
-	}
-
-	r.Invert = false
-
-	var negativeSigs []interface{}
-	negativeSigs = append(negativeSigs, "(?i)(.*thisShouldNotMatchAtAll.*)")
-	r.MatchValue = negativeSigs
-
-	negativeResults := HandleRule(r)
-
-	if negativeResults.Match != false {
-		t.Errorf(
-			"HandleRule = radare2 result mismatch, expected %t, got %t",
-			true,
-			result.Match)
-	}
 
 }
 
 func validateRuleResult(
 	rule model.Rule,
-	name string,
-	offset string,
-	result model.RuleResult,
+	expectMatchName string,
+	expectMatchOffset string,
 	t *testing.T) {
+
+	result := HandleRule(rule)
 
 	if result.Match != true {
 		t.Errorf(
@@ -278,19 +193,45 @@ func validateRuleResult(
 			rule.Name,
 			result.Evidence[0].RuleName)
 	}
-	if result.Evidence[0].Name != name {
+	if result.Evidence[0].Name != expectMatchName {
 		t.Errorf(
 			"HandleRule = radare2 rule result name mismatch,"+
 				"expected %q, got %q",
-			name,
+			expectMatchName,
 			result.Evidence[0].Name)
 	}
-	if result.Evidence[0].Offset != offset {
+	if result.Evidence[0].Offset != expectMatchOffset {
 		t.Errorf(
 			"HandleRule = radare2 rule result offset mismatch,"+
 				"expected %q, got %q",
-			offset,
+			expectMatchOffset,
 			result.Evidence[0].Offset)
+	}
+
+	rule.Invert = true
+	result = HandleRule(rule)
+
+	if result.Match != false {
+		t.Errorf(
+			"HandleRule = radare2 result mismatch, expected"+
+				" inverted result of %t, got %t",
+			false,
+			result.Match)
+	}
+
+	rule.Invert = false
+
+	var negativeSigs []interface{}
+	negativeSigs = append(negativeSigs, "(?i)(^thisShouldNotMatchAtAll$)")
+	rule.MatchValue = negativeSigs
+
+	negativeResults := HandleRule(rule)
+
+	if negativeResults.Match != false {
+		t.Errorf(
+			"HandleRule = radare2 result mismatch, expected %t, got %t",
+			true,
+			result.Match)
 	}
 }
 
