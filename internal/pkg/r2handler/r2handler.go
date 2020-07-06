@@ -17,14 +17,16 @@ var allStringsInBinary map[string][]map[string]string
 var allSymbolsInBinary map[string][]map[string]string
 var allbinaryInfo map[string]map[string]map[string]string
 var allSyscall map[string][]map[string]string
-var allBinClassAndFunc map[string][]map[string][]map[string]string
+var allBinClassMethFields map[string][]map[string][]map[string]string
+var allBinFunctions map[string][]map[string]string
 
 func init() {
 	allStringsInBinary = make(map[string][]map[string]string, 0)
 	allSymbolsInBinary = make(map[string][]map[string]string, 0)
 	allSyscall = make(map[string][]map[string]string, 0)
 	allbinaryInfo = make(map[string]map[string]map[string]string, 0)
-	allBinClassAndFunc = make(map[string][]map[string][]map[string]string, 0)
+	allBinClassMethFields = make(map[string][]map[string][]map[string]string, 0)
+	allBinFunctions = make(map[string][]map[string]string, 0)
 }
 
 // PrepareAnal - gathers all the relevant data required for analysis
@@ -40,7 +42,8 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 		binaryInfo := make(chan map[string]map[string]string)
 		symbols := make(chan []map[string]string)
 		syscalls := make(chan []map[string]string)
-		binClassAndFuncs := make(chan []map[string][]map[string]string)
+		binClassMethFields := make(chan []map[string][]map[string]string)
+		functions := make(chan []map[string]string)
 
 		// fmt.Println(index, path)
 
@@ -70,7 +73,13 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 
 		go func(p string) {
 			r2Session := openR2Pipe(path)
-			binClassAndFuncs <- getFunctionsAndClasses(r2Session)
+			binClassMethFields <- getClassMethFields(r2Session)
+			r2Session.Close()
+		}(path)
+
+		go func(p string) {
+			r2Session := openR2Pipe(path)
+			functions <- getFunctions(r2Session)
 			r2Session.Close()
 		}(path)
 
@@ -78,13 +87,14 @@ func PrepareAnal(binaryPath []string, wg *sync.WaitGroup) {
 		allSymbolsInBinary[path] = <-symbols
 		allSyscall[path] = <-syscalls
 		allbinaryInfo[path] = <-binaryInfo
-		allBinClassAndFunc[path] = <-binClassAndFuncs
+		allBinClassMethFields[path] = <-binClassMethFields
+		allBinFunctions[path] = <-functions
 
 		close(strings)
 		close(symbols)
 		close(syscalls)
 		close(binaryInfo)
-		close(binClassAndFuncs)
+		close(binClassMethFields)
 	}
 
 	// writeString("Letsa go!")
@@ -435,7 +445,7 @@ func getFunctions(r2session r2pipe.Pipe) []map[string]string {
 }
 
 // Seems to overlap alot with getFunctions() investigate if this has value
-func getFunctionsAndClasses(r2session r2pipe.Pipe) []map[string][]map[string]string {
+func getClassMethFields(r2session r2pipe.Pipe) []map[string][]map[string]string {
 
 	// Map to store all classes, methods, and fields in a structured format
 	allObjectsMap := make([]map[string][]map[string]string, 0)

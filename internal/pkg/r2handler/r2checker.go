@@ -98,7 +98,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 			}
 
 		} else if strings.ToLower(ruleType) == "classobjects" {
-			for file, bundle := range allBinClassAndFunc {
+			for file, bundle := range allBinClassMethFields {
 
 				for _, b := range bundle {
 
@@ -114,7 +114,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 				}
 			}
 		} else if strings.ToLower(ruleType) == "methodobjects" {
-			for file, bundle := range allBinClassAndFunc {
+			for file, bundle := range allBinClassMethFields {
 
 				for _, b := range bundle {
 
@@ -127,7 +127,7 @@ func HandleRule(r model.Rule) model.RuleResult {
 				}
 			}
 		} else if strings.ToLower(ruleType) == "fieldobjects" {
-			for file, bundle := range allBinClassAndFunc {
+			for file, bundle := range allBinClassMethFields {
 				fmt.Println("[INFO] Searching file", file)
 
 				for _, b := range bundle {
@@ -141,6 +141,20 @@ func HandleRule(r model.Rule) model.RuleResult {
 
 				}
 			}
+		} else if strings.ToLower(ruleType) == "functions" {
+
+			// ToDo: Complete functions rule parsing
+			fmt.Println("[INFO] Functions rule!")
+
+			for _, fileFuncs := range allBinFunctions {
+				for _, f := range fileFuncs {
+					fmt.Println("\t", f)
+
+					// Break after the first func to keep it simple
+					break
+				}
+			}
+
 		} else {
 			panic(fmt.Sprintf("[ERROR] Unknown rule type %q in %q", r.Type, r.Name))
 		}
