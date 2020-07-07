@@ -57,7 +57,6 @@ func TestHandleRuleStrings(t *testing.T) {
 		"It's MobProtID here!",
 		"1918",
 		t)
-
 }
 
 func TestHandleRuleSymbols(t *testing.T) {

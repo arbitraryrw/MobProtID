@@ -124,7 +124,7 @@ func TestUgetFunctionsAndClasses(t *testing.T) {
 	expectFieldName := "SensitiveLogic.ifield_c:Landroid/content/Context"
 	expectFieldOffset := "54820"
 
-	got := getFunctionsAndClasses(r2s)
+	got := getClassMethFields(r2s)
 
 	for _, bundle := range got {
 

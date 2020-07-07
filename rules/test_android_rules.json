@@ -2,24 +2,16 @@
     "rules": [
       {
         "ruleId":"001",
-        "ruleName": "yara",
+        "ruleName": "R2 function parsing check",
         "description" : "POC IN PROGRESS",
         "condition": "OR",
         "part_1": {
-            "type": "ruleName",
-            "handler": "yara",
+            "type": "functions",
+            "handler": "radare2",
             "matchType": "regex",
             "matchValue": [
-              "(?i)(.*_example.*)"
+              "(?i)(.*)"
             ]
-        },
-        "part_2": {
-          "type": "ruleName",
-          "handler": "yara",
-          "matchType": "exact",
-          "matchValue": [
-            "first_example"
-          ]
         }
       }
     ]

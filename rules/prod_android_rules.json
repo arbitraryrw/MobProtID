@@ -325,6 +325,28 @@
             "read"
           ]
         }
+      },
+      {
+        "ruleId":"007",
+        "ruleName": "yara",
+        "description" : "POC IN PROGRESS",
+        "condition": "OR",
+        "part_1": {
+            "type": "ruleName",
+            "handler": "yara",
+            "matchType": "regex",
+            "matchValue": [
+              "(?i)(.*_example.*)"
+            ]
+        },
+        "part_2": {
+          "type": "ruleName",
+          "handler": "yara",
+          "matchType": "exact",
+          "matchValue": [
+            "first_example"
+          ]
+        }
       }
 
     ]
