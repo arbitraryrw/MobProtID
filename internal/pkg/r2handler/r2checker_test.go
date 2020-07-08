@@ -78,6 +78,25 @@ func TestHandleRuleSymbols(t *testing.T) {
 		t)
 }
 
+func TestHandleRuleFunctions(t *testing.T) {
+	var r model.Rule
+	var sigs []interface{}
+
+	sigs = append(sigs, "(?i)(^entry.init0$)")
+
+	r.Handler = "radare2"
+	r.MatchType = "regex"
+	r.MatchValue = sigs
+	r.Type = "functions"
+	r.Name = "part_1"
+	r.Invert = false
+
+	validateRuleResult(r,
+		"entry.init0",
+		"1696",
+		t)
+}
+
 func TestHandleRuleSysCalls(t *testing.T) {
 	var r model.Rule
 	var sigs []interface{}
