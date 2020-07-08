@@ -81,19 +81,31 @@ func TestUgetFunctions(t *testing.T) {
 
 	r2s := openR2Pipe(matchedFiles[0])
 
-	expect := "com_example_dummyapplication_BusinessLogic"
+	expect := "method.public.final.Lcom_example_dummyapplication" +
+		"_SensitiveLogic.Lcom_example_dummyapplication_SensitiveLogic" +
+		".method.rootDetection__Z"
+
 	got := getFunctions(r2s)
 
 	for _, f := range got {
-		if name, ok := f["name"]; ok {
-			if strings.Contains(name, expect) {
-				result = true
-			}
+		if _, ok := f["name"]; !ok {
+			t.Error("getFunctions() = map missing name attribute.")
 		}
+
+		if _, ok := f["offset"]; !ok {
+			t.Error("getFunctions() = map missing name attribute.")
+		}
+
+		if f["name"] == expect && f["offset"] == "79828" {
+			result = true
+		}
+
 	}
 
 	if result == false {
-		t.Errorf("getFunctions() = could not find %q in %q r2 reponse", expect, matchedFiles[0])
+		t.Errorf("getFunctions() = could not find %q in %q r2 reponse",
+			expect,
+			matchedFiles[0])
 	}
 }
 
