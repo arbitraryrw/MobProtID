@@ -85,6 +85,17 @@
             "(?i)(.*magisk.*)",
             "(?i)(.*supersu.*)"
           ]
+        },
+        "part_6": {
+          "type": "functions",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*rootdetect.*)",
+            "(?i)(.*magisk.*)",
+            "(?i)(.*supersu.*)"
+          ]
         }
       },
       {
@@ -159,6 +170,18 @@
             "(?i)(.*substrate.*)",
             "(?i)(.*xposed.*)"
           ]
+        },
+        "part_6": {
+          "type": "functions",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*frida.*)",
+            "(?i)(.*dynamic.*instrument.*)",
+            "(?i)(.*substrate.*)",
+            "(?i)(.*xposed.*)"
+          ]
         }
       },
       {
@@ -218,6 +241,17 @@
             "(?i)(.*debugger.*detected.*)",
             "(?i)(.*lldb.*)"
           ]
+        },
+        "part_6": {
+          "type": "functions",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*debugger.*attached.*)",
+            "(?i)(.*debugger.*detected.*)",
+            "(?i)(.*lldb.*)"
+          ]
         }
       },
       {
@@ -263,6 +297,15 @@
         },
         "part_5": {
           "type": "fieldobjects",
+          "handler": "radare2",
+          "matchType": "regex",
+          "invert" : false,
+          "matchValue": [
+            "(?i)(.*emulator.*)"
+          ]
+        },
+        "part_6": {
+          "type": "functions",
           "handler": "radare2",
           "matchType": "regex",
           "invert" : false,
