@@ -142,16 +142,13 @@ func HandleRule(r model.Rule) model.RuleResult {
 				}
 			}
 		} else if strings.ToLower(ruleType) == "functions" {
+			// fmt.Println("[DEBUG] Functions rule!")
 
-			// ToDo: Complete functions rule parsing
-			fmt.Println("[INFO] Functions rule!")
+			for file, functionsBundle := range allBinFunctions {
+				for _, fb := range functionsBundle {
 
-			for _, fileFuncs := range allBinFunctions {
-				for _, f := range fileFuncs {
-					fmt.Println("\t", f)
-
-					// Break after the first func to keep it simple
-					break
+					evidence := evalMatch(file, r, val.(string), fb)
+					evidenceInstances = append(evidenceInstances, evidence...)
 				}
 			}
 
