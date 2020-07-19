@@ -336,3 +336,28 @@ func ExactMatch(haystack string, needle string) []string {
 
 	return matches
 }
+
+func CreateTempFile(file string) {
+
+	fp := filepath.Join(AnalysisDir, file)
+
+	if _, err := os.Stat(AnalysisDir); os.IsNotExist(err) {
+		panic(fmt.Sprintf(
+			"Unable to create temp file, analysis dir %q does not exist. Error: %s",
+			AnalysisDir,
+			err))
+	}
+
+	fmt.Println("->", fp)
+
+	f, err := os.Create(fp)
+	defer f.Close()
+
+	if err != nil {
+		panic(fmt.Sprintf(
+			"Unable to create file at %q, got the following error: %s",
+			fp,
+			err))
+	}
+
+}

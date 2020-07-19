@@ -94,6 +94,8 @@ func Start(bp string, testRuleSet bool) {
 		}
 	}
 
+	utils.CreateTempFile("phaseOne.json")
+
 	// r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
 	// nextRule := ruleSequence(r...)
 	// fmt.Println(nextRule())
