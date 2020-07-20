@@ -82,9 +82,12 @@ func Start(bp string, testRuleSet bool) {
 	fmt.Println("RULE FILES ->", rules)
 	ruleResults := ruleparser.ParseRuleFile(rules)
 
+	utils.WriteResultsToFile("PhaseOne.json", ruleResults)
+
 	for k, v := range ruleResults {
 		fmt.Println("[INFO] Results for rule file", k)
 		for _, rr := range v {
+
 			fmt.Println("\t", rr.RuleID, rr.RuleName, rr.Match)
 			fmt.Println("\t\t", len(rr.Evidence), "Evidence entries:")
 
@@ -94,7 +97,7 @@ func Start(bp string, testRuleSet bool) {
 		}
 	}
 
-	utils.CreateTempFile("phaseOne.json")
+	// utils.CreateTempFile("phaseOne.json")
 
 	// r := []string{"ruleOne", "ruletwo", "rulethree", "rulefour", "rulefive"}
 	// nextRule := ruleSequence(r...)

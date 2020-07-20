@@ -2,8 +2,10 @@ package utils
 
 import (
 	"archive/zip"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -13,6 +15,8 @@ import (
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/arbitraryrw/MobProtID/internal/pkg/model"
 )
 
 var AnalysisDir string
@@ -337,8 +341,7 @@ func ExactMatch(haystack string, needle string) []string {
 	return matches
 }
 
-func CreateTempFile(file string) {
-
+func createTempFile(file string) {
 	fp := filepath.Join(AnalysisDir, file)
 
 	if _, err := os.Stat(AnalysisDir); os.IsNotExist(err) {
@@ -348,9 +351,8 @@ func CreateTempFile(file string) {
 			err))
 	}
 
-	fmt.Println("->", fp)
-
 	f, err := os.Create(fp)
+
 	defer f.Close()
 
 	if err != nil {
@@ -360,4 +362,31 @@ func CreateTempFile(file string) {
 			err))
 	}
 
+	f.WriteString("Test value\n")
+
+	f.Sync()
+}
+
+// WriteResultsToFile writes parsed rule results to file for downstream consumption
+func WriteResultsToFile(file string, data map[string][]model.RuleResult) {
+
+	fp := filepath.Join(AnalysisDir, file)
+
+	if _, err := os.Stat(fp); os.IsExist(err) {
+		panic(fmt.Sprintf(
+			"Unable to write rule result to file at %q. Error: %s",
+			fp,
+			err))
+	}
+
+	f, err := json.MarshalIndent(data, "", "")
+
+	_ = ioutil.WriteFile(fp, f, 644)
+
+	if err != nil {
+		panic(fmt.Sprintf(
+			"Unable to create file at %q, got the following error: %s",
+			fp,
+			err))
+	}
 }
